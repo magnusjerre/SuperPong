@@ -72,6 +72,13 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MJFrameWork\MJNode.cs" />
+    <Compile Include="MJFrameWork\MJPhysicsBody.cs" />
+    <Compile Include="MJFrameWork\MJParticle.cs" />
+    <Compile Include="MJFrameWork\MJParticleEmitter.cs" />
+    <Compile Include="MJFrameWork\MJPhysicsManager.cs" />
+    <Compile Include="MJFrameWork\MJSceneManager.cs" />
+    <Compile Include="MJFrameWork\MJSprite.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
