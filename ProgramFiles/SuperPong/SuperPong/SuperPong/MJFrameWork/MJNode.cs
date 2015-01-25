@@ -41,6 +41,11 @@ namespace SuperPong.MJFrameWork
 
             if (ParticleEmitter != null)
                 ParticleEmitter.Update(gameTime);
+
+            foreach (MJNode child in Children)
+            {
+                child.Update(gameTime);
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -101,6 +106,34 @@ namespace SuperPong.MJFrameWork
         {
             this.ParticleEmitter.DetachFromParent();
             this.ParticleEmitter = null;
+        }
+
+        protected Vector2 CalculateGlobalPosition()
+        {
+            Vector2 globalPosition = CalculateRelativeToParent();
+            MJNode parentNode = Parent;
+            while (parentNode != null)
+            {
+                Vector2 tempOffset = parentNode.CalculateRelativeToParent();
+                globalPosition.X = globalPosition.X + tempOffset.X;
+                globalPosition.Y = globalPosition.Y + tempOffset.Y;
+                parentNode = parentNode.Parent;
+            }
+            return globalPosition;
+        }
+
+        protected Vector2 CalculateRelativeToParent()
+        {
+            Vector2 output = new Vector2(Position.X, Position.Y);
+            if (Parent != null && Parent.Rotation != 0)
+            {
+                float length = (float)Math.Sqrt(Position.X * Position.X + Position.Y * Position.Y);
+                float x = (float)(length * Math.Cos(Parent.Rotation));
+                float y = (float)(length * Math.Sin(Parent.Rotation));
+                output.X = x;
+                output.Y = y;
+            }
+            return output;
         }
     }
 }
