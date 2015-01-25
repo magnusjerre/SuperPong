@@ -69,7 +69,7 @@ namespace SuperPong.MJFrameWork
         public int AnimationTime { get; set; }
         public int ElapsedAnimationTime { get; set; }
 
-        public MJSprite(Texture2D texture)
+        public MJSprite(Texture2D texture) : base()
         {
             this.Texture = texture;
             NumberOfSubImages = 1;
