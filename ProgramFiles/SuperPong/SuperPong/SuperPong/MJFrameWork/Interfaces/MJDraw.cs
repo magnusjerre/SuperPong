@@ -7,10 +7,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SuperPong.MJFrameWork
 {
-    interface MJDraw
+    public interface MJDraw
     {
 
-        public void Draw(SpriteBatch spriteBatch);
+        void Draw(SpriteBatch spriteBatch);
 
     }
 }

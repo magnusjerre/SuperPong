@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SuperPong.MJFrameWork
 {
-    class MJPhysicsManager
+    public class MJPhysicsManager
     {
     }
 }

@@ -7,8 +7,11 @@ using Microsoft.Xna.Framework;
 
 namespace SuperPong.MJFrameWork
 {
-    public interface MJUpdate
+    public class MJUtils
     {
-        void Update(GameTime gameTime);
+        public static float GetAngleFromXAxis(Vector2 vector)
+        {
+            return (float)Math.Atan2(vector.Y, vector.X);
+        }
     }
 }

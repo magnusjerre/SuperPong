@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SuperPong.MJFrameWork
 {
-    class MJPhysicsBody : MJDetachable, MJUpdate
+    public class MJPhysicsBody : MJDetachable, MJUpdate
     {
         public MJNode Parent { get; set; }
 

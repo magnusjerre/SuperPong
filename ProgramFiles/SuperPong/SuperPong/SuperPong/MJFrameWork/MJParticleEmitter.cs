@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SuperPong.MJFrameWork
 {
-    class MJParticleEmitter : MJDetachable, MJUpdate, MJDraw
+    public class MJParticleEmitter : MJDetachable, MJUpdate, MJDraw
     {
 
         public MJNode Parent { get; set; }

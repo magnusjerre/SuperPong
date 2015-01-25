@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SuperPong.MJFrameWork
 {
-    class MJSprite : MJNode, MJUpdate, MJDraw
+    public class MJSprite : MJNode, MJUpdate, MJDraw
     {
 
         protected Texture2D Texture { get; set; }
@@ -58,7 +58,6 @@ namespace SuperPong.MJFrameWork
         }
         
         public SpriteEffects SEffects { get; set; }
-        public float LayerDepth { get; set; }
 
         private int currentImageNumber;
         protected int CurrentImageNumber { get { return currentImageNumber; } }
@@ -79,14 +78,13 @@ namespace SuperPong.MJFrameWork
             ColorTint = Color.White;
             Origin = new Vector2(0.5f, 0.5f);
             SEffects = SpriteEffects.None;
-            LayerDepth = 1;
             AnimationTime = 100;
             ElapsedAnimationTime = 0;
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, CalculateGlobalPosition(), SourceRectangle, ColorTint, Rotation, Origin, Scale, SEffects, LayerDepth);
+            spriteBatch.Draw(Texture, absoluteCoordinateSystem.Position, SourceRectangle, ColorTint, absoluteCoordinateSystem.Rotation, Origin, Scale, SEffects, LayerDepth);
 
             foreach (MJNode child in Children)
             {
@@ -99,7 +97,7 @@ namespace SuperPong.MJFrameWork
             }
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             if (NumberOfSubImages > 1)
             {

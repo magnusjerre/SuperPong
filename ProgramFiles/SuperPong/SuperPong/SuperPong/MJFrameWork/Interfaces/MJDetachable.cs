@@ -5,8 +5,8 @@ using System.Text;
 
 namespace SuperPong.MJFrameWork
 {
-    interface MJDetachable
+    public interface MJDetachable
     {
-        public void DetachFromParent();
+        void DetachFromParent();
     }
 }

@@ -9,6 +9,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
+using SuperPong.MJFrameWork;
+
 namespace SuperPong
 {
     /// <summary>
@@ -18,6 +20,7 @@ namespace SuperPong
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        MJSprite sprite, sprite2, sprite3;
 
         public Game1()
         {
@@ -46,7 +49,24 @@ namespace SuperPong
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-
+            Texture2D texture = Content.Load<Texture2D>("ball");
+            
+            sprite = new MJSprite(texture);
+            sprite.Name = "sprite";
+            sprite.Position = new Vector2(200, 200);
+            //sprite.Rotation = 3.14f;
+            
+            sprite2 = new MJSprite(texture);
+            sprite2.Name = "sprite2";
+            sprite2.ColorTint = Color.Blue;
+            sprite2.Position = new Vector2(100, 100);
+            sprite.AddChild(sprite2);
+            
+            sprite3 = new MJSprite(texture);
+            sprite3.Name = "sprite3";
+            sprite3.ColorTint = Color.Green;
+            sprite3.Position = new Vector2(-50, 30);
+            sprite2.AddChild(sprite3);
             // TODO: use this.Content to load your game content here
         }
 
@@ -73,6 +93,10 @@ namespace SuperPong
             // TODO: Add your update logic here
 
             base.Update(gameTime);
+            sprite.Update(gameTime);
+            sprite.Rotation += 0.01f;
+            sprite2.Rotation -= 0.03f;
+            //sprite.Position = new Vector2(sprite.Position.X + 1, sprite.Position.Y);
         }
 
         /// <summary>
@@ -86,6 +110,11 @@ namespace SuperPong
             // TODO: Add your drawing code here
 
             base.Draw(gameTime);
+            spriteBatch.Begin();
+            sprite.Draw(spriteBatch);
+            sprite2.Draw(spriteBatch);
+            sprite3.Draw(spriteBatch);
+            spriteBatch.End();
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SuperPong.MJFrameWork
 {
-    class MJParticle
+    public class MJParticle
     {
     }
 }

@@ -8,11 +8,39 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SuperPong.MJFrameWork
 {
-    class MJNode : MJUpdate, MJDraw
+    public class MJNode : MJUpdate, MJDraw
     {
         public string Name { get; set; }
-        public Vector2 Position { get; set; }
-        public float Rotation { get; set; }
+
+        private Vector2 position;
+        public Vector2 Position {
+            get
+            { 
+                return position; 
+            }
+            set
+            {
+                position = value;
+                UpdateAbsValues();
+            }
+        }
+
+        private float rotation;
+        public float Rotation {
+            get
+            {
+                return rotation;
+            }
+            set
+            {
+                rotation = value;
+                UpdateAbsValues();
+            }
+        }
+
+        public MJAbsoluteCoordinateSystem absoluteCoordinateSystem { get; set; }
+
+        public float LayerDepth { get; set; }
 
         public MJNode Parent { get; set; }
         private List<MJNode> children;
@@ -24,17 +52,19 @@ namespace SuperPong.MJFrameWork
         public MJNode()
         {
             Name = null;
-            Position = new Vector2(0, 0);
-            Rotation = 0;
-
             Parent = null;
             Children = new List<MJNode>();
+
+            absoluteCoordinateSystem = new MJAbsoluteCoordinateSystem();
+            Position = new Vector2(0, 0);
+            Rotation = 0;
+            LayerDepth = 1;
 
             PhysicsBody = null;
             ParticleEmitter = null;
         }
 
-        public void Update(GameTime gameTime)
+        public virtual void Update(GameTime gameTime)
         {
             if (PhysicsBody != null)
                 PhysicsBody.Update(gameTime);
@@ -48,7 +78,7 @@ namespace SuperPong.MJFrameWork
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public virtual void Draw(SpriteBatch spriteBatch)
         {
             foreach (MJNode child in children) {
                 child.Draw(spriteBatch);
@@ -58,11 +88,12 @@ namespace SuperPong.MJFrameWork
                 ParticleEmitter.Draw(spriteBatch);
         }
 
-        public void AdChild(MJNode child)
+        public void AddChild(MJNode child)
         {
             if (child.Parent == null) {
                 children.Add(child);
                 child.Parent = this;
+                child.UpdateAbsValues();
             } else {
                 throw new Exception("Child already has a parent: Parent.Name: " + child.Parent.Name);
             }
@@ -73,6 +104,7 @@ namespace SuperPong.MJFrameWork
             if (child != null) {
                 children.Remove(child);
                 child.Parent = null;
+                child.UpdateAbsValues();
             }
         }
 
@@ -81,6 +113,7 @@ namespace SuperPong.MJFrameWork
             if (Parent != null)
             {
                 Parent.RemoveChild(this);
+                UpdateAbsValues();
             }
         }
 
@@ -108,32 +141,41 @@ namespace SuperPong.MJFrameWork
             this.ParticleEmitter = null;
         }
 
-        protected Vector2 CalculateGlobalPosition()
+        protected void UpdateAbsValuesForThis()
         {
-            Vector2 globalPosition = CalculateRelativeToParent();
-            MJNode parentNode = Parent;
-            while (parentNode != null)
+            Vector2 globalPosition = new Vector2(Position.X, Position.Y);
+            float absRotation = Rotation;
+
+            if (Parent != null)
             {
-                Vector2 tempOffset = parentNode.CalculateRelativeToParent();
-                globalPosition.X = globalPosition.X + tempOffset.X;
-                globalPosition.Y = globalPosition.Y + tempOffset.Y;
-                parentNode = parentNode.Parent;
+                float xAxisAngle = MJUtils.GetAngleFromXAxis(Position);
+                float lengthOfPosFromParent = Position.Length();
+                float newAngle = xAxisAngle + Parent.absoluteCoordinateSystem.Rotation;
+                float newX = (float)(Math.Cos(newAngle) * lengthOfPosFromParent) + Parent.absoluteCoordinateSystem.Position.X;
+                float newY = (float)(Math.Sin(newAngle) * lengthOfPosFromParent) + Parent.absoluteCoordinateSystem.Position.Y;
+
+                globalPosition.X = newX;
+                globalPosition.Y = newY;
+                absRotation = Rotation + Parent.absoluteCoordinateSystem.Rotation;
             }
-            return globalPosition;
+
+            absoluteCoordinateSystem.Position = globalPosition;
+            absoluteCoordinateSystem.Rotation = absRotation;
         }
 
-        protected Vector2 CalculateRelativeToParent()
+        protected void UpdateChildrenAbsValues()
         {
-            Vector2 output = new Vector2(Position.X, Position.Y);
-            if (Parent != null && Parent.Rotation != 0)
+            foreach (MJNode child in Children)
             {
-                float length = (float)Math.Sqrt(Position.X * Position.X + Position.Y * Position.Y);
-                float x = (float)(length * Math.Cos(Parent.Rotation));
-                float y = (float)(length * Math.Sin(Parent.Rotation));
-                output.X = x;
-                output.Y = y;
+                child.UpdateAbsValuesForThis();
+                child.UpdateChildrenAbsValues();
             }
-            return output;
+        }
+
+        protected void UpdateAbsValues()
+        {
+            UpdateAbsValuesForThis();
+            UpdateChildrenAbsValues();
         }
     }
 }
