@@ -21,11 +21,16 @@ namespace SuperPong
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         MJSprite sprite, sprite2, sprite3;
+        MJSceneManager sceneManager;
+        int elapsedButtonPressTime = 0;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+            sceneManager = new MJSceneManager(new FirstScene(Content));
+            sceneManager.AddScene(new SecondScene(Content));
+            Console.WriteLine("Constructor");
         }
 
         /// <summary>
@@ -39,6 +44,8 @@ namespace SuperPong
             // TODO: Add your initialization logic here
 
             base.Initialize();
+            Console.WriteLine("Initialize");
+            
         }
 
         /// <summary>
@@ -49,24 +56,26 @@ namespace SuperPong
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            Texture2D texture = Content.Load<Texture2D>("ball");
+            sceneManager.MainScene.LoadContent();
+            Console.WriteLine("LoadContent");
+            //Texture2D texture = Content.Load<Texture2D>("ball");
             
-            sprite = new MJSprite(texture);
-            sprite.Name = "sprite";
-            sprite.Position = new Vector2(200, 200);
-            //sprite.Rotation = 3.14f;
+            //sprite = new MJSprite(texture);
+            //sprite.Name = "sprite";
+            //sprite.Position = new Vector2(200, 200);
+            ////sprite.Rotation = 3.14f;
             
-            sprite2 = new MJSprite(texture);
-            sprite2.Name = "sprite2";
-            sprite2.ColorTint = Color.Blue;
-            sprite2.Position = new Vector2(100, 100);
-            sprite.AddChild(sprite2);
+            //sprite2 = new MJSprite(texture);
+            //sprite2.Name = "sprite2";
+            //sprite2.ColorTint = Color.Blue;
+            //sprite2.Position = new Vector2(100, 100);
+            //sprite.AddChild(sprite2);
             
-            sprite3 = new MJSprite(texture);
-            sprite3.Name = "sprite3";
-            sprite3.ColorTint = Color.Green;
-            sprite3.Position = new Vector2(-50, 30);
-            sprite2.AddChild(sprite3);
+            //sprite3 = new MJSprite(texture);
+            //sprite3.Name = "sprite3";
+            //sprite3.ColorTint = Color.Green;
+            //sprite3.Position = new Vector2(-50, 30);
+            //sprite2.AddChild(sprite3);
             // TODO: use this.Content to load your game content here
         }
 
@@ -93,9 +102,34 @@ namespace SuperPong
             // TODO: Add your update logic here
 
             base.Update(gameTime);
-            sprite.Update(gameTime);
-            sprite.Rotation += 0.01f;
-            sprite2.Rotation -= 0.03f;
+            sceneManager.Update(gameTime);
+
+            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+            {
+                if (elapsedButtonPressTime == 0)
+                {
+                    if (sceneManager.MainScene == sceneManager.GetSceneNamed("FirstScene"))
+                    {
+                        sceneManager.TransitionTo(sceneManager.GetSceneNamed("SecondScene"));
+                    }
+                    else
+                    {
+                        sceneManager.TransitionTo(sceneManager.GetSceneNamed("FirstScene"));
+                    }
+                }
+                elapsedButtonPressTime += gameTime.ElapsedGameTime.Milliseconds;
+                if (elapsedButtonPressTime > 200)
+                {
+                    elapsedButtonPressTime = 0;
+                }
+            }
+            else
+            {
+                elapsedButtonPressTime = 0;
+            }
+            //sprite.Update(gameTime);
+            //sprite.Rotation += 0.01f;
+            //sprite2.Rotation -= 0.03f;
             //sprite.Position = new Vector2(sprite.Position.X + 1, sprite.Position.Y);
         }
 
@@ -111,9 +145,10 @@ namespace SuperPong
 
             base.Draw(gameTime);
             spriteBatch.Begin();
-            sprite.Draw(spriteBatch);
-            sprite2.Draw(spriteBatch);
-            sprite3.Draw(spriteBatch);
+            sceneManager.Draw(spriteBatch);
+            //sprite.Draw(spriteBatch);
+            //sprite2.Draw(spriteBatch);
+            //sprite3.Draw(spriteBatch);
             spriteBatch.End();
         }
     }

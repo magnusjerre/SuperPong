@@ -72,8 +72,10 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FirstScene.cs" />
     <Compile Include="MJFrameWork\Interfaces\MJDetachable.cs" />
     <Compile Include="MJFrameWork\Interfaces\MJDraw.cs" />
+    <Compile Include="MJFrameWork\Interfaces\MJTransitionListener.cs" />
     <Compile Include="MJFrameWork\MJAbs.cs" />
     <Compile Include="MJFrameWork\MJNode.cs" />
     <Compile Include="MJFrameWork\MJPhysicsBody.cs" />
@@ -84,10 +86,12 @@
     <Compile Include="MJFrameWork\MJSceneManager.cs" />
     <Compile Include="MJFrameWork\MJSprite.cs" />
     <Compile Include="MJFrameWork\Interfaces\MJUpdate.cs" />
+    <Compile Include="MJFrameWork\MJTransition.cs" />
     <Compile Include="MJFrameWork\MJUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="SecondScene.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

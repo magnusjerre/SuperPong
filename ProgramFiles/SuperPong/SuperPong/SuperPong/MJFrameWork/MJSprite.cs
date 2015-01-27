@@ -82,6 +82,12 @@ namespace SuperPong.MJFrameWork
             ElapsedAnimationTime = 0;
         }
 
+        public MJSprite(Texture2D texture, int numberOfFrames) : this(texture)
+        {
+            NumberOfSubImages = numberOfFrames;
+            UpdateSourceRectangle();
+        }
+
         public override void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(Texture, absoluteCoordinateSystem.Position, SourceRectangle, ColorTint, absoluteCoordinateSystem.Rotation, Origin, Scale, SEffects, LayerDepth);

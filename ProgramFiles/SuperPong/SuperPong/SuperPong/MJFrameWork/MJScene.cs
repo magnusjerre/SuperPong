@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace SuperPong.MJFrameWork
 {
     public class MJScene : MJNode
     {
         public ContentManager content;
+        public Boolean hasLoadedContent = false;
 
         public MJScene(ContentManager content, string name) : base()
         {
@@ -17,19 +19,20 @@ namespace SuperPong.MJFrameWork
             Name = name;
         }
 
-        protected void Initialize()
+        public virtual void Initialize()
         {
 
         }
 
-        protected void UnloadContent()
+        public virtual void UnloadContent()
         {
 
         }
 
-        protected void LoadContent()
+        public virtual void LoadContent()
         {
 
         }
+
     }
 }

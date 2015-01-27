@@ -90,7 +90,7 @@ namespace SuperPong.MJFrameWork
 
         public void AddChild(MJNode child)
         {
-            if (child.Parent == null) {
+            if (child.Parent == null && !Children.Contains(child)) {
                 children.Add(child);
                 child.Parent = this;
                 child.UpdateAbsValues();
@@ -106,6 +106,16 @@ namespace SuperPong.MJFrameWork
                 child.Parent = null;
                 child.UpdateAbsValues();
             }
+        }
+
+        public Boolean HasChildNamed(string name)
+        {
+            foreach (MJNode child in Children)
+            {
+                if (child.Name.Equals(name))
+                    return true;
+            }
+            return false;
         }
 
         public void RemoveFromParent()
