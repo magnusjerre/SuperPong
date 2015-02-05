@@ -26,7 +26,7 @@ namespace SuperPong.MJFrameWork
 
         public virtual void UnloadContent()
         {
-
+            
         }
 
         public virtual void LoadContent()
