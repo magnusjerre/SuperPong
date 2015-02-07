@@ -128,42 +128,6 @@ namespace SuperPong.MJFrameWork
             return polygonPath;
         }
 
-        public Boolean Collides(MJPhysicsBody other)
-        {
-            if (Radius > -1 && other.Radius > -1)
-                return CollidesBothCircular(other);
-            return false;
-        }
-
-        private Boolean CollidesBothCircular(MJPhysicsBody other)
-        {
-            Vector2 pos1 = Parent.absoluteCoordinateSystem.Position;
-            Vector2 pos2 = other.Parent.absoluteCoordinateSystem.Position;
-            float dx = pos2.X - pos1.X;
-            float dy = pos2.Y - pos1.Y;
-            float distance = dx * dx + dy * dy;
-
-            return distance < (Radius + other.Radius) * (Radius + other.Radius);   
-        }
-
-        public Boolean PointInsideBody(Vector2 point)
-        {
-            if (Radius > -1)
-            {
-                return PointInsideCircle(point);
-            }
-            return false;
-        }
-
-        private Boolean PointInsideCircle(Vector2 point)
-        {
-            Vector2 pos = Parent.absoluteCoordinateSystem.Position;
-            float dx = point.X - pos.X;
-            float dy = point.Y - pos.Y;
-
-            return dx * dx + dy * dy < Radius * Radius;
-        }
-
         protected void CalculateAxisAlignedBoundingBox()
         {
             if (PolygonPath.Count > 1)
@@ -218,5 +182,148 @@ namespace SuperPong.MJFrameWork
             Matrix inversetranslationMatrix = Matrix.CreateTranslation(
                 new Vector3(-position.X, -position.Y, 0));
         }
+
+//------------------------- Collision detection ----------------------------\\
+
+        public Boolean Collides(MJPhysicsBody other)
+        {
+            if (Radius > -1 && other.Radius > -1)
+                return CollidesBothCircular(other);
+
+            if (AxisAlignedIntersects(other.AxisAlignedBoundingBox))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private Boolean CollidesBothCircular(MJPhysicsBody other)
+        {
+            Vector2 pos1 = Parent.absoluteCoordinateSystem.Position;
+            Vector2 pos2 = other.Parent.absoluteCoordinateSystem.Position;
+            float dx = pos2.X - pos1.X;
+            float dy = pos2.Y - pos1.Y;
+            float distance = dx * dx + dy * dy;
+
+            return distance < (Radius + other.Radius) * (Radius + other.Radius);
+        }
+
+        private Boolean AxisAlignedIntersects(MJRectangle other)
+        {
+            if (other.MaxX < AxisAlignedBoundingBox.MinX)
+                return false;
+
+            if (other.MinX > AxisAlignedBoundingBox.MaxX)
+                return false;
+
+            if (other.MaxY < AxisAlignedBoundingBox.MinY)
+                return false;
+
+            if (other.MinY > AxisAlignedBoundingBox.MaxY)
+                return false;
+
+            return true;
+        }
+
+        public Boolean PointInsideBody(Vector2 point)
+        {
+            if (Radius > -1)
+                return PointInsideCircle(point);
+            if (PointInsideAxisAlignedBoundingBox(point))
+                return true;    //TODO: More implementation needed
+            return false;
+        }
+
+        private Boolean PointInsideCircle(Vector2 point)
+        {
+            Vector2 pos = Parent.absoluteCoordinateSystem.Position;
+            float dx = point.X - pos.X;
+            float dy = point.Y - pos.Y;
+
+            return dx * dx + dy * dy < Radius * Radius;
+        }
+
+        private Boolean PointInsideAxisAlignedBoundingBox(Vector2 point)
+        {
+            if (point.X < AxisAlignedBoundingBox.MinX)
+                return false;
+            if (point.X > AxisAlignedBoundingBox.MaxX)
+                return false;
+            if (point.Y < AxisAlignedBoundingBox.MinY)
+                return false;
+            if (point.Y > AxisAlignedBoundingBox.MaxY)
+                return false;
+            
+            return true;
+        }
+
+        private Boolean PointInsidePolygon(Vector2 point)
+        {
+            Vector2 pointH1 = point;
+            Vector2 pointH2 = new Vector2(AxisAlignedBoundingBox.MaxY, 
+                point.Y);
+
+            int counter = 0;
+
+            for (int i = 0; i < PolygonPath.Count; i++)
+            {
+                Vector2 pointA1 = new Vector2(PolygonPath[i].X,
+                    PolygonPath[i].Y);
+                int next = (i + 1) % PolygonPath.Count;
+                Vector2 pointA2 = new Vector2(PolygonPath[next].X,
+                    PolygonPath[next].Y);
+                if (LineCrossesHorizontal(pointH1, pointH2, pointA1, pointA2))
+                    counter++;
+            }
+
+            return counter % 2 != 0;
+        }
+
+        private Boolean LinesCross(Vector2 pointA1, Vector2 pointA2,
+            Vector2 pointB1, Vector2 pointB2)
+        {
+            //Ya = a*x + b
+            //Yb = a*x + b
+            float Aa = (pointA1.Y - pointA2.Y) / (pointA1.X - pointA2.X);
+            float Ba = (pointB1.Y - pointB2.Y) / (pointB1.X - pointB2.X);
+            float Ab = pointA1.Y - Aa * pointA1.X;
+            float Bb = pointB1.Y - Ba * pointB1.X;
+            
+            //Ya = Yb -> x * (Aa - Ba) = (Bb - Ab)
+            float x = (Bb - Ab) / (Aa - Ba);
+            
+            float max = Math.Max(pointA1.X, pointA2.X);
+            float min = Math.Min(pointA1.X, pointA2.X);
+
+            return x >= min && x <= max;
+        }
+
+        /*
+         * <summary>
+         * pointH1 and pointH2 are assumed to be the points of the horizontal 
+         * line.
+         * </summary>
+         */
+        private Boolean LineCrossesHorizontal(Vector2 pointH1, Vector2 pointH2,
+            Vector2 pointA1, Vector2 pointA2)
+        {
+            if (pointA1.Y > pointH1.Y && pointA2.Y > pointH1.Y ||
+                pointA1.Y < pointH1.Y && pointA2.Y < pointH1.Y)
+            {
+                return false;
+            }
+
+            //Ya = a*x + b
+            float Aa = (pointA1.Y - pointA2.Y) / (pointA1.X - pointA2.X);
+            float Ab = pointA1.Y - Aa * pointA1.X;
+            
+            //x = (Ya - b) / a
+            float x = (pointH1.Y - Ab) / Aa;
+            
+            float max = Math.Max(pointH1.X, pointH2.X);
+            float min = Math.Min(pointH1.X, pointH2.X);
+            return x >= min && x <= max;
+        }
     }
+
 }
