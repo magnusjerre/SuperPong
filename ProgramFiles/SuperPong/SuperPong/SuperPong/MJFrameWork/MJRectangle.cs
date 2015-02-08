@@ -20,5 +20,11 @@ namespace SuperPong.MJFrameWork
             MaxY = maxY;
         }
 
+        public override string ToString()
+        {
+            return "MinX: " + MinX + ", MinY: " + MinY + ", MaxX: " + MaxX +
+                ", MaxY: " + MaxY;
+        }
+
     }
 }

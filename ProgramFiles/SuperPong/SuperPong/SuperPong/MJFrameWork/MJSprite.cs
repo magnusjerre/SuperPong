@@ -56,6 +56,11 @@ namespace SuperPong.MJFrameWork
                 this.origin = value;
             }
         }
+
+        public Vector2 GetOrigin()
+        {
+            return this.origin;
+        }
         
         public SpriteEffects SEffects { get; set; }
 
