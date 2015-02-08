@@ -36,12 +36,12 @@ namespace SuperPong
             //rectangle1 = new MJSprite(rectangleT);
             polygon1 = new MJSprite(polygonT);
 
-            circle1.Position = new Vector2(120, 120);
+            circle1.Position = new Vector2(450, 120);
             //rectangle1.Position = new Vector2(450, 320);
             polygon1.Position = new Vector2(450, 400);
 
             MJPhysicsBody circle1Body = MJPhysicsBody.CircularMJPhysicsBody(circle1.Size.X / 2);
-            circle1Body.Velocity = new Vector2(20, 20);
+            circle1Body.Velocity = new Vector2(0, 20);
             circle1.AttachPhysicsBody(circle1Body);
 
 

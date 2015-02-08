@@ -242,7 +242,10 @@ namespace SuperPong.MJFrameWork
                         Vector3 nextVector = other.PolygonPathTransformed[next];
                         Vector2 a2 = new Vector2(nextVector.X, nextVector.Y);
                         if (LineCrossesCircle(a1, a2))
+                        {
+                            Console.WriteLine("i: " + i);
                             return true;
+                        }
                     }
                 }
             }
@@ -466,15 +469,22 @@ namespace SuperPong.MJFrameWork
 
         private Boolean LineCrossesCircle(Vector2 a1, Vector2 a2)
         {
-            Vector2 line = new Vector2(a2.X - a1.X, a2.Y - a1.Y);
-            Vector2 lineToCircle = new Vector2(
-                Parent.absoluteCoordinateSystem.Position.X - a1.X,
-                Parent.absoluteCoordinateSystem.Position.Y - a1.Y);
-            float angleBetween = CalculateAngleBetween(line, lineToCircle);
-            float distanceFromCircle = 
-                (float)(Math.Sin(angleBetween) * lineToCircle.Length());
-            
-            return distanceFromCircle <= Radius;
+            Vector2 circlePos = Parent.absoluteCoordinateSystem.Position;
+            Vector2 AB = new Vector2(a2.X - a1.X, a2.Y - a1.Y);
+            Vector2 BA = new Vector2(a1.X - a2.X, a1.Y - a2.Y);
+            Vector2 AC = new Vector2(circlePos.X - a1.X, circlePos.Y - a1.Y);
+            Vector2 BC = new Vector2(circlePos.X - a2.X, circlePos.Y - a2.Y);
+            float angleABAC = CalculateAngleBetween(AB, AC);
+            float angleBABC = CalculateAngleBetween(BA, BC);
+
+            if (angleABAC > Math.PI / 2)
+                return AC.Length() <= Radius;
+
+            if (angleBABC > Math.PI / 2)
+                return BC.Length() <= Radius;
+
+            float distanceToLine = (float)(Math.Sin(angleABAC) * AC.Length());
+            return distanceToLine <= Radius; 
         }
 
         private float CalculateAngleBetween(Vector2 line1, Vector2 line2)
