@@ -93,6 +93,12 @@ namespace SuperPong.MJFrameWork
         {
             MJPhysicsBody body = new MJPhysicsBody();
             body.PolygonPath = path;
+            Console.WriteLine("Creating the initial bounding box");
+            for (int i = 0; i < body.PolygonPath.Count; i++)
+            {
+                Vector3 v = body.PolygonPath[i];
+                Console.WriteLine("v" + i + ": " + v);
+            } Console.WriteLine("Finished creating the initial bounding box");
             foreach (Vector3 v in path)
             {
                 body.PolygonPathTransformed.Add(new Vector3(v.X, v.Y, v.Z));
@@ -206,11 +212,9 @@ namespace SuperPong.MJFrameWork
             Vector2 position = Parent.absoluteCoordinateSystem.Position;
 
             Matrix rotationMatrix = Matrix.CreateRotationZ((float)(Math.PI));
-            Console.WriteLine("RM: " + rotationMatrix);
 
             Matrix translationMatrix = Matrix.CreateTranslation(
                 new Vector3(position.X, position.Y, 0));
-            Console.WriteLine("TLM: " + translationMatrix);
             TransformationMatrix = translationMatrix;
 
             //TransformationMatrix = Matrix.Multiply(translationMatrix, rotationMatrix);
@@ -227,11 +231,9 @@ namespace SuperPong.MJFrameWork
             //This body is circle, the other is not
             if (Radius > -1)
             {
-                Console.WriteLine("THis is circle, the other isnt");
                 if (CircleIntersectsAxisAlignedBoundingBox(
                     other.AxisAlignedBoundingBox))
                 {
-                    Console.WriteLine("Axis");
                     for (int i = 0; i < other.PolygonPathTransformed.Count; i++)
                     {
                         Vector3 current = other.PolygonPathTransformed[i];
