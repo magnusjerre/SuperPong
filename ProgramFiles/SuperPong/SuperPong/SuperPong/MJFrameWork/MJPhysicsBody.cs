@@ -59,7 +59,7 @@ namespace SuperPong.MJFrameWork
          */
         protected List<Vector3> PolygonPath { get; set; }
 
-        protected List<Vector3> PolygonPathTransformed { get; set; }
+        public List<Vector3> PolygonPathTransformed { get; set; }
 
         public static MJPhysicsBody CircularMJPhysicsBody(float radius) 
         {
@@ -271,13 +271,22 @@ namespace SuperPong.MJFrameWork
             //Both bodies are polygons
             if (AxisAlignedIntersects(other.AxisAlignedBoundingBox))
             {
+                foreach (Vector3 point3 in other.PolygonPathTransformed)
+                {
+                    Vector2 point = new Vector2(point3.X, point3.Y);
+                    if (PointInsidePol(point))
+                        return true;
+                    //if (PointInsideBody(point))
+                    //    return true;
+                }
+                
                 foreach (Vector3 point3 in PolygonPathTransformed)
                 {
                     Vector2 point = new Vector2(point3.X, point3.Y);
-                    if (PointInsideBody(point))
+                    if (other.PointInsidePol(point))
                         return true;
                 }
-
+                //This needs to be fixed
                 for (int i = 0; i < PolygonPathTransformed.Count; i++)
                 {
                     Vector3 current = PolygonPathTransformed[i];
@@ -299,7 +308,7 @@ namespace SuperPong.MJFrameWork
                     }
                     
                 }
-
+                
             }
 
             return false;
@@ -385,8 +394,7 @@ namespace SuperPong.MJFrameWork
         private Boolean PointInsidePolygon(Vector2 point)
         {
             Vector2 h1 = point;
-            Vector2 h2 = new Vector2(AxisAlignedBoundingBox.MaxY, point.Y);
-
+            Vector2 h2 = new Vector2(AxisAlignedBoundingBox.MaxX + 1, point.Y);
             int counter = 0;
 
             for (int i = 0; i < PolygonPathTransformed.Count; i++)
@@ -451,20 +459,84 @@ namespace SuperPong.MJFrameWork
         private Boolean LineCrossesHorizontal(Vector2 h1, Vector2 h2,
             Vector2 a1, Vector2 a2)
         {
-            if (LinesDoNotOverlapVertically(h1, h2, a1, a2) || 
+            if (LinesDoNotOverlapVertically(h1, h2, a1, a2) && 
                 LinesDoNotOverlapHorizontally(h1, h2, a1, a2))
+            {
                 return false;
+            }
 
             //Ya = Aa*x + Ab
-            float Aa = (a1.Y - a2.Y) / (a1.X - a2.X);
+            float Aa = (a2.Y - a1.Y) / (a2.X - a1.X);
+            //float Aa = (a1.Y - a2.Y) / (a1.X - a2.X);
             float Ab = a1.Y - Aa * a1.X;
+            Console.WriteLine("Aa: " + Aa);
             
             //x = (Ya - b) / a
             float x = (h1.Y - Ab) / Aa;
+            Console.WriteLine("x: " + x);
             
             float max = Math.Max(h1.X, h2.X);
             float min = Math.Min(h1.X, h2.X);
             return x >= min && x <= max;
+        }
+
+        public Boolean PointInsidePol(Vector2 point)
+        {
+            Vector2 endOfRay = new Vector2(AxisAlignedBoundingBox.MaxX + 10, point.Y);
+            int counter = 0;
+
+            for (int i = 0; i < PolygonPathTransformed.Count; i++)
+            {
+                int nextPos = (i + 1) % PolygonPathTransformed.Count;
+                Vector3 current = PolygonPathTransformed[i];
+                Vector3 next = PolygonPathTransformed[nextPos];
+
+                Vector2 a1 = new Vector2(current.X, current.Y);
+                Vector2 a2 = new Vector2(next.X, next.Y);
+
+                if (ArcLineCrossed(point, endOfRay, a1, a2))
+                    counter++;
+            }
+
+
+            return counter % 2 != 0;
+        }
+
+        private Boolean ArcLineCrossed(Vector2 p, Vector2 e, Vector2 a1, Vector2 a2)
+        {
+            float dy = a2.Y - a1.Y;
+            float dx = a2.X - a1.X;
+
+            float minX = (float)(Math.Min(p.X, e.X));
+            float maxX = (float)(Math.Max(p.X, e.X));
+
+            if (dy == 0)
+            {
+                return p.Y == a2.Y;
+            }
+
+            if (dx == 0)
+            {
+                if (a2.X >= minX && a2.X <= maxX)
+                {
+                    float minY = (float)(Math.Min(a1.Y, a2.Y));
+                    float maxY = (float)(Math.Min(a1.Y, a2.Y));
+                    return p.Y >= minY && p.Y <= maxY;
+                }
+
+                return false;
+            }
+            
+            //Y = a * x + b
+            //Ya = Aa * x + Ab
+            float Aa = dy / dx;
+            float Ab = a1.Y - Aa * a1.X;
+            
+            // x = (Y - b) / a
+            // x = (p.Y - Ab) / Aa
+            float x = (p.Y - Ab) / Aa;
+
+            return x >= minX && x <= maxX;            
         }
 
         private Boolean LineCrossesCircle(Vector2 a1, Vector2 a2)
