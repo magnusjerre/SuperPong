@@ -81,6 +81,38 @@ namespace SuperPong
             AddChild(rectangleSmall1);
             //AddChild(polygon1);
             //AddChild(ball1);
+
+            Vector2 a1 = new Vector2(100, 50);
+            Vector2 a2 = new Vector2(100, 200);
+            Vector2 b1 = new Vector2(100, 100);
+            Vector2 b2 = new Vector2(300, 100);
+            Vector2 c1 = new Vector2(50, 150);
+            Vector2 c2 = new Vector2(200, 150);
+            Vector2 d1 = new Vector2(250, 150);
+            Vector2 d2 = new Vector2(350, 50);
+            Vector2 e1 = new Vector2(350, 150);
+            Vector2 e2 = new Vector2(350, 300);
+            Vector2 f1 = new Vector2(450, 150);
+            Vector2 f2 = new Vector2(700, 150);
+            Vector2 g1 = new Vector2(500, 150);
+            Vector2 g2 = new Vector2(600, 150);
+            Vector2 h1 = new Vector2(500, 200);
+            Vector2 h2 = new Vector2(650, 200);
+            Vector2 i1 = new Vector2(350, 400);
+            Vector2 i2 = new Vector2(400, 300);
+            Vector2 j1 = new Vector2(350, 400);
+            Vector2 j2 = new Vector2(550, 400);
+            Vector2 k1 = new Vector2(300, 450);
+            Vector2 k2 = new Vector2(500, 450);
+            Vector2 l1 = new Vector2(150, 500);
+            Vector2 l2 = new Vector2(350, 400);
+            Vector2 m1 = new Vector2(150, 350);
+            Vector2 m2 = new Vector2(200, 700);
+
+            if (rectangleSmall1.PhysicsBody.MJLinesCross(f1, f2, g1, g2))
+                Console.WriteLine("Cross");
+            else
+                Console.WriteLine("No-Cross");
             
         }
 
@@ -145,14 +177,6 @@ namespace SuperPong
             {
                 //rectangleSmall1.Alpha = 0.5f;
             }*/
-
-
-            Vector2 a1 = new Vector2(100, 100);
-            Vector2 a2 = new Vector2(100, 150);
-            Vector2 b1 = new Vector2(90, 140);
-            Vector2 b2 = new Vector2(105, 180);
-            if (rectangleSmall1.PhysicsBody.MJLinesCrossVertical(a1, a2, b1, b2, 0.5f))
-                Console.WriteLine("cross");
 
         }
     }

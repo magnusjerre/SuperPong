@@ -578,18 +578,19 @@ namespace SuperPong.MJFrameWork
 
 
 
-
         public Boolean MJLinesCross(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2)
         {
+            return MJLinesCross(a1, a2, b1, b2, 0.1f);
+        }
 
-            float delta = 0.5f; //The precision of the calculations
-
+        public Boolean MJLinesCross(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2, float delta)
+        {
             if (lineIsVertical(a1, a2, delta))
                 return MJLinesCrossVertical(a1, a2, b1, b2, delta);
             else if (lineIsVertical(b1, b2, delta))         
                 return MJLinesCrossVertical(b1, b2, a1, a2, delta);
             else
-                return MJLinesCrossDef(a1, a2, b1, b2);
+                return MJLinesCrossDef(a1, a2, b1, b2, delta);
         }
 
         public Boolean MJLinesCrossVertical(Vector2 v1, Vector2 v2, Vector2 a1, Vector2 a2, float delta)
@@ -629,9 +630,46 @@ namespace SuperPong.MJFrameWork
             return (min < b1.Y && b1.Y < max) || (min < b2.Y && b2.Y < max);
         }
 
-        public Boolean MJLinesCrossDef(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2)
+        public Boolean MJLinesCrossDef(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2, float delta)
         {
-            return false;
+            float dyA = a2.Y - a1.Y;
+            float dyB = b2.Y - b1.Y;
+            float dxA = a2.X - a1.X;
+            float dxB = b2.X - b1.X;
+
+            //YA = aA * x + bA
+            //YB = aB * x + bB
+            float aA = dyA / dxA;
+            float bA = a2.Y - aA * a2.X;
+            float aB = dyB / dxB;
+            float bB = b2.Y - aB * b2.X;
+
+            //YA = YB
+            //aA * x + bA = aB * x + bB
+            //(aA - aB) * x = bB - bA
+            //x = (bB - bA) / (aA - aB)
+            float xIntersection = (bB - bA) / (aA - aB);
+            float yIntersection = aA * xIntersection + bA;
+
+            float minXA = Min(a1.X, a2.X) - delta;
+            float maxXA = Max(a1.X, a2.X) + delta;
+            float minYA = Min(a1.Y, a2.Y) - delta;
+            float maxYA = Max(a1.Y, a2.Y) + delta;
+
+            float minXB = Min(b1.X, b2.X) - delta;
+            float maxXB = Max(b1.X, b2.X) + delta;
+            float minYB = Min(b1.Y, b2.Y) - delta;
+            float maxYB = Max(b1.Y, b2.Y) + delta;
+            
+
+            Console.WriteLine("x: " + xIntersection + ", y: " + yIntersection);
+            Console.WriteLine("minXA: " + minXA + ", maxXA: " + maxXA);
+            Console.WriteLine("minYA: " + minYA + ", maxYA: " + maxYA);
+
+            return ((minXA < xIntersection && xIntersection < maxXA) && 
+                (minYA < yIntersection && yIntersection < maxYA)) &&
+                ((minXB < xIntersection && xIntersection < maxXB) && 
+                (minYB < yIntersection && yIntersection < maxYB));
         }
 
         public Boolean lineIsHorizontal(Vector2 a1, Vector2 a2, float delta)
@@ -644,6 +682,16 @@ namespace SuperPong.MJFrameWork
         {
             float dx = a2.X - a1.X;
             return -delta < dx && dx < delta;
+        }
+
+        public float Min(float a, float b)
+        {
+            return a < b ? a : b;
+        }
+
+        public float Max(float a, float b)
+        {
+            return a > b ? a : b;
         }
 
     

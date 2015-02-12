@@ -28,8 +28,9 @@ namespace SuperPong
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            sceneManager = new MJSceneManager(new FirstScene(Content));
-            sceneManager.AddScene(new SecondScene(Content));
+            //sceneManager = new MJSceneManager(new FirstScene(Content));
+            sceneManager = new MJSceneManager(new SecondScene(Content));
+            //sceneManager.AddScene(new SecondScene(Content));
             Console.WriteLine("Constructor");
         }
 
@@ -44,6 +45,7 @@ namespace SuperPong
             // TODO: Add your initialization logic here
 
             base.Initialize();
+            sceneManager.Initialize();
             Console.WriteLine("Initialize");
             
         }
@@ -103,7 +105,7 @@ namespace SuperPong
 
             base.Update(gameTime);
             sceneManager.Update(gameTime);
-
+            /*
             if (Mouse.GetState().LeftButton == ButtonState.Pressed)
             {
                 if (elapsedButtonPressTime == 0)
@@ -127,6 +129,7 @@ namespace SuperPong
             {
                 elapsedButtonPressTime = 0;
             }
+             **/
             //sprite.Update(gameTime);
             //sprite.Rotation += 0.01f;
             //sprite2.Rotation -= 0.03f;
