@@ -585,6 +585,8 @@ namespace SuperPong.MJFrameWork
 
         public Boolean MJLinesCross(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2, float delta)
         {
+            if (bothLinesHorizontal(a1, a2, b1, b2, delta))
+                return MJHorizontalOverlap(a1, a2, b1, b2, delta);
             if (lineIsVertical(a1, a2, delta))
                 return MJLinesCrossVertical(a1, a2, b1, b2, delta);
             else if (lineIsVertical(b1, b2, delta))         
@@ -630,6 +632,22 @@ namespace SuperPong.MJFrameWork
             return (min < b1.Y && b1.Y < max) || (min < b2.Y && b2.Y < max);
         }
 
+        public Boolean MJHorizontalOverlap(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2, float delta)
+        {
+            if (a1.Y - delta < b1.Y && b1.Y < a1.Y + delta)
+            {
+                float minXA = Min(a1.X, a2.X);
+                float maxXA = Max(a1.X, a2.X);
+                if ((minXA < b1.X && b1.X < maxXA) || (minXA < b2.X && b2.X < maxXA))
+                    return true;
+                float minXB = Min(b1.X, b2.X);
+                float maxXB = Max(b1.X, b2.X);
+                if ((minXB < a1.X && a1.X < maxXB) || (minXB < a2.X && a2.X < maxXB))
+                    return true;
+            }
+            return false;
+        }
+
         public Boolean MJLinesCrossDef(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2, float delta)
         {
             float dyA = a2.Y - a1.Y;
@@ -670,6 +688,11 @@ namespace SuperPong.MJFrameWork
                 (minYA < yIntersection && yIntersection < maxYA)) &&
                 ((minXB < xIntersection && xIntersection < maxXB) && 
                 (minYB < yIntersection && yIntersection < maxYB));
+        }
+
+        public Boolean bothLinesHorizontal(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2, float delta)
+        {
+            return lineIsHorizontal(a1, a2, delta) && lineIsHorizontal(b1, b2, delta);
         }
 
         public Boolean lineIsHorizontal(Vector2 a1, Vector2 a2, float delta)
