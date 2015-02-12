@@ -288,7 +288,7 @@ namespace SuperPong.MJFrameWork
                         return true;
                 }
                 //This needs to be fixed
-                /*for (int i = 0; i < PolygonPathTransformed.Count; i++)
+                for (int i = 0; i < PolygonPathTransformed.Count; i++)
                 {
                     Vector3 current = PolygonPathTransformed[i];
                     Vector2 a1 = new Vector2(current.X, current.Y);
@@ -308,7 +308,7 @@ namespace SuperPong.MJFrameWork
                             return true;
                     }
                     
-                }*/
+                }
                 
             }
 
@@ -460,6 +460,11 @@ namespace SuperPong.MJFrameWork
         private Boolean LineCrossesHorizontal(Vector2 h1, Vector2 h2,
             Vector2 a1, Vector2 a2)
         {
+
+            
+
+
+
             if (LinesDoNotOverlapVertically(h1, h2, a1, a2) && 
                 LinesDoNotOverlapHorizontally(h1, h2, a1, a2))
             {
@@ -563,13 +568,85 @@ namespace SuperPong.MJFrameWork
             float distanceToLine = (float)(Math.Sin(angleABAC) * AC.Length());
             return distanceToLine <= Radius; 
         }
-
+        
         private float CalculateAngleBetween(Vector2 line1, Vector2 line2)
         {
             float topEquation = line1.X * line2.X + line1.Y * line2.Y;
             float result = topEquation / (line1.Length() * line2.Length());
             return (float)(Math.Acos(result));
         }
+
+
+
+
+        public Boolean MJLinesCross(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2)
+        {
+
+            float delta = 0.5f; //The precision of the calculations
+
+            if (lineIsVertical(a1, a2, delta))
+                return MJLinesCrossVertical(a1, a2, b1, b2, delta);
+            else if (lineIsVertical(b1, b2, delta))         
+                return MJLinesCrossVertical(b1, b2, a1, a2, delta);
+            else
+                return MJLinesCrossDef(a1, a2, b1, b2);
+        }
+
+        public Boolean MJLinesCrossVertical(Vector2 v1, Vector2 v2, Vector2 a1, Vector2 a2, float delta)
+        {
+            if (LinesDoNotOverlapVertically(v1, v2, a1, a2) ||
+                LinesDoNotOverlapHorizontally(v1, v2, a1, a2))
+                return false;
+
+            if (lineIsVertical(a1, a2, delta))  //Handles dx==0
+            {
+                if (v1.X - delta < a1.X && a1.X < v1.X + delta)
+                    return MJVerticalOverlap(v1, v2, a1, a2, delta) || MJVerticalOverlap(a1, a2, v1, v2, delta);
+                return false;
+            }
+
+            //Confusingly, minYV is at the top of the screen, maxYV is at the bottom
+            float min = (float)(Math.Min(v1.Y, v2.Y)) - delta;
+            float max = (float)(Math.Max(v1.Y, v2.Y)) + delta;
+            float xOfVerticalLine = v1.X;
+
+            float dy = a2.Y - a1.Y;
+            float dx = a2.X - a1.X;
+                
+            //Y = a * x + b
+            float a = dy / dx;
+            float b = a1.Y - a * a1.X;
+
+            float yCross = a * xOfVerticalLine + b;
+
+            return min < yCross && yCross < max;
+        }
+
+        public Boolean MJVerticalOverlap(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2, float delta)
+        {
+            float min = (float)(Math.Min(a1.Y, a2.Y)) - delta;
+            float max = (float)(Math.Max(a1.Y, a2.Y)) + delta;
+            return (min < b1.Y && b1.Y < max) || (min < b2.Y && b2.Y < max);
+        }
+
+        public Boolean MJLinesCrossDef(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2)
+        {
+            return false;
+        }
+
+        public Boolean lineIsHorizontal(Vector2 a1, Vector2 a2, float delta)
+        {
+            float dy = a2.Y - a1.Y;
+            return -delta < dy && dy < delta;
+        }
+
+        public Boolean lineIsVertical(Vector2 a1, Vector2 a2, float delta)
+        {
+            float dx = a2.X - a1.X;
+            return -delta < dx && dx < delta;
+        }
+
+    
     } 
 
 }
