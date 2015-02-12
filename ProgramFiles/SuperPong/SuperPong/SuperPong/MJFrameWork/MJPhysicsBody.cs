@@ -516,7 +516,8 @@ namespace SuperPong.MJFrameWork
 
             if (-delta < dy && dy < delta)  //Approx: dy == 0
             {
-                return p.Y == a2.Y;
+                return a2.Y - delta <= p.Y && p.Y <= a2.Y + delta;
+                //return p.Y == a2.Y;
             }
 
             if (-delta < dx && dx < delta)  //Approx: dx == 0
