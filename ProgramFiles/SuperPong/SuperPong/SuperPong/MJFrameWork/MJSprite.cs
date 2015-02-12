@@ -61,7 +61,8 @@ namespace SuperPong.MJFrameWork
         {
             return this.origin;
         }
-        
+
+        public float Alpha { get; set; }
         public SpriteEffects SEffects { get; set; }
 
         private int currentImageNumber;
@@ -85,6 +86,7 @@ namespace SuperPong.MJFrameWork
             SEffects = SpriteEffects.None;
             AnimationTime = 100;
             ElapsedAnimationTime = 0;
+            Alpha = 1.0f;
         }
 
         public MJSprite(Texture2D texture, int numberOfFrames) : this(texture)
@@ -95,7 +97,7 @@ namespace SuperPong.MJFrameWork
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, absoluteCoordinateSystem.Position, SourceRectangle, ColorTint, absoluteCoordinateSystem.Rotation, Origin, Scale, SEffects, LayerDepth);
+            spriteBatch.Draw(Texture, absoluteCoordinateSystem.Position, SourceRectangle, ColorTint * Alpha, absoluteCoordinateSystem.Rotation, Origin, Scale, SEffects, LayerDepth);
 
             foreach (MJNode child in Children)
             {

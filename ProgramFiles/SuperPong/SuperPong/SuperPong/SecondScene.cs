@@ -13,8 +13,9 @@ namespace SuperPong
     class SecondScene : MJScene
     {
 
-        Texture2D circleT, rectangleT, polygonT;
-        MJSprite circle1, circle2, rectangle1, rectangle2, polygon1, polygon2;
+        Texture2D circleT, rectangleT, polygonT, ballT;
+        MJSprite circle1, circle2, rectangle1, rectangle2, polygon1, polygon2, ball1;
+        Vector2 point = new Vector2(300, 340);
         
         public SecondScene(ContentManager content)
             : base(content, "SecondScene")
@@ -27,6 +28,7 @@ namespace SuperPong
             circleT = content.Load<Texture2D>("circle");
             rectangleT = content.Load<Texture2D>("rectangle");
             polygonT = content.Load<Texture2D>("polygon");
+            ballT = content.Load<Texture2D>("ball");
         }
 
         public override void Initialize()
@@ -35,10 +37,15 @@ namespace SuperPong
             //circle1 = new MJSprite(circleT);
             rectangle1 = new MJSprite(rectangleT);
             polygon1 = new MJSprite(polygonT);
-
+            ball1 = new MJSprite(ballT);
+            polygon1.ColorTint = Color.Gray;
+            polygon1.Alpha = 0.5f;
+            
             //circle1.Position = new Vector2(450, 120);
             rectangle1.Position = new Vector2(200, 110);
+            //rectangle1.Position = new Vector2(300, 250);
             polygon1.Position = new Vector2(450, 300);
+            ball1.Position = point;
 
             //MJPhysicsBody circle1Body = MJPhysicsBody.CircularMJPhysicsBody(circle1.Size.X / 2);
             //circle1Body.Velocity = new Vector2(0, 20);
@@ -64,6 +71,7 @@ namespace SuperPong
             //AddChild(circle1);
             AddChild(rectangle1);
             AddChild(polygon1);
+            //AddChild(ball1);
             
         }
 
@@ -72,6 +80,27 @@ namespace SuperPong
             
             
             base.Update(gameTime);
+            /*
+            Console.WriteLine("Rectangle1");
+            int i = 0;
+            foreach (Vector3 v in rectangle1.PhysicsBody.PolygonPathTransformed)
+            {
+                Console.WriteLine("i: " + i + ", X: " + v.X + ", Y: " + v.Y + ", v.Z: " + v.Z);
+                i++;
+            }
+
+            Console.WriteLine("Polgon1");
+            i = 0;
+            foreach (Vector3 v in polygon1.PhysicsBody.PolygonPathTransformed)
+            {
+                Console.WriteLine("i: " + i + ", X: " + v.X + ", Y: " + v.Y + ", v.Z: " + v.Z);
+                i++;
+            }*/
+            /*
+            if (rectangle1.PhysicsBody.PointInsidePol(point))
+            {
+                rectangle1.ColorTint = Color.Red;
+            }*/
             /* 
             float x = 301;// +polygon1.Size.X / 2;
             float y = 400;// +polygon1.Size.Y / 2;
@@ -80,6 +109,15 @@ namespace SuperPong
                 polygon1.ColorTint = Color.Green;
             }*/
             
+            /*
+            foreach (Vector3 point in polygon1.PhysicsBody.PolygonPathTransformed) {
+                Vector2 p = new Vector2(point.X, point.Y);
+                if (rectangle1.PhysicsBody.PointInsidePol(p)) {
+                    Console.WriteLine("cake");
+                    polygon1.ColorTint = Color.Green;
+                    break;
+                }
+            }*/
             
             if (rectangle1.PhysicsBody.Collides(polygon1.PhysicsBody))
             {
@@ -87,8 +125,9 @@ namespace SuperPong
             }
             else
             {
-                polygon1.ColorTint = Color.White;
+                polygon1.ColorTint = Color.Gray;
             }
+            
         }
     }
 }

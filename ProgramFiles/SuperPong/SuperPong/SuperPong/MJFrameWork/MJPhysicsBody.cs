@@ -57,7 +57,7 @@ namespace SuperPong.MJFrameWork
          * A list containing each point that defines the polygon box.
          * </summary>
          */
-        protected List<Vector3> PolygonPath { get; set; }
+        public List<Vector3> PolygonPath { get; set; }
 
         public List<Vector3> PolygonPathTransformed { get; set; }
 
@@ -200,7 +200,8 @@ namespace SuperPong.MJFrameWork
         {
             foreach (Vector3 v in PolygonPath)
             {
-                PolygonPathTransformed.Add(Vector3.Transform(v, TransformationMatrix));
+                Vector3 copy = new Vector3(v.X, v.Y, v.Z);
+                PolygonPathTransformed.Add(Vector3.Transform(copy, TransformationMatrix));
             }
         }
 
@@ -208,10 +209,10 @@ namespace SuperPong.MJFrameWork
         {
             TransformationMatrix = Matrix.Identity;
 
-            float rotation = Parent.absoluteCoordinateSystem.Rotation;
+            //float rotation = Parent.absoluteCoordinateSystem.Rotation;
             Vector2 position = Parent.absoluteCoordinateSystem.Position;
 
-            Matrix rotationMatrix = Matrix.CreateRotationZ((float)(Math.PI));
+            //Matrix rotationMatrix = Matrix.CreateRotationZ((float)(Math.PI));
 
             Matrix translationMatrix = Matrix.CreateTranslation(
                 new Vector3(position.X, position.Y, 0));
@@ -287,7 +288,7 @@ namespace SuperPong.MJFrameWork
                         return true;
                 }
                 //This needs to be fixed
-                for (int i = 0; i < PolygonPathTransformed.Count; i++)
+                /*for (int i = 0; i < PolygonPathTransformed.Count; i++)
                 {
                     Vector3 current = PolygonPathTransformed[i];
                     Vector2 a1 = new Vector2(current.X, current.Y);
@@ -307,7 +308,7 @@ namespace SuperPong.MJFrameWork
                             return true;
                     }
                     
-                }
+                }*/
                 
             }
 
@@ -391,7 +392,7 @@ namespace SuperPong.MJFrameWork
             return true;
         }
 
-        private Boolean PointInsidePolygon(Vector2 point)
+        public Boolean PointInsidePolygon(Vector2 point)
         {
             Vector2 h1 = point;
             Vector2 h2 = new Vector2(AxisAlignedBoundingBox.MaxX + 1, point.Y);
@@ -469,11 +470,11 @@ namespace SuperPong.MJFrameWork
             float Aa = (a2.Y - a1.Y) / (a2.X - a1.X);
             //float Aa = (a1.Y - a2.Y) / (a1.X - a2.X);
             float Ab = a1.Y - Aa * a1.X;
-            Console.WriteLine("Aa: " + Aa);
+            //Console.WriteLine("Aa: " + Aa);
             
             //x = (Ya - b) / a
             float x = (h1.Y - Ab) / Aa;
-            Console.WriteLine("x: " + x);
+            //Console.WriteLine("x: " + x);
             
             float max = Math.Max(h1.X, h2.X);
             float min = Math.Min(h1.X, h2.X);
@@ -488,40 +489,43 @@ namespace SuperPong.MJFrameWork
             for (int i = 0; i < PolygonPathTransformed.Count; i++)
             {
                 int nextPos = (i + 1) % PolygonPathTransformed.Count;
-                Vector3 current = PolygonPathTransformed[i];
-                Vector3 next = PolygonPathTransformed[nextPos];
+                Vector3 currentPoint = PolygonPathTransformed[i];
+                Vector3 nextPoint = PolygonPathTransformed[nextPos];
 
-                Vector2 a1 = new Vector2(current.X, current.Y);
-                Vector2 a2 = new Vector2(next.X, next.Y);
-
+                Vector2 a1 = new Vector2(currentPoint.X, currentPoint.Y);
+                Vector2 a2 = new Vector2(nextPoint.X, nextPoint.Y);
+                //Console.WriteLine("a1.X: " + a1.X + ", a1.Y: " + a1.Y + ", a2.X: " + a2.X + ", a2.Y: " + a2.Y);
+                //Console.WriteLine("i: " + i);
                 if (ArcLineCrossed(point, endOfRay, a1, a2))
                     counter++;
             }
-
+           // Console.WriteLine("counter: " + counter);
 
             return counter % 2 != 0;
         }
 
         private Boolean ArcLineCrossed(Vector2 p, Vector2 e, Vector2 a1, Vector2 a2)
         {
+            float delta = 0.5f;
             float dy = a2.Y - a1.Y;
             float dx = a2.X - a1.X;
 
             float minX = (float)(Math.Min(p.X, e.X));
             float maxX = (float)(Math.Max(p.X, e.X));
 
-            if (dy == 0)
+
+            if (-delta < dy && dy < delta)  //Approx: dy == 0
             {
                 return p.Y == a2.Y;
             }
 
-            if (dx == 0)
+            if (-delta < dx && dx < delta)  //Approx: dx == 0
             {
                 if (a2.X >= minX && a2.X <= maxX)
                 {
                     float minY = (float)(Math.Min(a1.Y, a2.Y));
-                    float maxY = (float)(Math.Min(a1.Y, a2.Y));
-                    return p.Y >= minY && p.Y <= maxY;
+                    float maxY = (float)(Math.Max(a1.Y, a2.Y));
+                    return minY <= p.Y  && p.Y <= maxY;
                 }
 
                 return false;
@@ -536,7 +540,7 @@ namespace SuperPong.MJFrameWork
             // x = (p.Y - Ab) / Aa
             float x = (p.Y - Ab) / Aa;
 
-            return x >= minX && x <= maxX;            
+            return minX <= x && x <= maxX;            
         }
 
         private Boolean LineCrossesCircle(Vector2 a1, Vector2 a2)
