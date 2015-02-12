@@ -110,8 +110,10 @@ namespace SuperPong
             Vector2 m2 = new Vector2(200, 700);
             Vector2 n1 = new Vector2(750, 150);
             Vector2 n2 = new Vector2(800, 150);
+            Vector2 o1 = new Vector2(350, 250);
+            Vector2 o2 = new Vector2(350, 350);
 
-            if (rectangleSmall1.PhysicsBody.MJLinesCross(f1, f2, n1, n2))
+            if (rectangleSmall1.PhysicsBody.MJLinesCross(e1, e2, o1, o2))
                 Console.WriteLine("Cross");
             else
                 Console.WriteLine("No-Cross");
