@@ -662,6 +662,12 @@ namespace SuperPong.MJFrameWork
             float aB = dyB / dxB;
             float bB = b2.Y - aB * b2.X;
 
+            if (aA - delta < aB && aB < aA + delta)
+                if (bA - delta < bB && bB < bA + delta)
+                    return slantedLinesOverlaps(a1, a2, b1, b2, delta);
+                else
+                    return false;
+
             //YA = YB
             //aA * x + bA = aB * x + bB
             //(aA - aB) * x = bB - bA
@@ -688,6 +694,29 @@ namespace SuperPong.MJFrameWork
                 (minYA < yIntersection && yIntersection < maxYA)) &&
                 ((minXB < xIntersection && xIntersection < maxXB) && 
                 (minYB < yIntersection && yIntersection < maxYB));
+        }
+
+        public Boolean slantedLinesOverlaps(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2, float delta)
+        {
+            float minXA = Min(a1.X, a2.X) - delta;
+            float maxXA = Max(a1.X, a2.X) + delta;
+            float minYA = Min(a1.Y, a2.Y) - delta;
+            float maxYA = Max(a1.Y, a2.Y) + delta;
+
+            if (((minXA < b1.X && b1.X < maxXA) && (minYA < b1.Y && b1.Y < maxYA)) ||
+                ((minXA < b2.X && b2.X < maxXA) && (minYA < b2.Y && b2.Y < maxYA)))
+                return true;
+
+            float minXB = Min(b1.X, b2.X) - delta;
+            float maxXB = Max(b1.X, b2.X) + delta;
+            float minYB = Min(b1.Y, b2.Y) - delta;
+            float maxYB = Max(b1.Y, b2.Y) + delta;
+
+            if (((minXB < a1.X && a1.X < maxXB) && (minYA < a1.Y && a1.Y < maxXB)) ||
+                ((minXB < a2.X && a2.X < maxXB) && (minYB < a2.Y && a2.Y < maxYB)))
+                return true;
+
+            return false;
         }
 
         public Boolean bothLinesHorizontal(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2, float delta)
