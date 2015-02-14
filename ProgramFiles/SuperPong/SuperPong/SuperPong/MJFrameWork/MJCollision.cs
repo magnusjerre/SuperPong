@@ -8,12 +8,22 @@ namespace SuperPong.MJFrameWork
 {
     public class MJCollision
     {
-
+        //----------------- Line Intersections -----------------\\
+        /*
+         * <summary> Checks whether two lines intersect or not with a delta of
+         * 0.1f
+         * </summary>
+         */
         public static Boolean LinesIntersect(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2)
         {
             return LinesIntersect(a1, a2, b1, b2, 0.1f);
         }
 
+        /*
+         * <summary> Check whether two liones intersect or not with the input
+         * delta value.
+         * </summary>
+         */
         public static Boolean LinesIntersect(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2, float delta)
         {
             if (LinesCannotOverlap(a1, a2, b1, b2))
@@ -33,7 +43,7 @@ namespace SuperPong.MJFrameWork
          * vertical.
          * </summary>
          */
-        public static Boolean LinesIntersectVertical(Vector2 v1, Vector2 v2, Vector2 a1, Vector2 a2, float delta)
+        private static Boolean LinesIntersectVertical(Vector2 v1, Vector2 v2, Vector2 a1, Vector2 a2, float delta)
         {
             if (LineIsVertical(a1, a2, delta))  //Handles dx==0
             {
@@ -58,7 +68,6 @@ namespace SuperPong.MJFrameWork
 
             return min < yCross && yCross < max;
         }
-
 
         private static Boolean LinesCannotOverlap(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2)
         {
@@ -89,7 +98,7 @@ namespace SuperPong.MJFrameWork
          * least one line is not horizontal
          * </summary>
          */
-        public static Boolean LinesIntersectNonVertically(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2, float delta)
+        private static Boolean LinesIntersectNonVertically(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2, float delta)
         {
             float dyA = a2.Y - a1.Y;
             float dyB = b2.Y - b1.Y;
@@ -164,7 +173,7 @@ namespace SuperPong.MJFrameWork
             return false;
         }
 
-        public static Boolean OverlapsSlanted(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2, float delta)
+        private static Boolean OverlapsSlanted(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2, float delta)
         {
             if (LineIsHorizontal(a1, a2, delta) || 
                 LineIsHorizontal(b1, b2, delta) || 
@@ -193,7 +202,7 @@ namespace SuperPong.MJFrameWork
             return false;
         }
 
-        public static Boolean BothLinesHorizontal(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2, float delta)
+        private static Boolean BothLinesHorizontal(Vector2 a1, Vector2 a2, Vector2 b1, Vector2 b2, float delta)
         {
             return LineIsHorizontal(a1, a2, delta) && LineIsHorizontal(b1, b2, delta);
         }
@@ -210,12 +219,13 @@ namespace SuperPong.MJFrameWork
             return -delta < dx && dx < delta;
         }
 
-        public static float Min(float a, float b)
+        //----------------- Math Methods -----------------\\
+        private static float Min(float a, float b)
         {
             return a < b ? a : b;
         }
 
-        public static float Max(float a, float b)
+        private static float Max(float a, float b)
         {
             return a > b ? a : b;
         }
