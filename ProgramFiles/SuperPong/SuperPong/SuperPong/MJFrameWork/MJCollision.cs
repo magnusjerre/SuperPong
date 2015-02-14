@@ -9,6 +9,111 @@ namespace SuperPong.MJFrameWork
     public class MJCollision
     {
 
+        //------------------- Collision ---------------------\\
+
+        public static Boolean Intersects(MJPhysicsBody body1, MJPhysicsBody body2)
+        {
+            if (body1.Radius > -1 && body2.Radius > -1)
+                return CirclesIntersect(body1.Radius, body1.Parent.absoluteCoordinateSystem.Position,
+                    body2.Radius, body2.Parent.absoluteCoordinateSystem.Position);
+
+            if (body1.Radius > -1 || body2.Radius > -1)
+            {
+                MJPhysicsBody circleBody = body1.Radius > -1 ? body1 : body2;
+                MJPhysicsBody polygonBody = body1.Radius > -1 ? body2 : body1;
+                if (CircleIntersectsPolygon(circleBody, polygonBody))
+                    return true;
+            }
+
+            if (RectanglesIntersect(body1.AxisAlignedBoundingBox, body2.AxisAlignedBoundingBox))
+            {
+                if (PointsInPolygonInsideOtherPolygon(body1, body2))
+                    return true;
+                if (PointsInPolygonInsideOtherPolygon(body2, body1))
+                    return true;
+                if (LinesInPolygonIntersectsOtherPolygon(body1, body2))
+                    return true;
+            }
+
+            return false;
+        }
+
+        private static Boolean CircleIntersectsPolygon(MJPhysicsBody circleBody, MJPhysicsBody polygonBody)
+        {
+            if (RectangleIntersectsCirclesBoundingRectangle(
+                    circleBody.Radius, circleBody.Parent.absoluteCoordinateSystem.Position,
+                    polygonBody.AxisAlignedBoundingBox))
+            {
+                if (PointInsidePolygon(polygonBody.AxisAlignedBoundingBox,
+                    polygonBody.PolygonPathTransformed, circleBody.Parent.absoluteCoordinateSystem.Position))
+                    return true;
+                
+                for (int i = 0; i < polygonBody.PolygonPathTransformed.Count; i++)
+                {
+                    Vector3 current = polygonBody.PolygonPathTransformed[i];
+                    int nextPos = (i + 1) % polygonBody.PolygonPathTransformed.Count;
+                    Vector3 next = polygonBody.PolygonPathTransformed[nextPos];
+
+                    Vector2 a1 = new Vector2(current.X, current.Y);
+                    Vector2 a2 = new Vector2(next.X, next.Y);
+                    if (LineIntersectsCircle(a1, a2, circleBody.Radius, circleBody.Parent.absoluteCoordinateSystem.Position))
+                        return true;
+                }
+            }
+            
+            return false;
+        }
+
+        private static Boolean LinesInPolygonIntersectsOtherPolygon(MJPhysicsBody body1, MJPhysicsBody body2)
+        {
+            for (int i = 0; i < body1.PolygonPathTransformed.Count; i++)
+            {
+                Vector3 current = body1.PolygonPathTransformed[i];
+                int nextPos = (i + 1) % body1.PolygonPathTransformed.Count;
+                Vector3 next = body1.PolygonPathTransformed[nextPos];
+
+                Vector2 a1 = new Vector2(current.X, current.Y);
+                Vector2 a2 = new Vector2(next.X, next.Y);
+
+                for (int j = 0; j < body2.PolygonPathTransformed.Count; j++)
+                {
+                    Vector3 jCurrent = body2.PolygonPathTransformed[j];
+                    int jNextPos = (i + 1) % body2.PolygonPathTransformed.Count;
+                    Vector3 jNext = body2.PolygonPathTransformed[jNextPos];
+
+                    Vector2 b1 = new Vector2(jCurrent.X, jCurrent.Y);
+                    Vector2 b2 = new Vector2(jNext.X, jNext.Y);
+
+                    if (LinesIntersect(a1, a2, b1, b2))
+                        return true;
+                }
+            }
+            return false;
+        }
+
+        private static Boolean PointsInPolygonInsideOtherPolygon(MJPhysicsBody body1, MJPhysicsBody body2)
+        {
+            foreach (Vector3 point3 in body1.PolygonPathTransformed)
+            {
+                Vector2 point = new Vector2(point3.X, point3.Y);
+                if (PointInsidePolygon(body2.AxisAlignedBoundingBox, body2.PolygonPathTransformed, point))
+                    return true;
+            }
+            return false;
+        }
+
+        private static Boolean PointInsidePolygon(MJRectangle rect, List<Vector3> path, Vector2 point)
+        {
+            List<Vector2> vectors = new List<Vector2>();
+            foreach (Vector3 v in path)
+            {
+                vectors.Add(new Vector2(v.X, v.Y
+                    ));
+            }
+            return PointInsidePolygon(rect, vectors, point);
+        }
+
+
         //---------------- Point inside/on ------------------\\
 
         public static Boolean PointInsideCircle(float radius, Vector2 pos, Vector2 point)
@@ -115,6 +220,32 @@ namespace SuperPong.MJFrameWork
             MJRectangle rect = new MJRectangle(pos.X - radius, pos.Y - radius,
                 pos.X + radius, pos.Y + radius);
             return RectanglesIntersect(rect, rectangle);
+        }
+
+        public static Boolean LineIntersectsCircle(Vector2 a1, Vector2 a2, float radius, Vector2 pos)
+        {
+            Vector2 AB = new Vector2(a2.X - a1.X, a2.Y - a1.Y);
+            Vector2 BA = new Vector2(a1.X - a2.X, a1.Y - a2.Y);
+            Vector2 AC = new Vector2(pos.X - a1.X, pos.Y - a1.Y);
+            Vector2 BC = new Vector2(pos.X - a2.X, pos.Y - a2.Y);
+            float angleABAC = CalculateAngleBetween(AB, AC);
+            float angleBABC = CalculateAngleBetween(BA, BC);
+
+            if (angleABAC > Math.PI / 2)
+                return AC.Length() <= radius;
+
+            if (angleBABC > Math.PI / 2)
+                return BC.Length() <= radius;
+
+            float distanceToLine = (float)(Math.Sin(angleABAC) * AC.Length());
+            return distanceToLine <= radius;
+        }
+
+        private static float CalculateAngleBetween(Vector2 line1, Vector2 line2)
+        {
+            float topEquation = line1.X * line2.X + line1.Y * line2.Y;
+            float result = topEquation / (line1.Length() * line2.Length());
+            return (float)(Math.Acos(result));
         }
 
         //----------------- Line Intersections -----------------\\

@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SuperPong.MJFrameWork;
 using Microsoft.Xna.Framework;
+
 using System.Collections.Generic;
 
 namespace UnitTestSuperPong
@@ -207,6 +208,26 @@ namespace UnitTestSuperPong
         }
 
         [TestMethod]
+        public void TestLineIntersectsCircle()
+        {
+            float radius1 = 100;
+            float radius2 = 50;
+            Vector2 point1 = new Vector2(100, 150);
+            Vector2 point2 = new Vector2(250, 50);
+
+            Vector2 h1 = new Vector2(100, 100);
+            Vector2 h2 = new Vector2(200, 100);
+
+            Vector2 s1 = new Vector2(150, 200);
+            Vector2 s2 = new Vector2(400, 350);
+
+            Assert.IsTrue(MJCollision.LineIntersectsCircle(h1, h2, radius1, point1));
+            Assert.IsTrue(MJCollision.LineIntersectsCircle(s1, s2, radius1, point1));
+            Assert.IsFalse(MJCollision.LineIntersectsCircle(h1, h2, radius2, point2));
+            Assert.IsFalse(MJCollision.LineIntersectsCircle(s1, s2, radius2, point1));
+        }
+
+        [TestMethod]
         public void TestPointInsideCircle()
         {
             float radius = 100;
@@ -292,6 +313,68 @@ namespace UnitTestSuperPong
             Assert.IsFalse(MJCollision.PointInsidePolygon(boundingBox, path, point5));
             Assert.IsFalse(MJCollision.PointInsidePolygon(boundingBox, path, point6));
             Assert.IsTrue(MJCollision.PointInsidePolygon(boundingBox, path, point7));
+        }
+
+        [TestMethod]
+        public void TestCollision()
+        {
+            MJNode node1 = new MJNode();
+            node1.Position = new Vector2(250, 200);
+            MJPhysicsBody rectangleBody1 = MJPhysicsBody.RectangularMJPhysicsBody(new Vector2(300, 200), new Vector2(0.5f, 0.5f));
+            node1.AttachPhysicsBody(rectangleBody1);
+
+
+            MJNode node2 = new MJNode();
+            node2.Position = new Vector2(300, 150);
+            List<Vector3> path = new List<Vector3>();
+            path.Add(new Vector3(150, 0, 0));
+            path.Add(new Vector3(300, 50, 0));
+            path.Add(new Vector3(300, 200, 0));
+            path.Add(new Vector3(150, 250, 0));
+            path.Add(new Vector3(0, 200, 0));
+            MJPhysicsBody polygonBody = MJPhysicsBody.PolygonPathMJPhysicsBody(path);
+            node2.AttachPhysicsBody(polygonBody);
+
+            MJNode circle1 = new MJNode();
+            circle1.Position = new Vector2(650, 250);
+            MJPhysicsBody circle1Body = MJPhysicsBody.CircularMJPhysicsBody(100);
+            circle1.AttachPhysicsBody(circle1Body);
+
+            MJNode circle2 = new MJNode();
+            circle2.Position = new Vector2(200, 250);
+            MJPhysicsBody circle2Body = MJPhysicsBody.CircularMJPhysicsBody(50);
+            circle2.AttachPhysicsBody(circle2Body);
+
+            GameTime gameTime = new GameTime(new TimeSpan(0, 0, 1), new TimeSpan(0, 0, 0, 0, 17));
+            node1.Update(gameTime);
+            node2.Update(gameTime);
+            circle1.Update(gameTime);
+            circle2.Update(gameTime);
+
+            //Intersects with self
+            Assert.IsTrue(MJCollision.Intersects(rectangleBody1, rectangleBody1));
+            Assert.IsTrue(MJCollision.Intersects(polygonBody, polygonBody));
+            Assert.IsTrue(MJCollision.Intersects(circle1Body, circle1Body));
+
+            Assert.IsTrue(MJCollision.Intersects(rectangleBody1, polygonBody));
+            Assert.IsTrue(MJCollision.Intersects(polygonBody, rectangleBody1));
+            
+            Assert.IsTrue(MJCollision.Intersects(circle2Body, rectangleBody1));
+            Assert.IsTrue(MJCollision.Intersects(rectangleBody1, circle2Body));
+
+            Assert.IsTrue(MJCollision.Intersects(polygonBody, circle1Body));
+            Assert.IsTrue(MJCollision.Intersects(circle1Body, polygonBody));
+
+            Assert.IsFalse(MJCollision.Intersects(circle1Body, rectangleBody1));
+            Assert.IsFalse(MJCollision.Intersects(rectangleBody1, circle1Body));
+
+            node2.Position = new Vector2(350, 200);
+            node2.Update(gameTime);
+
+            Assert.IsFalse(MJCollision.Intersects(rectangleBody1, polygonBody));
+            Assert.IsFalse(MJCollision.Intersects(polygonBody, rectangleBody1));
+
+
         }
     
     }

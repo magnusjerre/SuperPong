@@ -50,7 +50,7 @@ namespace SuperPong.MJFrameWork
          * aligned with the major coordinate system.
          * </summary>
          */
-        protected MJRectangle AxisAlignedBoundingBox { get; set; }
+        public MJRectangle AxisAlignedBoundingBox { get; set; }
         
         /*
          * <summary>
