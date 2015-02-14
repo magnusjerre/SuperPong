@@ -50,12 +50,9 @@ namespace SuperPong.MJFrameWork
                 
                 for (int i = 0; i < polygonBody.PolygonPathTransformed.Count; i++)
                 {
-                    Vector3 current = polygonBody.PolygonPathTransformed[i];
                     int nextPos = (i + 1) % polygonBody.PolygonPathTransformed.Count;
-                    Vector3 next = polygonBody.PolygonPathTransformed[nextPos];
-
-                    Vector2 a1 = new Vector2(current.X, current.Y);
-                    Vector2 a2 = new Vector2(next.X, next.Y);
+                    Vector2 a1 = polygonBody.PolygonPathTransformed[i];
+                    Vector2 a2 = polygonBody.PolygonPathTransformed[nextPos];
                     if (LineIntersectsCircle(a1, a2, circleBody.Radius, circleBody.Parent.absoluteCoordinateSystem.Position))
                         return true;
                 }
@@ -68,21 +65,15 @@ namespace SuperPong.MJFrameWork
         {
             for (int i = 0; i < body1.PolygonPathTransformed.Count; i++)
             {
-                Vector3 current = body1.PolygonPathTransformed[i];
                 int nextPos = (i + 1) % body1.PolygonPathTransformed.Count;
-                Vector3 next = body1.PolygonPathTransformed[nextPos];
-
-                Vector2 a1 = new Vector2(current.X, current.Y);
-                Vector2 a2 = new Vector2(next.X, next.Y);
+                Vector2 a1 = body1.PolygonPathTransformed[i];
+                Vector2 a2 = body1.PolygonPathTransformed[nextPos];
 
                 for (int j = 0; j < body2.PolygonPathTransformed.Count; j++)
                 {
-                    Vector3 jCurrent = body2.PolygonPathTransformed[j];
                     int jNextPos = (i + 1) % body2.PolygonPathTransformed.Count;
-                    Vector3 jNext = body2.PolygonPathTransformed[jNextPos];
-
-                    Vector2 b1 = new Vector2(jCurrent.X, jCurrent.Y);
-                    Vector2 b2 = new Vector2(jNext.X, jNext.Y);
+                    Vector2 b1 = body2.PolygonPathTransformed[j];
+                    Vector2 b2 = body2.PolygonPathTransformed[jNextPos];
 
                     if (LinesIntersect(a1, a2, b1, b2))
                         return true;
@@ -93,26 +84,13 @@ namespace SuperPong.MJFrameWork
 
         private static Boolean PointsInPolygonInsideOtherPolygon(MJPhysicsBody body1, MJPhysicsBody body2)
         {
-            foreach (Vector3 point3 in body1.PolygonPathTransformed)
+            foreach (Vector2 point in body1.PolygonPathTransformed)
             {
-                Vector2 point = new Vector2(point3.X, point3.Y);
                 if (PointInsidePolygon(body2.AxisAlignedBoundingBox, body2.PolygonPathTransformed, point))
                     return true;
             }
             return false;
         }
-
-        private static Boolean PointInsidePolygon(MJRectangle rect, List<Vector3> path, Vector2 point)
-        {
-            List<Vector2> vectors = new List<Vector2>();
-            foreach (Vector3 v in path)
-            {
-                vectors.Add(new Vector2(v.X, v.Y
-                    ));
-            }
-            return PointInsidePolygon(rect, vectors, point);
-        }
-
 
         //---------------- Point inside/on ------------------\\
 

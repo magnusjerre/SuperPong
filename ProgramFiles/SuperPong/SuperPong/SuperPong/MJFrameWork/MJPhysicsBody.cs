@@ -57,9 +57,9 @@ namespace SuperPong.MJFrameWork
          * A list containing each point that defines the polygon box.
          * </summary>
          */
-        public List<Vector3> PolygonPath { get; set; }
+        public List<Vector2> PolygonPath { get; set; }
 
-        public List<Vector3> PolygonPathTransformed { get; set; }
+        public List<Vector2> PolygonPathTransformed { get; set; }
 
         public static MJPhysicsBody CircularMJPhysicsBody(float radius) 
         {
@@ -73,35 +73,23 @@ namespace SuperPong.MJFrameWork
         {
             MJPhysicsBody body = new MJPhysicsBody();
             body.PolygonPath = body.RectangularBoundingBox(size, origin);
-            Console.WriteLine("Creating the initial bounding box");
-            for (int i = 0; i < body.PolygonPath.Count; i++)
+            foreach (Vector2 v in body.PolygonPath)
             {
-                Vector3 v = body.PolygonPath[i];
-                Console.WriteLine("v" + i + ": " + v);
-            } Console.WriteLine("Finished creating the initial bounding box");
-            foreach (Vector3 v in body.PolygonPath)
-            {
-                body.PolygonPathTransformed.Add(new Vector3(v.X, v.Y, v.Z));
+                body.PolygonPathTransformed.Add(new Vector2(v.X, v.Y));
             }
             body.CalculateAxisAlignedBoundingBox();
-            Console.WriteLine("AABB: " + body.AxisAlignedBoundingBox);
             return body;
         }
 
         public static MJPhysicsBody PolygonPathMJPhysicsBody(
-            List<Vector3> path)
+            List<Vector2> path)
         {
             MJPhysicsBody body = new MJPhysicsBody();
             body.PolygonPath = path;
-            Console.WriteLine("Creating the initial bounding box");
-            for (int i = 0; i < body.PolygonPath.Count; i++)
+            
+            foreach (Vector2 v in path)
             {
-                Vector3 v = body.PolygonPath[i];
-                Console.WriteLine("v" + i + ": " + v);
-            } Console.WriteLine("Finished creating the initial bounding box");
-            foreach (Vector3 v in path)
-            {
-                body.PolygonPathTransformed.Add(new Vector3(v.X, v.Y, v.Z));
+                body.PolygonPathTransformed.Add(new Vector2(v.X, v.Y));
             }
             body.CalculateAxisAlignedBoundingBox();
             return body;
@@ -116,8 +104,8 @@ namespace SuperPong.MJFrameWork
             Acceleration = new Vector2(0, 0);
             IsStatic = false;
             AxisAlignedBoundingBox = new MJRectangle(0, 0, 0, 0);
-            PolygonPath = new List<Vector3>();
-            PolygonPathTransformed = new List<Vector3>();
+            PolygonPath = new List<Vector2>();
+            PolygonPathTransformed = new List<Vector2>();
         }
 
         /*
@@ -129,21 +117,20 @@ namespace SuperPong.MJFrameWork
          * the upper right, the third the lower right and the fourth the lower
          * left.
          * </summar>
-         * 
          */
-        protected List<Vector3> RectangularBoundingBox(Vector2 size, 
+        protected List<Vector2> RectangularBoundingBox(Vector2 size, 
             Vector2 origin)
         {
             float minX = -origin.X * size.X;
             float minY = -origin.Y * size.Y;
             float maxX = size.X - origin.X * size.X;
             float maxY = size.Y - origin.Y * size.Y;
-            Vector3 upperLeft = new Vector3(minX, minY, W);
-            Vector3 upperRight = new Vector3(maxX, minY, W);
-            Vector3 lowerRight = new Vector3(maxX, maxY, W);
-            Vector3 lowerLeft = new Vector3(minX, maxY, W);
+            Vector2 upperLeft = new Vector2(minX, minY);
+            Vector2 upperRight = new Vector2(maxX, minY);
+            Vector2 lowerRight = new Vector2(maxX, maxY);
+            Vector2 lowerLeft = new Vector2(minX, maxY);
 
-            List<Vector3> polygonPath = new List<Vector3>();
+            List<Vector2> polygonPath = new List<Vector2>();
             polygonPath.Add(upperLeft);
             polygonPath.Add(upperRight);
             polygonPath.Add(lowerRight);
@@ -161,7 +148,7 @@ namespace SuperPong.MJFrameWork
                 float maxX = PolygonPathTransformed[1].X;
                 float maxY = PolygonPathTransformed[1].Y;
 
-                foreach (Vector3 point in PolygonPathTransformed)
+                foreach (Vector2 point in PolygonPathTransformed)
                 {
                     if (point.X < minX)
                         minX = point.X;
@@ -198,10 +185,10 @@ namespace SuperPong.MJFrameWork
 
         private void UpdatePolygons()
         {
-            foreach (Vector3 v in PolygonPath)
+            foreach (Vector2 v in PolygonPath)
             {
-                Vector3 copy = new Vector3(v.X, v.Y, v.Z);
-                PolygonPathTransformed.Add(Vector3.Transform(copy, TransformationMatrix));
+                Vector2 copy = new Vector2(v.X, v.Y);
+                PolygonPathTransformed.Add(Vector2.Transform(copy, TransformationMatrix));
             }
         }
 
