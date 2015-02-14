@@ -61,12 +61,6 @@ namespace SuperPong
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-
-           if (body.PointInsideBody(new Vector2(body.Parent.absoluteCoordinateSystem.Position.X + body.Radius, body.Parent.absoluteCoordinateSystem.Position.Y))) {
-                Console.WriteLine("Inside");
-            } else {
-                Console.WriteLine("Outside");
-            }
         }
 
     }
