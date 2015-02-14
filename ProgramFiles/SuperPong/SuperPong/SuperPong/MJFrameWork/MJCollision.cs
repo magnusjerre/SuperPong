@@ -8,6 +8,115 @@ namespace SuperPong.MJFrameWork
 {
     public class MJCollision
     {
+
+        //---------------- Point inside/on ------------------\\
+
+        public static Boolean PointInsideCircle(float radius, Vector2 pos, Vector2 point)
+        {
+            float dx = point.X - pos.X;
+            float dy = point.Y - pos.Y;
+            return dx * dx + dy * dy <= radius * radius;
+        }
+
+        public static Boolean PointInsideRectangle(MJRectangle rectangle, Vector2 point)
+        {
+            if (point.X < rectangle.MinX)
+                return false;
+            if (point.X > rectangle.MaxX)
+                return false;
+            if (point.Y < rectangle.MinY)
+                return false;
+            if (point.Y > rectangle.MaxY)
+                return false;
+            return true;
+        }
+
+        public static Boolean PointInsidePolygon(MJRectangle boundingBox, List<Vector2> path, Vector2 point)
+        {
+            Vector2 endOfRay = new Vector2(boundingBox.MaxX + 10, point.Y);
+            int counter = 0;
+
+            for (int i = 0; i < path.Count; i++)
+            {
+                int nextPos = (i + 1) % path.Count;
+                Vector2 a1 = path[i];
+                Vector2 a2 = path[nextPos];                
+                if (LinesIntersect(point, endOfRay, a1, a2))
+                {
+                    if (!PointOnLine(point, endOfRay, a1, 0.1f))
+                        counter++;
+                }
+            }
+            
+            return counter % 2 != 0;
+        }
+
+        public static Boolean PointOnLine(Vector2 a1, Vector2 a2, Vector2 point, float delta)
+        {
+            if (PointCannotBeOnLine(a1, a2, point, delta))
+                return false;
+
+            float dy = a2.Y - a1.Y;
+            float dx = a2.X - a1.X;
+
+            if (-delta < dx && dx < delta)  //Vertical line
+            {
+                if (a2.X - delta < point.X && point.X < a2.X + delta)
+                {
+                    float minY = Min(a1.Y, a2.Y) - delta;
+                    float maxY = Max(a1.Y, a2.Y) + delta;
+                    return minY < point.Y && point.Y < maxY;
+                }
+                return false;
+            }
+
+            float a = dy / dx;
+            float b = a1.Y - a * a1.X;
+            float y = a * point.X + b;
+            
+            return y - delta < point.Y && point.Y < y + delta;
+        }
+
+        private static bool PointCannotBeOnLine(Vector2 a1, Vector2 a2, Vector2 point, float delta)
+        {
+            return (point.X < a1.X - delta && point.X < a2.X - delta) ||
+                   (point.X > a1.X + delta && point.X > a2.X + delta) ||
+                   (point.Y < a1.Y - delta && point.Y < a2.Y - delta) ||
+                   (point.Y > a1.Y + delta && point.Y > a2.Y + delta);
+        }
+
+        //--------------- Shapes intersect -------------------\\
+
+        public static Boolean CirclesIntersect(float radius1, Vector2 pos1,
+            float radius2, Vector2 pos2)
+        {
+            float dx = pos2.X - pos1.X;
+            float dy = pos2.Y - pos1.Y;
+            float distance = dx * dx + dy * dy;
+            return distance < (radius1 + radius2) * (radius1 + radius2);
+        }
+
+        public static Boolean RectanglesIntersect(MJRectangle first, MJRectangle second)
+        {
+            if (second.MaxX < first.MinX)
+                return false;
+            if (second.MinX > first.MaxX)
+                return false;
+            if (second.MaxY < first.MinY)
+                return false;
+            if (second.MinY > first.MaxY)
+                return false;
+            return true;
+        }
+
+        private static Boolean RectangleIntersectsCirclesBoundingRectangle(
+            float radius, Vector2 pos, MJRectangle rectangle)
+        {
+            MJRectangle rect = new MJRectangle(pos.X - radius, pos.Y - radius,
+                pos.X + radius, pos.Y + radius);
+            return RectanglesIntersect(rect, rectangle);
+        }
+
         //----------------- Line Intersections -----------------\\
         /*
          * <summary> Checks whether two lines intersect or not with a delta of

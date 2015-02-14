@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SuperPong.MJFrameWork;
 using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 
 namespace UnitTestSuperPong
 {
@@ -173,6 +174,124 @@ namespace UnitTestSuperPong
             Assert.IsFalse(MJCollision.LinesIntersect(p1, p2, t1, t2, delta));
             Assert.IsFalse(MJCollision.LinesIntersect(gg1, gg2, cc1, cc2, delta));
             Assert.IsFalse(MJCollision.LinesIntersect(cc1, cc2, gg1, gg2, delta));
+        }
+
+        [TestMethod]
+        public void TestRectanglesIntersect()
+        {
+            MJRectangle rectangle1 = new MJRectangle(0, 0, 100, 100);
+            MJRectangle rectangle2 = new MJRectangle(50, 50, 200, 100);
+            MJRectangle rectangle3 = new MJRectangle(0, 0, 250, 200);
+            MJRectangle rectangle4 = new MJRectangle(300, 50, 450, 150);
+
+            Assert.IsTrue(MJCollision.RectanglesIntersect(rectangle1, rectangle1));
+            Assert.IsTrue(MJCollision.RectanglesIntersect(rectangle1, rectangle2));
+            Assert.IsTrue(MJCollision.RectanglesIntersect(rectangle2, rectangle1));
+            Assert.IsTrue(MJCollision.RectanglesIntersect(rectangle2, rectangle3));
+            Assert.IsTrue(MJCollision.RectanglesIntersect(rectangle3, rectangle2));
+            Assert.IsFalse(MJCollision.RectanglesIntersect(rectangle1, rectangle4));
+            Assert.IsFalse(MJCollision.RectanglesIntersect(rectangle4, rectangle1));
+        }
+
+        [TestMethod]
+        public void TestCirclesIntersect()
+        {
+            float radius1 = 100;
+            float radius2 = 50;
+            Vector2 pos1 = new Vector2(200, 200);
+            Vector2 pos2 = new Vector2(300, 300);
+
+            Assert.IsTrue(MJCollision.CirclesIntersect(radius1, pos1, radius2, pos2));
+            Assert.IsTrue(MJCollision.CirclesIntersect(radius2, pos2, radius1, pos1));
+            Assert.IsFalse(MJCollision.CirclesIntersect(radius2, pos1, radius2, pos2));
+        }
+
+        [TestMethod]
+        public void TestPointInsideCircle()
+        {
+            float radius = 100;
+            Vector2 pos = new Vector2(200, 200);
+            Vector2 point1 = new Vector2(250, 250);
+            Vector2 point2 = new Vector2(200, 300);
+            Vector2 point3 = new Vector2(500, 400);
+
+            Assert.IsTrue(MJCollision.PointInsideCircle(radius, pos, point1));
+            Assert.IsTrue(MJCollision.PointInsideCircle(radius, pos, point2));
+            Assert.IsFalse(MJCollision.PointInsideCircle(radius, pos, point3));
+        }
+
+        [TestMethod]
+        public void TestPointInsiderectangle()
+        {
+            MJRectangle rectangle = new MJRectangle(50, 50, 200, 150);
+            Vector2 point1 = new Vector2(180, 140);
+            Vector2 point2 = new Vector2(200, 150);
+            Vector2 point3 = new Vector2(300, 100);
+
+            Assert.IsTrue(MJCollision.PointInsideRectangle(rectangle, point1));
+            Assert.IsTrue(MJCollision.PointInsideRectangle(rectangle, point2));
+            Assert.IsFalse(MJCollision.PointInsideRectangle(rectangle, point3));
+        }
+
+        [TestMethod]
+        public void TestPointOnLine()
+        {
+            float delta = 0.1f;
+            Vector2 h1 = new Vector2(400, 600);
+            Vector2 h2 = new Vector2(550, 600);
+            Vector2 v1 = new Vector2(700, 450);
+            Vector2 v2 = new Vector2(700, 600);
+            Vector2 s1 = new Vector2(800, 550);
+            Vector2 s2 = new Vector2(900, 450);
+
+            Vector2 point1 = new Vector2(500, 600);
+            Vector2 point2 = new Vector2(700, 500);
+            Vector2 point3 = new Vector2(850, 500);
+            Vector2 h1o = new Vector2(399, 600);
+            Vector2 v1o = new Vector2(699, 450);
+            Vector2 s1o = new Vector2(799, 550);
+
+            Assert.IsTrue(MJCollision.PointOnLine(h1, h2, h1, delta));
+            Assert.IsTrue(MJCollision.PointOnLine(h1, h2, point1, delta));
+            Assert.IsTrue(MJCollision.PointOnLine(v1, v2, v1, delta));
+            Assert.IsTrue(MJCollision.PointOnLine(v1, v2, point2, delta));
+            Assert.IsTrue(MJCollision.PointOnLine(s1, s2, s1, delta));
+            Assert.IsTrue(MJCollision.PointOnLine(s1, s2, point3, delta));
+
+            Assert.IsFalse(MJCollision.PointOnLine(h1, h2, point2, delta));
+            Assert.IsFalse(MJCollision.PointOnLine(h1, h2, h1o, delta));
+            Assert.IsFalse(MJCollision.PointOnLine(v1, v2, point1, delta));
+            Assert.IsFalse(MJCollision.PointOnLine(v1, v2, v1o, delta));
+            Assert.IsFalse(MJCollision.PointOnLine(s1, s2, point2, delta));
+            Assert.IsFalse(MJCollision.PointOnLine(s1, s2, s1o, delta));
+        }
+
+        [TestMethod]
+        public void TestPointinsidePolygon()
+        {
+            MJRectangle boundingBox = new MJRectangle(150, 200, 400, 400);
+            List<Vector2> path = new List<Vector2>();
+            path.Add(new Vector2(200, 200));
+            path.Add(new Vector2(400, 250));
+            path.Add(new Vector2(350, 350));
+            path.Add(new Vector2(250, 400));
+            path.Add(new Vector2(150, 300));
+
+            Vector2 point1 = new Vector2(300, 300); //Inside
+            Vector2 point2 = new Vector2(400, 250); //Inside
+            Vector2 point3 = new Vector2(500, 500); //Outside
+            Vector2 point4 = new Vector2(401, 250); //Outside
+            Vector2 point5 = new Vector2(100, 300); //Outside
+            Vector2 point6 = new Vector2(200, 380); //Outside
+            Vector2 point7 = new Vector2(200, 400); //Usbude
+            
+            Assert.IsTrue(MJCollision.PointInsidePolygon(boundingBox, path, point1));
+            Assert.IsTrue(MJCollision.PointInsidePolygon(boundingBox, path, point2));
+            Assert.IsFalse(MJCollision.PointInsidePolygon(boundingBox, path, point3));
+            Assert.IsFalse(MJCollision.PointInsidePolygon(boundingBox, path, point4));
+            Assert.IsFalse(MJCollision.PointInsidePolygon(boundingBox, path, point5));
+            Assert.IsFalse(MJCollision.PointInsidePolygon(boundingBox, path, point6));
+            Assert.IsTrue(MJCollision.PointInsidePolygon(boundingBox, path, point7));
         }
     
     }
