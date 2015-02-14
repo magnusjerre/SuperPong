@@ -77,6 +77,7 @@
     <Compile Include="MJFrameWork\Interfaces\MJDraw.cs" />
     <Compile Include="MJFrameWork\Interfaces\MJTransitionListener.cs" />
     <Compile Include="MJFrameWork\MJAbs.cs" />
+    <Compile Include="MJFrameWork\MJCollision.cs" />
     <Compile Include="MJFrameWork\MJNode.cs" />
     <Compile Include="MJFrameWork\MJPhysicsBody.cs" />
     <Compile Include="MJFrameWork\MJParticle.cs" />
