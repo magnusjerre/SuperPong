@@ -41,6 +41,8 @@ namespace SuperPong.MJFrameWork
 
         public Vector2 Acceleration { get; set; }
 
+        public Vector2 AccelerationFromForce { get; set; }
+
         public Matrix TransformationMatrix { get; set; }
 
         /*
@@ -60,6 +62,9 @@ namespace SuperPong.MJFrameWork
         public List<Vector2> PolygonPath { get; set; }
 
         public List<Vector2> PolygonPathTransformed { get; set; }
+
+        public float RotationalAcceleration { get; set; }
+        public float RotationalSpeed { get; set; }
 
         public static MJPhysicsBody CircularMJPhysicsBody(float radius) 
         {
@@ -102,6 +107,7 @@ namespace SuperPong.MJFrameWork
             Mass = 1.0f;
             Velocity = new Vector2(0, 0);
             Acceleration = new Vector2(0, 0);
+            AccelerationFromForce = new Vector2();
             IsStatic = false;
             AxisAlignedBoundingBox = new MJRectangle(0, 0, 0, 0);
             PolygonPath = new List<Vector2>();
@@ -173,14 +179,22 @@ namespace SuperPong.MJFrameWork
         public void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
             float dt = gameTime.ElapsedGameTime.Milliseconds / 1000.0f;
-            Vector2 velocityFromAcceleration = Acceleration * dt;
+
+            Vector2 velocityFromAcceleration = (Acceleration + AccelerationFromForce)* dt;
+            AccelerationFromForce = new Vector2();
             Velocity += velocityFromAcceleration;
             Parent.Position += Velocity * dt;
+
+            float rotSpeedFromAccel = RotationalAcceleration * dt;
+            RotationalAcceleration = 0;
+            RotationalSpeed += rotSpeedFromAccel;
+            float deltaRot = RotationalSpeed * dt;
+            Parent.Rotation += deltaRot;
 
             PolygonPathTransformed.Clear();
             UpdateMatrix();
             UpdatePolygons();
-            CalculateAxisAlignedBoundingBox();
+            CalculateAxisAlignedBoundingBox();            
         }
 
         private void UpdatePolygons()
