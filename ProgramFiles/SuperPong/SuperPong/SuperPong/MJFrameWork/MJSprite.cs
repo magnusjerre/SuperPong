@@ -103,11 +103,6 @@ namespace SuperPong.MJFrameWork
             {
                 child.Draw(spriteBatch);
             }
-
-            if (ParticleEmitter != null)
-            {
-                ParticleEmitter.Draw(spriteBatch);
-            }
         }
 
         public override void Update(GameTime gameTime)
@@ -125,9 +120,6 @@ namespace SuperPong.MJFrameWork
 
             if (PhysicsBody != null)
                 PhysicsBody.Update(gameTime);
-
-            if (ParticleEmitter != null)
-                ParticleEmitter.Update(gameTime);
 
             foreach (MJNode child in Children)
             {

@@ -47,7 +47,6 @@ namespace SuperPong.MJFrameWork
         protected List<MJNode> Children { get { return children; } set { children = value; } }
 
         public MJPhysicsBody PhysicsBody { get; set; }
-        public MJParticleEmitter ParticleEmitter { get; set; }
 
         public MJNode()
         {
@@ -60,17 +59,13 @@ namespace SuperPong.MJFrameWork
             Rotation = 0;
             LayerDepth = 1;
 
-            PhysicsBody = null;
-            ParticleEmitter = null;
+            PhysicsBody = null;            
         }
 
         public virtual void Update(GameTime gameTime)
         {
             if (PhysicsBody != null)
                 PhysicsBody.Update(gameTime);
-
-            if (ParticleEmitter != null)
-                ParticleEmitter.Update(gameTime);
 
             foreach (MJNode child in Children)
             {
@@ -83,9 +78,6 @@ namespace SuperPong.MJFrameWork
             foreach (MJNode child in children) {
                 child.Draw(spriteBatch);
             }
-
-            if (ParticleEmitter != null)
-                ParticleEmitter.Draw(spriteBatch);
         }
 
         public void AddChild(MJNode child)
@@ -137,18 +129,6 @@ namespace SuperPong.MJFrameWork
         {
             this.PhysicsBody.DetachFromParent();
             this.PhysicsBody = null;
-        }
-
-        public void AttachParticleEmitter(MJParticleEmitter particleEmiiter)
-        {
-            this.ParticleEmitter = particleEmiiter;
-            this.ParticleEmitter.Parent = this;
-        }
-
-        public void DetachParticleEmitter()
-        {
-            this.ParticleEmitter.DetachFromParent();
-            this.ParticleEmitter = null;
         }
 
         protected void UpdateAbsValuesForThis()

@@ -202,9 +202,10 @@ namespace UnitTestSuperPong
             Vector2 pos1 = new Vector2(200, 200);
             Vector2 pos2 = new Vector2(300, 300);
 
-            Assert.IsTrue(MJCollision.CirclesIntersect(radius1, pos1, radius2, pos2));
-            Assert.IsTrue(MJCollision.CirclesIntersect(radius2, pos2, radius1, pos1));
-            Assert.IsFalse(MJCollision.CirclesIntersect(radius2, pos1, radius2, pos2));
+            Assert.AreNotEqual(MJCollision.CirclesIntersect(radius1, pos1, radius1, pos1), -1);
+            Assert.AreNotEqual(MJCollision.CirclesIntersect(radius1, pos1, radius2, pos2), -1);
+            Assert.AreNotEqual(MJCollision.CirclesIntersect(radius2, pos2, radius1, pos1), -1);
+            Assert.AreEqual(MJCollision.CirclesIntersect(radius2, pos1, radius2, pos2), -1);
         }
 
         [TestMethod]
@@ -326,12 +327,12 @@ namespace UnitTestSuperPong
 
             MJNode node2 = new MJNode();
             node2.Position = new Vector2(300, 150);
-            List<Vector3> path = new List<Vector3>();
-            path.Add(new Vector3(150, 0, 0));
-            path.Add(new Vector3(300, 50, 0));
-            path.Add(new Vector3(300, 200, 0));
-            path.Add(new Vector3(150, 250, 0));
-            path.Add(new Vector3(0, 200, 0));
+            List<Vector2> path = new List<Vector2>();
+            path.Add(new Vector2(150, 0));
+            path.Add(new Vector2(0, 200));
+            path.Add(new Vector2(150, 250));
+            path.Add(new Vector2(300, 200));
+            path.Add(new Vector2(300, 50));
             MJPhysicsBody polygonBody = MJPhysicsBody.PolygonPathMJPhysicsBody(path);
             node2.AttachPhysicsBody(polygonBody);
 
@@ -352,27 +353,27 @@ namespace UnitTestSuperPong
             circle2.Update(gameTime);
 
             //Intersects with self
-            Assert.IsTrue(MJCollision.Intersects(rectangleBody1, rectangleBody1));
-            Assert.IsTrue(MJCollision.Intersects(polygonBody, polygonBody));
-            Assert.IsTrue(MJCollision.Intersects(circle1Body, circle1Body));
+            Assert.AreNotEqual(MJCollision.Intersects(rectangleBody1, rectangleBody1), -1);
+            Assert.AreNotEqual(MJCollision.Intersects(polygonBody, polygonBody), -1);
+            Assert.AreNotEqual(MJCollision.Intersects(circle1Body, circle1Body), -1);
 
-            Assert.IsTrue(MJCollision.Intersects(rectangleBody1, polygonBody));
-            Assert.IsTrue(MJCollision.Intersects(polygonBody, rectangleBody1));
-            
-            Assert.IsTrue(MJCollision.Intersects(circle2Body, rectangleBody1));
-            Assert.IsTrue(MJCollision.Intersects(rectangleBody1, circle2Body));
+            Assert.AreNotEqual(MJCollision.Intersects(rectangleBody1, polygonBody), -1);
+            Assert.AreNotEqual(MJCollision.Intersects(polygonBody, rectangleBody1), -1);
 
-            Assert.IsTrue(MJCollision.Intersects(polygonBody, circle1Body));
-            Assert.IsTrue(MJCollision.Intersects(circle1Body, polygonBody));
+            Assert.AreNotEqual(MJCollision.Intersects(circle2Body, rectangleBody1), -1);
+            Assert.AreNotEqual(MJCollision.Intersects(rectangleBody1, circle2Body), -1);
 
-            Assert.IsFalse(MJCollision.Intersects(circle1Body, rectangleBody1));
-            Assert.IsFalse(MJCollision.Intersects(rectangleBody1, circle1Body));
+            Assert.AreNotEqual(MJCollision.Intersects(polygonBody, circle1Body), -1);
+            Assert.AreNotEqual(MJCollision.Intersects(circle1Body, polygonBody), -1);
+
+            Assert.AreEqual(MJCollision.Intersects(circle1Body, rectangleBody1), -1);
+            Assert.AreEqual(MJCollision.Intersects(rectangleBody1, circle1Body), -1);
 
             node2.Position = new Vector2(350, 200);
             node2.Update(gameTime);
 
-            Assert.IsFalse(MJCollision.Intersects(rectangleBody1, polygonBody));
-            Assert.IsFalse(MJCollision.Intersects(polygonBody, rectangleBody1));
+            Assert.AreEqual(MJCollision.Intersects(rectangleBody1, polygonBody), -1);
+            Assert.AreEqual(MJCollision.Intersects(polygonBody, rectangleBody1), -1);
 
 
         }

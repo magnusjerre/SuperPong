@@ -216,11 +216,14 @@ namespace SuperPong.MJFrameWork
             float dy = pos2.Y - pos1.Y;
             float distance = dx * dx + dy * dy;
             float result = (radius1 + radius2) * (radius1 + radius2);
-            if (result < distance)
+            if (distance < result)
             {
                 return -3;
             }
-            return -1;
+            else
+            {
+                return -1;
+            }
         }
 
         public static Boolean RectanglesIntersect(MJRectangle first, MJRectangle second)

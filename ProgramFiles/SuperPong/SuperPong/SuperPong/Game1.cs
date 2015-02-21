@@ -20,16 +20,16 @@ namespace SuperPong
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        MJSprite sprite, sprite2, sprite3;
-        MJSceneManager sceneManager;
+        MJSprite sprite, sprite2, sprite3;        
         int elapsedButtonPressTime = 0;
+        MJScene scene;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             //sceneManager = new MJSceneManager(new FirstScene(Content));
-            sceneManager = new MJSceneManager(new SecondScene(Content));
+            scene = new SecondScene(Content);
             //sceneManager.AddScene(new SecondScene(Content));
             Console.WriteLine("Constructor");
         }
@@ -45,7 +45,7 @@ namespace SuperPong
             // TODO: Add your initialization logic here
 
             base.Initialize();
-            sceneManager.Initialize();
+            scene.Initialize();
             Console.WriteLine("Initialize");
             
         }
@@ -58,7 +58,7 @@ namespace SuperPong
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            sceneManager.MainScene.LoadContent();
+            scene.LoadContent();
             Console.WriteLine("LoadContent");
             //Texture2D texture = Content.Load<Texture2D>("ball");
             
@@ -104,7 +104,7 @@ namespace SuperPong
             // TODO: Add your update logic here
 
             base.Update(gameTime);
-            sceneManager.Update(gameTime);
+            scene.Update(gameTime);
             /*
             if (Mouse.GetState().LeftButton == ButtonState.Pressed)
             {
@@ -148,7 +148,7 @@ namespace SuperPong
 
             base.Draw(gameTime);
             spriteBatch.Begin();
-            sceneManager.Draw(spriteBatch);
+            scene.Draw(spriteBatch);
             //sprite.Draw(spriteBatch);
             //sprite2.Draw(spriteBatch);
             //sprite3.Draw(spriteBatch);
