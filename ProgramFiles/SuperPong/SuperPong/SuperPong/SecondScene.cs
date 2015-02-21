@@ -42,7 +42,7 @@ namespace SuperPong
         public override void Initialize()
         {
             ball1 = new MJSprite(ballT);
-            ball1.Position = new Vector2(300, 200 - ball1.Size.X / 2);
+            ball1.Position = new Vector2(400, 200 - ball1.Size.X / 2);
 
             rectangle1 = new MJSprite(rectangleT);
             rectangle1.Position = new Vector2(200, 200);
@@ -53,7 +53,7 @@ namespace SuperPong
             MJPhysicsBody rect1Body = MJPhysicsBody.RectangularMJPhysicsBody(rectangle1.Size, new Vector2(0.5f, 0.5f));
             rectangle1.AttachPhysicsBody(rect1Body);
 
-            ball1Body.Velocity = new Vector2(10, 0);         
+            ball1Body.Velocity = new Vector2(-30, 10);         
 
             AddChild(ball1);
             AddChild(rectangle1);
@@ -90,12 +90,16 @@ namespace SuperPong
 
             if (!collided)
             {
-                if (MJCollision.Intersects(ball1.PhysicsBody, rectangle1.PhysicsBody))
+                int collisionResult = MJCollision.Intersects(ball1.PhysicsBody, rectangle1.PhysicsBody);
+                if (collisionResult > -1)
                 {
-
+                    Vector2 unitNormal = rectangle1.PhysicsBody.PolygonPathNormals[collisionResult];
+                    Vector2 unitTangent = new Vector2(-unitNormal.Y, unitNormal.X);
+                    MJPhysicsManager.BounceObjects(ball1.PhysicsBody, rectangle1.PhysicsBody, unitNormal, unitTangent);
+                    collided = true;
                 }
-            }
-                
+
+            }                
 
         }
     }

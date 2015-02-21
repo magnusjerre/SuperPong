@@ -11,7 +11,16 @@ namespace SuperPong.MJFrameWork
 
         //------------------- Collision ---------------------\\
 
-        public static Boolean Intersects(MJPhysicsBody body1, MJPhysicsBody body2)
+        /*
+         * <summary>
+         * i: the line from point i to the next is the one that is intersected
+         * -3: Circle intersects circle
+         * -2: Point is inside polygon
+         * -1: no intersection
+         * </summary>
+         * 
+         */
+        public static int Intersects(MJPhysicsBody body1, MJPhysicsBody body2)
         {
             if (body1.Radius > -1 && body2.Radius > -1)
                 return CirclesIntersect(body1.Radius, body1.Parent.absoluteCoordinateSystem.Position,
@@ -21,32 +30,49 @@ namespace SuperPong.MJFrameWork
             {
                 MJPhysicsBody circleBody = body1.Radius > -1 ? body1 : body2;
                 MJPhysicsBody polygonBody = body1.Radius > -1 ? body2 : body1;
-                if (CircleIntersectsPolygon(circleBody, polygonBody))
-                    return true;
+                int result = CircleIntersectsPolygon(circleBody, polygonBody);
+                if (result != -1)
+                {
+                    return result;
+                }
             }
 
             if (RectanglesIntersect(body1.AxisAlignedBoundingBox, body2.AxisAlignedBoundingBox))
             {
-                if (PointsInPolygonInsideOtherPolygon(body1, body2))
-                    return true;
-                if (PointsInPolygonInsideOtherPolygon(body2, body1))
-                    return true;
-                if (LinesInPolygonIntersectsOtherPolygon(body1, body2))
-                    return true;
+                int result = LinesInPolygonIntersectsOtherPolygon(body1, body2);
+                if (result != -1) 
+                {
+                    return result;
+                }
+                result = PointsInPolygonInsideOtherPolygon(body1, body2);
+                if (result != -1)
+                {
+                    return result;
+                }
+                result = PointsInPolygonInsideOtherPolygon(body2, body1);
+                if (result != -1)
+                {
+                    return result;
+                }
             }
 
-            return false;
+            return -1;
         }
 
-        private static Boolean CircleIntersectsPolygon(MJPhysicsBody circleBody, MJPhysicsBody polygonBody)
+        /*
+         * <summary>
+         * i: the line from point i to the next is the one that is intersected 
+         * -2: Point is inside polygon
+         * -1: no intersection
+         * </summary>
+         * 
+         */
+        private static int CircleIntersectsPolygon(MJPhysicsBody circleBody, MJPhysicsBody polygonBody)
         {
             if (RectangleIntersectsCirclesBoundingRectangle(
                     circleBody.Radius, circleBody.Parent.absoluteCoordinateSystem.Position,
                     polygonBody.AxisAlignedBoundingBox))
             {
-                if (PointInsidePolygon(polygonBody.AxisAlignedBoundingBox,
-                    polygonBody.PolygonPathTransformed, circleBody.Parent.absoluteCoordinateSystem.Position))
-                    return true;
                 
                 for (int i = 0; i < polygonBody.PolygonPathTransformed.Count; i++)
                 {
@@ -54,14 +80,18 @@ namespace SuperPong.MJFrameWork
                     Vector2 a1 = polygonBody.PolygonPathTransformed[i];
                     Vector2 a2 = polygonBody.PolygonPathTransformed[nextPos];
                     if (LineIntersectsCircle(a1, a2, circleBody.Radius, circleBody.Parent.absoluteCoordinateSystem.Position))
-                        return true;
+                        return i;
                 }
+
+                if (PointInsidePolygon(polygonBody.AxisAlignedBoundingBox,
+                    polygonBody.PolygonPathTransformed, circleBody.Parent.absoluteCoordinateSystem.Position))
+                    return -2;
             }
             
-            return false;
+            return -1;
         }
 
-        private static Boolean LinesInPolygonIntersectsOtherPolygon(MJPhysicsBody body1, MJPhysicsBody body2)
+        private static int LinesInPolygonIntersectsOtherPolygon(MJPhysicsBody body1, MJPhysicsBody body2)
         {
             for (int i = 0; i < body1.PolygonPathTransformed.Count; i++)
             {
@@ -76,24 +106,33 @@ namespace SuperPong.MJFrameWork
                     Vector2 b2 = body2.PolygonPathTransformed[jNextPos];
 
                     if (LinesIntersect(a1, a2, b1, b2))
-                        return true;
+                        return i;
                 }
             }
-            return false;
+            return -1;
         }
 
-        private static Boolean PointsInPolygonInsideOtherPolygon(MJPhysicsBody body1, MJPhysicsBody body2)
+
+        /*
+         * <summary>
+         * i: the line from point i to the next is the one that is intersected 
+         * -2: Point is inside polygon
+         * -1: no intersection
+         * </summary>
+         * 
+         */
+        private static int PointsInPolygonInsideOtherPolygon(MJPhysicsBody body1, MJPhysicsBody body2)
         {
             foreach (Vector2 point in body1.PolygonPathTransformed)
             {
                 if (PointInsidePolygon(body2.AxisAlignedBoundingBox, body2.PolygonPathTransformed, point))
-                    return true;
+                    return -2;
             }
-            return false;
+            return -1;
         }
 
         //---------------- Point inside/on ------------------\\
-
+        
         public static Boolean PointInsideCircle(float radius, Vector2 pos, Vector2 point)
         {
             float dx = point.X - pos.X;
@@ -170,13 +209,18 @@ namespace SuperPong.MJFrameWork
 
         //--------------- Shapes intersect -------------------\\
 
-        public static Boolean CirclesIntersect(float radius1, Vector2 pos1,
+        public static int CirclesIntersect(float radius1, Vector2 pos1,
             float radius2, Vector2 pos2)
         {
             float dx = pos2.X - pos1.X;
             float dy = pos2.Y - pos1.Y;
             float distance = dx * dx + dy * dy;
-            return distance < (radius1 + radius2) * (radius1 + radius2);
+            float result = (radius1 + radius2) * (radius1 + radius2);
+            if (result < distance)
+            {
+                return -3;
+            }
+            return -1;
         }
 
         public static Boolean RectanglesIntersect(MJRectangle first, MJRectangle second)
