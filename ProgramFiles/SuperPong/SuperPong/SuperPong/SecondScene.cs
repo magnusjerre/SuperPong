@@ -16,8 +16,8 @@ namespace SuperPong
     {
 
         Texture2D circleT, rectangleT, polygonT, ballT, rectangleSmallT;
-        MJSprite circle1, circle2, rectangle1, rectangle2, polygon1, polygon2, ball1, ball2, rectangleSmall1;
-        Vector2 point = new Vector2(300, 250);
+        MJSprite circle1, circle2, rectangle1, rectangle2, polygon1, polygon2, ball1, ball2, ball3, rectangleSmall1;
+        Vector2 point = new Vector2(300, 200);
         int i = 0;
         int millisecondsPress = 200;
         int elapsed = 0;
@@ -42,11 +42,15 @@ namespace SuperPong
         public override void Initialize()
         {
             ball1 = new MJSprite(ballT);
-            ball1.Position = point;
+            ball1.Position = new Vector2(300, 200 - ball1.Size.X / 2);
 
             ball2 = new MJSprite(ballT);
-            ball2.Position = new Vector2(400, 250);
+            ball2.Position = new Vector2(300, 200 + ball2.Size.X / 2);
             ball2.ColorTint = Color.Green;
+
+            ball3 = new MJSprite(ballT);
+            ball3.Position = new Vector2(500, 200);
+            ball3.ColorTint = Color.Yellow;
 
             MJPhysicsBody ball1Body = MJPhysicsBody.CircularMJPhysicsBody(ball1.Size.X / 2);
             ball1.AttachPhysicsBody(ball1Body);
@@ -56,13 +60,18 @@ namespace SuperPong
             MJPhysicsBody ball2Body = MJPhysicsBody.CircularMJPhysicsBody(ball2.Size.X / 2);
             ball2.AttachPhysicsBody(ball2Body);
 
+            MJPhysicsBody ball3Body = MJPhysicsBody.CircularMJPhysicsBody(ball3.Size.X / 2);
+            ball3.AttachPhysicsBody(ball3Body);
 
-            ball1Body.Velocity = new Vector2(30, 0);
-            ball2Body.Velocity = new Vector2(-10, 0);
+
+            //ball1Body.Velocity = new Vector2(10, 0);
+            //ball2Body.Velocity = new Vector2(-10, -10f);
+            ball3Body.Velocity = new Vector2(-30, 0);
             
 
             AddChild(ball1);
             AddChild(ball2);
+            AddChild(ball3);
         }
 
         public override void Update(GameTime gameTime)
@@ -97,15 +106,42 @@ namespace SuperPong
             if (!collided) {
                 if (MJCollision.Intersects(ball1.PhysicsBody, ball2.PhysicsBody))
                 {
-                    collided = true;
+                    //collided = true;
                     Vector2 normalVector = ball1.Position - ball2.Position;
                     Vector2 unitNormal = normalVector / normalVector.Length();
-                    Vector2 unitTangent = new Vector2(-normalVector.Y, normalVector.X);
+                    Vector2 unitTangent = new Vector2(-unitNormal.Y, unitNormal.X);
                     Console.WriteLine("unitNormal: " + unitNormal);
                     MJPhysicsManager.BounceObjects(ball1.PhysicsBody, ball2.PhysicsBody, unitNormal, unitTangent);
                 }
+
+                if (MJCollision.Intersects(ball1.PhysicsBody, ball3.PhysicsBody))
+                {
+                    //collided = true;
+                    Vector2 normalVector = ball1.Position - ball3.Position;
+                    Vector2 unitNormal = normalVector / normalVector.Length();
+                    Vector2 unitTangent = new Vector2(-unitNormal.Y, unitNormal.X);
+                    Console.WriteLine("unitNormal: " + unitNormal);
+                    MJPhysicsManager.BounceObjects(ball1.PhysicsBody, ball3.PhysicsBody, unitNormal, unitTangent);
+                }
+                if (MJCollision.Intersects(ball3.PhysicsBody, ball2.PhysicsBody))
+                {
+                    //collided = true;
+                    Vector2 normalVector = ball3.Position - ball2.Position;
+                    Vector2 unitNormal = normalVector / normalVector.Length();
+                    Vector2 unitTangent = new Vector2(-unitNormal.Y, unitNormal.X);
+                    Console.WriteLine("unitNormal: " + unitNormal);
+                    MJPhysicsManager.BounceObjects(ball3.PhysicsBody, ball2.PhysicsBody, unitNormal, unitTangent);
+                }
             } else {
                 if (!MJCollision.Intersects(ball1.PhysicsBody, ball2.PhysicsBody)) {
+                    collided = false;
+                }
+                if (!MJCollision.Intersects(ball1.PhysicsBody, ball3.PhysicsBody))
+                {
+                    collided = false;
+                }
+                if (!MJCollision.Intersects(ball3.PhysicsBody, ball2.PhysicsBody))
+                {
                     collided = false;
                 }
             }

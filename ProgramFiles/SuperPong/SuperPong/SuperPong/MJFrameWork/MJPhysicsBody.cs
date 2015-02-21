@@ -39,11 +39,7 @@ namespace SuperPong.MJFrameWork
 
         public Vector2 Velocity { get; set; }
 
-        public Vector2 VelocityTemp { get; set; }
-
         public Vector2 Acceleration { get; set; }
-
-        public Vector2 TempAcceleration { get; set; }
 
         public Vector2 AccelerationFromForce { get; set; }
 
@@ -110,10 +106,8 @@ namespace SuperPong.MJFrameWork
             Radius = -1.0f;
             Mass = 1.0f;
             Velocity = new Vector2(0, 0);
-            VelocityTemp = new Vector2();
             Acceleration = new Vector2(0, 0);
             AccelerationFromForce = new Vector2();
-            TempAcceleration = new Vector2();
             IsStatic = false;
             AxisAlignedBoundingBox = new MJRectangle(0, 0, 0, 0);
             PolygonPath = new List<Vector2>();
@@ -185,11 +179,6 @@ namespace SuperPong.MJFrameWork
         public void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
             float dt = gameTime.ElapsedGameTime.Milliseconds / 1000.0f;
-            if (VelocityTemp.X != 0 && VelocityTemp.Y != 0)
-            {
-                Velocity = VelocityTemp;
-                VelocityTemp = new Vector2();
-            }
             Vector2 velocityFromAcceleration = (Acceleration + AccelerationFromForce) * dt;
             AccelerationFromForce = new Vector2();
             Velocity += velocityFromAcceleration;

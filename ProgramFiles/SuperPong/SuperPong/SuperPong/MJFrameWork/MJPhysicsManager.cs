@@ -63,6 +63,11 @@ namespace SuperPong.MJFrameWork
             return rotationalForce / mass;
         }
 
+        /*
+         * <summar>
+         * Works for collision between two objects. I don't think it works correctly for a three-way collision.
+         * </summary>
+         */
         public static void BounceObjects(MJPhysicsBody body1, MJPhysicsBody body2, Vector2 unitNormal, Vector2 unitTangent)
         {
             //Project each body's onto normal and tangent
@@ -77,11 +82,6 @@ namespace SuperPong.MJFrameWork
             float v1nFinal = (v1n * (body1.Mass - body2.Mass) + 2 * v2n * body2.Mass) / (body1.Mass + body2.Mass);
             float v2nFinal = (v2n * (body2.Mass - body1.Mass) + 2 * v1n * body1.Mass) / (body1.Mass + body2.Mass);
 
-            Console.WriteLine("v1n: " + v1n);
-            Console.WriteLine("v2n: " + v2n);
-            Console.WriteLine("v1nFinal: " + v1nFinal);
-            Console.WriteLine("v2nFinal: " + v2nFinal);
-
             Vector2 v1nFinalVector = unitNormal * v1nFinal;
             Vector2 v1tFinalVector = unitTangent * v1tFinal;
             Vector2 v2nFinalVector = unitNormal * v2nFinal;
@@ -90,14 +90,8 @@ namespace SuperPong.MJFrameWork
             Vector2 v1Final = v1nFinalVector + v1tFinalVector;
             Vector2 v2Final = v2nFinalVector + v2tFinalVector;
 
-            Console.WriteLine("v1Final: " + v1Final);
-            Console.WriteLine("v2Final: " + v2Final);
-
-            body1.VelocityTemp += v1Final;
-            body2.VelocityTemp += v2Final;
-
-            body1.Velocity += v1Final;
-            body2.Velocity += v2Final;
+            body1.Velocity = v1Final;
+            body2.Velocity = v2Final;
         }
     }
 }
