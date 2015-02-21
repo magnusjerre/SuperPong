@@ -215,8 +215,8 @@ namespace SuperPong.MJFrameWork
             float dx = pos2.X - pos1.X;
             float dy = pos2.Y - pos1.Y;
             float distance = dx * dx + dy * dy;
-            float result = (radius1 + radius2) * (radius1 + radius2);
-            if (distance < result)
+            float maxDistanceBetween = (radius1 + radius2) * (radius1 + radius2);
+            if (distance < maxDistanceBetween)
             {
                 return -3;
             }
