@@ -62,6 +62,7 @@ namespace SuperPong.MJFrameWork
         public List<Vector2> PolygonPath { get; set; }
 
         public List<Vector2> PolygonPathTransformed { get; set; }
+        public List<Vector2> PolygonPathNormals { get; set; }
 
         public float RotationalAcceleration { get; set; }
         public float RotationalSpeed { get; set; }
@@ -112,6 +113,7 @@ namespace SuperPong.MJFrameWork
             AxisAlignedBoundingBox = new MJRectangle(0, 0, 0, 0);
             PolygonPath = new List<Vector2>();
             PolygonPathTransformed = new List<Vector2>();
+            PolygonPathNormals = new List<Vector2>();
         }
 
         /*
@@ -138,9 +140,9 @@ namespace SuperPong.MJFrameWork
 
             List<Vector2> polygonPath = new List<Vector2>();
             polygonPath.Add(upperLeft);
-            polygonPath.Add(upperRight);
-            polygonPath.Add(lowerRight);
             polygonPath.Add(lowerLeft);
+            polygonPath.Add(lowerRight);
+            polygonPath.Add(upperRight);
             
             return polygonPath;
         }
@@ -203,6 +205,21 @@ namespace SuperPong.MJFrameWork
             {
                 Vector2 copy = new Vector2(v.X, v.Y);
                 PolygonPathTransformed.Add(Vector2.Transform(copy, TransformationMatrix));
+            }
+
+            CalculateNormals();
+        }
+
+        private void CalculateNormals()
+        {
+            PolygonPathNormals.Clear();
+            for (int i = 0; i < PolygonPathTransformed.Count; i++)
+            {
+                int next = (i + 1) % PolygonPathTransformed.Count;
+                Vector2 line = PolygonPathTransformed[next] - PolygonPathTransformed[i];
+                Vector2 normal = new Vector2(-line.Y, line.X);
+                Vector2 unitNormal = normal / normal.Length();
+                PolygonPathNormals.Add(unitNormal);
             }
         }
 
