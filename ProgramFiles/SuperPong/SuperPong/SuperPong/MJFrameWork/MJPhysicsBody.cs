@@ -67,6 +67,10 @@ namespace SuperPong.MJFrameWork
         public float RotationalAcceleration { get; set; }
         public float RotationalSpeed { get; set; }
 
+        public uint CollisionMask { get; set; }
+        public uint IntersectionMask { get; set; }
+        public uint Bitmask { get; set; }
+
         public static MJPhysicsBody CircularMJPhysicsBody(float radius) 
         {
             MJPhysicsBody body = new MJPhysicsBody();
@@ -114,6 +118,10 @@ namespace SuperPong.MJFrameWork
             PolygonPath = new List<Vector2>();
             PolygonPathTransformed = new List<Vector2>();
             PolygonPathNormals = new List<Vector2>();
+
+            Bitmask = 0;
+            CollisionMask = 0;
+            IntersectionMask = 0;
         }
 
         /*
@@ -237,6 +245,16 @@ namespace SuperPong.MJFrameWork
             TransformationMatrix = translationMatrix;
 
             //TransformationMatrix = Matrix.Multiply(translationMatrix, rotationMatrix);
+        }
+
+        public Boolean ShouldCheckForCollision(uint otherBitmask)
+        {
+            return (otherBitmask & CollisionMask) > 0;
+        }
+
+        public Boolean ShouldCheckForIntersection(uint otherBitmask)
+        {
+            return (otherBitmask & IntersectionMask) > 0;
         }
     } 
 

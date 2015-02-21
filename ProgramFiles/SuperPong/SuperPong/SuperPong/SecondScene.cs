@@ -48,10 +48,14 @@ namespace SuperPong
             rectangle1.Position = new Vector2(200, 200);
 
             MJPhysicsBody ball1Body = MJPhysicsBody.CircularMJPhysicsBody(ball1.Size.X / 2);
+            ball1Body.Bitmask = 1;
             ball1.AttachPhysicsBody(ball1Body);
 
             MJPhysicsBody rect1Body = MJPhysicsBody.RectangularMJPhysicsBody(rectangle1.Size, new Vector2(0.5f, 0.5f));
+            rect1Body.Bitmask = 2;
             rectangle1.AttachPhysicsBody(rect1Body);
+
+            ball1Body.CollisionMask = rect1Body.Bitmask;
 
             ball1Body.Velocity = new Vector2(-30, 10);         
 
@@ -88,7 +92,7 @@ namespace SuperPong
                 }
             }*/
 
-            if (!collided)
+            if (!collided && ball1.PhysicsBody.ShouldCheckForCollision(rectangle1.PhysicsBody.Bitmask))
             {
                 int collisionResult = MJCollision.Intersects(ball1.PhysicsBody, rectangle1.PhysicsBody);
                 if (collisionResult > -1)
@@ -99,7 +103,7 @@ namespace SuperPong
                     collided = true;
                 }
 
-            }                
+            }
 
         }
     }
