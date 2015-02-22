@@ -10,6 +10,14 @@ namespace SuperPong.MJFrameWork
 {
     public class MJPhysicsManager : MJUpdate
     {
+        private static MJPhysicsManager singleton;
+
+        public static MJPhysicsManager getInstance()
+        {
+            if (singleton == null)           
+                singleton = new MJPhysicsManager();
+            return singleton;
+        }
 
         public MJPhysicsEventListener Listener { get; set; }
 
@@ -17,13 +25,24 @@ namespace SuperPong.MJFrameWork
         public List<MJCollisionPair> intersectionPairs;
         public List<MJPhysicsBody> allBodies;
 
-        public MJPhysicsManager()
+        private MJPhysicsManager()
         {
             collisionPairs = new List<MJCollisionPair>();
             allBodies = new List<MJPhysicsBody>();
         }
 
+        public void AddBody(MJPhysicsBody body)
+        {
+            if (!allBodies.Contains(body))
+            {
+                allBodies.Add(body);
+            }
+        }
 
+        public void RemoveBody(MJPhysicsBody body)
+        {
+            allBodies.Remove(body);
+        }
 
         public static void ApplyForce(Vector2 force, MJPhysicsBody body)
         {
@@ -85,7 +104,6 @@ namespace SuperPong.MJFrameWork
          */
         public static void BounceObjects(MJPhysicsBody body1, MJPhysicsBody body2, Vector2 unitNormal, Vector2 unitTangent)
         {
-            Console.WriteLine("BounceObjects");
             //Project each body's onto normal and tangent
             float v1n = body1.Velocity.X * unitNormal.X + body1.Velocity.Y * unitNormal.Y;
             float v1t = body1.Velocity.X * unitTangent.X + body1.Velocity.Y * unitTangent.Y;

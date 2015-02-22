@@ -12,14 +12,18 @@ namespace SuperPong.MJFrameWork
 {
     public class MJScene : MJNode, MJPhysicsEventListener
     {
-        public ContentManager content;
-        public Boolean hasLoadedContent = false;
-        public MJPhysicsManager physicsManager;
+        private ContentManager content;
+        private MJPhysicsManager physicsManager;
 
         public MJScene(ContentManager content, string name) : base()
         {
             this.content = content;
             Name = name;
+        }
+
+        public Texture2D LoadTexture2D(string textureName)
+        {
+            return content.Load<Texture2D>(textureName);
         }
 
         public virtual void Initialize()

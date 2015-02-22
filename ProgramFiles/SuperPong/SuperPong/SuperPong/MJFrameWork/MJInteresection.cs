@@ -78,7 +78,7 @@ namespace SuperPong.MJFrameWork
             if (PointInsideCircle(a1, radius, position) || PointInsideCircle(a2, radius, position))
                 return true;
 
-            if (PointCannotBeOnLine(a1, a2, position))
+            if (PointCannotBeOnLine(a1, a2, position, radius))
                 return false;
 
             Vector2 pointToA = a1 - position;
@@ -92,7 +92,7 @@ namespace SuperPong.MJFrameWork
             return false;
         }
 
-        private static Boolean PointCannotBeOnLine(Vector2 a1, Vector2 a2, Vector2 point)
+        private static Boolean PointCannotBeOnLine(Vector2 a1, Vector2 a2, Vector2 point, float radius)
         {
             float minX = Min(a1.X, a2.X);
             float maxX = Max(a1.X, a2.X);
@@ -100,13 +100,13 @@ namespace SuperPong.MJFrameWork
             float minY = Min(a1.Y, a2.Y);
             float maxY = Max(a1.Y, a2.Y);
 
-            if (point.X < minX)
+            if (point.X < minX - radius)
                 return true;
-            if (point.X > maxX)
+            if (point.X > maxX + radius)
                 return true;
-            if (point.Y < minY)
+            if (point.Y < minY - radius)
                 return true;
-            if (point.Y > maxY)
+            if (point.Y > maxY + radius)
                 return true;
             return false;
 

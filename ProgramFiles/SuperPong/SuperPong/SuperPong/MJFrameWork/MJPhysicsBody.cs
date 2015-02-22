@@ -18,13 +18,6 @@ namespace SuperPong.MJFrameWork
         public MJNode Parent { get; set; }
 
         /*
-         * <summary>
-         * This is the W-component associated with homogenous coordinates.
-         * </summary>
-         */
-        public float W = 1.0f;
-
-        /*
          *<summary>
          * The radius specifies the size of the body using a radius. 
          * Ideal for circular bodies. Default radius is -1, which means
@@ -60,7 +53,6 @@ namespace SuperPong.MJFrameWork
          * </summary>
          */
         public List<Vector2> PolygonPath { get; set; }
-
         public List<Vector2> PolygonPathTransformed { get; set; }
         public List<Vector2> PolygonPathNormals { get; set; }
 
@@ -88,6 +80,7 @@ namespace SuperPong.MJFrameWork
                 body.PolygonPathTransformed.Add(new Vector2(v.X, v.Y));
             }
             body.CalculateAxisAlignedBoundingBox();
+            body.UpdatePolygons();
             return body;
         }
 
@@ -102,6 +95,7 @@ namespace SuperPong.MJFrameWork
                 body.PolygonPathTransformed.Add(new Vector2(v.X, v.Y));
             }
             body.CalculateAxisAlignedBoundingBox();
+            body.UpdatePolygons();
             return body;
         }
 
@@ -183,7 +177,7 @@ namespace SuperPong.MJFrameWork
 
         public void DetachFromParent()
         {
-            throw new NotImplementedException();
+            Parent.DetachPhysicsBody();
         }
 
         public void Update(Microsoft.Xna.Framework.GameTime gameTime)
@@ -200,21 +194,24 @@ namespace SuperPong.MJFrameWork
             float deltaRot = RotationalSpeed * dt;
             Parent.Rotation += deltaRot;
 
-            PolygonPathTransformed.Clear();
-            UpdateMatrix();
-            UpdatePolygons();
-            CalculateAxisAlignedBoundingBox();
-            
+            if (Radius == -1)
+            {
+                UpdateMatrix();
+                UpdatePolygons();
+                CalculateAxisAlignedBoundingBox();
+            }
         }
 
         public void UpdatePolygons()
         {
+            PolygonPathTransformed.Clear();
             foreach (Vector2 v in PolygonPath)
             {
                 Vector2 copy = new Vector2(v.X, v.Y);
-                PolygonPathTransformed.Add(Vector2.Transform(copy, TransformationMatrix));
-            }
+                Vector2 transformed = Vector2.Transform(copy, TransformationMatrix);
+                PolygonPathTransformed.Add(transformed);
 
+            }
             CalculateNormals();
         }
 
@@ -234,17 +231,11 @@ namespace SuperPong.MJFrameWork
         public void UpdateMatrix()
         {
             TransformationMatrix = Matrix.Identity;
-
-            //float rotation = Parent.absoluteCoordinateSystem.Rotation;
             Vector2 position = Parent.absoluteCoordinateSystem.Position;
 
-            //Matrix rotationMatrix = Matrix.CreateRotationZ((float)(Math.PI));
-
-            Matrix translationMatrix = Matrix.CreateTranslation(
-                new Vector3(position.X, position.Y, 0));
-            TransformationMatrix = translationMatrix;
-
-            //TransformationMatrix = Matrix.Multiply(translationMatrix, rotationMatrix);
+            Matrix translationMatrix = Matrix.CreateTranslation(new Vector3(position.X, position.Y, 0));
+            Matrix rotationMatrix = Matrix.CreateRotationZ(Parent.absoluteCoordinateSystem.Rotation);
+            TransformationMatrix = rotationMatrix * translationMatrix;
         }
 
         public Boolean ShouldCheckForCollision(uint otherBitmask)
