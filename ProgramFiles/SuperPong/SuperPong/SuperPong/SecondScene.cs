@@ -67,7 +67,7 @@ namespace SuperPong
             ball1Body.CollisionMask = 1;
             ball1.AttachPhysicsBody(ball1Body);
 
-            ball1Body.Velocity = new Vector2(60, 30);
+            ball1Body.Velocity = new Vector2(75, 30);
 
             AddChild(ball1);
             AddChild(shape);

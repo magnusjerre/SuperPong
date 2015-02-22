@@ -74,42 +74,19 @@ namespace SuperPong.MJFrameWork
 
         public static Boolean LineIntersectsCircle(Vector2 a1, Vector2 a2, float radius, Vector2 position)
         {
+            Vector2 CA = a1 - position;
+            Vector2 directionA1A2 = a2 - a1;
+            Vector2 unitDirection = directionA1A2 / directionA1A2.Length();
+            Vector2 normal = new Vector2(-unitDirection.Y, unitDirection.X);
+            float height = Abs(CA.X * normal.X + CA.Y * normal.Y);
+            if (height < radius)
+            {
+                Vector2 AC = CA * -1;
+                float length = (AC.X * directionA1A2.X + AC.Y * directionA1A2.Y) / directionA1A2.Length();
+                return 0 < length && length < directionA1A2.Length();
+            }
 
-            if (PointInsideCircle(a1, radius, position) || PointInsideCircle(a2, radius, position))
-                return true;
-
-            if (PointCannotBeOnLine(a1, a2, position, radius))
-                return false;
-
-            Vector2 pointToA = a1 - position;
-            Vector2 direction = a2 - a1;
-            Vector2 normal = new Vector2(-direction.Y, direction.X);
-            Vector2 unitNormal = normal / normal.Length();
-            float distanceFromLine = Abs(pointToA.X * unitNormal.X + pointToA.Y * unitNormal.Y);
-            if (distanceFromLine < radius)
-                return true;
-            
             return false;
-        }
-
-        private static Boolean PointCannotBeOnLine(Vector2 a1, Vector2 a2, Vector2 point, float radius)
-        {
-            float minX = Min(a1.X, a2.X);
-            float maxX = Max(a1.X, a2.X);
-
-            float minY = Min(a1.Y, a2.Y);
-            float maxY = Max(a1.Y, a2.Y);
-
-            if (point.X < minX - radius)
-                return true;
-            if (point.X > maxX + radius)
-                return true;
-            if (point.Y < minY - radius)
-                return true;
-            if (point.Y > maxY + radius)
-                return true;
-            return false;
-
         }
 
         public static Boolean PointInsideCircle(Vector2 point, float radius, Vector2 position)
