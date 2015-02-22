@@ -482,6 +482,25 @@ namespace UnitTestSuperPong
             circle.Position = new Vector2(150, 100);
             Assert.AreEqual(MJInteresection.Collides(polygonBody, circleBody), new MJIntersects(true, new Vector2((float)Math.Sqrt(0.5f), (float)Math.Sqrt(0.5f))));
         }
+
+        [TestMethod]
+        public void TestListRemove()
+        {
+
+            MJPhysicsBody body1 = MJPhysicsBody.CircularMJPhysicsBody(50);
+            MJPhysicsBody body2 = MJPhysicsBody.CircularMJPhysicsBody(50);
+            MJPhysicsBody body3 = MJPhysicsBody.CircularMJPhysicsBody(50);
+
+            MJCollisionPair intersects1 = new MJCollisionPair(body1, body2);
+            MJCollisionPair intersects2 = new MJCollisionPair(body1, body3);
+
+            List<MJCollisionPair> pairs = new List<MJCollisionPair>();
+            pairs.Add(intersects1);
+            pairs.Add(intersects2);
+
+            pairs.Remove(new MJCollisionPair(body1, body2));
+            Assert.AreEqual(1, pairs.Count);   
+        }
     
     }
 }

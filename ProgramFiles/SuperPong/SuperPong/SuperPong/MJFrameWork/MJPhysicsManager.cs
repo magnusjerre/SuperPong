@@ -85,6 +85,7 @@ namespace SuperPong.MJFrameWork
          */
         public static void BounceObjects(MJPhysicsBody body1, MJPhysicsBody body2, Vector2 unitNormal, Vector2 unitTangent)
         {
+            Console.WriteLine("BounceObjects");
             //Project each body's onto normal and tangent
             float v1n = body1.Velocity.X * unitNormal.X + body1.Velocity.Y * unitNormal.Y;
             float v1t = body1.Velocity.X * unitTangent.X + body1.Velocity.Y * unitTangent.Y;
@@ -121,13 +122,14 @@ namespace SuperPong.MJFrameWork
                 if (body1.ShouldCheckForCollision(body2.Bitmask))
                 {
                     MJCollisionPair collisionPair = new MJCollisionPair(body1, body2);
-                    int intersectsResult = MJCollision.Intersects(body1, body2);
-                    if (intersectsResult != -1)
+                    MJIntersects intersects = MJInteresection.Collides(body1, body2);
+                    if (intersects.Intersects)
                     {
                         if (!collisionPairs.Contains(collisionPair))
                         {
                             collisionPairs.Add(collisionPair);
                             Listener.CollisionBegan(collisionPair);
+                            BounceObjects(body1, body2, intersects.Normal, new Vector2(-intersects.Normal.Y, intersects.Normal.X));
                         }
                     }
                     else
@@ -139,27 +141,11 @@ namespace SuperPong.MJFrameWork
                         }
                     }
                 }
+            }
 
-                if (body1.ShouldCheckForIntersection(body2.Bitmask))
-                {
-                    MJCollisionPair intersectionPair = new MJCollisionPair(body1, body2);
-                    int intersectsResult = MJCollision.Intersects(body1, body2);
-                    if (intersectsResult != -1)
-                    {
-                        if (!intersectionPairs.Contains(intersectionPair)) {
-                            intersectionPairs.Add(intersectionPair);
-                            Listener.IntersectionBegan(intersectionPair);
-                        }
-                    }
-                    else 
-                    {
-                        if (intersectionPairs.Contains(intersectionPair)) {
-                            intersectionPairs.Remove(intersectionPair);
-                            Listener.IntersectionEnded(intersectionPair);
-                        }
-                    }
-                }
-
+            foreach (MJPhysicsBody body in allBodies)
+            {
+                body.Update(gameTime);
             }
         }
     }

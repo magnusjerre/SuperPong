@@ -43,12 +43,12 @@ namespace SuperPong.MJFrameWork
 
             if (distance < maxDistance)
             {
-                Vector2 tangent = new Vector2(dx, dy);
-                if (tangent.Length() == 0)
+                Vector2 normal = new Vector2(dx, dy);
+                if (normal.Length() == 0)
                     return new MJIntersects(true, new Vector2(0, 0));
                 
-                Vector2 unitTangent = tangent / tangent.Length();
-                return new MJIntersects(true, new Vector2(-unitTangent.Y, unitTangent.X));
+                Vector2 unitNormal = normal / normal.Length();
+                return new MJIntersects(true, unitNormal);
             }
 
             return new MJIntersects(false, new Vector2(0, 0));

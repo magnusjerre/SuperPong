@@ -118,9 +118,6 @@ namespace SuperPong.MJFrameWork
                 }
             }
 
-            if (PhysicsBody != null)
-                PhysicsBody.Update(gameTime);
-
             foreach (MJNode child in Children)
             {
                 child.Update(gameTime);

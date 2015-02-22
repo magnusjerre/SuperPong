@@ -64,9 +64,6 @@ namespace SuperPong.MJFrameWork
 
         public virtual void Update(GameTime gameTime)
         {
-            if (PhysicsBody != null)
-                PhysicsBody.Update(gameTime);
-
             foreach (MJNode child in Children)
             {
                 child.Update(gameTime);
