@@ -59,6 +59,9 @@ namespace SuperPong.MJFrameWork
             MJPhysicsBody circleBody = body1.Radius != -1 ? body1 : body2;
             MJPhysicsBody polygonBody = body1.Radius != -1 ? body2 : body1;
 
+            if (!CircleIntersectsRectangle(circleBody.Radius, circleBody.Parent.absoluteCoordinateSystem.Position, polygonBody.AxisAlignedBoundingBox))
+                return new MJIntersects(false, new Vector2(0, 0));
+
             for (int i = 0; i < polygonBody.PolygonPathTransformed.Count; i++)
             {
                 int next = (i + 1) % polygonBody.PolygonPathTransformed.Count;
@@ -67,6 +70,18 @@ namespace SuperPong.MJFrameWork
 
                 if (LineIntersectsCircle(a1, a2, circleBody.Radius, circleBody.Parent.absoluteCoordinateSystem.Position))
                     return new MJIntersects(true, polygonBody.PolygonPathNormals[i]);
+            }
+
+            foreach (Vector2 point in polygonBody.PolygonPathTransformed)
+            {
+                Vector2 circlePos = circleBody.Parent.absoluteCoordinateSystem.Position;
+                if (PointInsideCircle(point, circleBody.Radius, circlePos)) 
+                {
+                    Vector2 normal = circlePos - point;
+                    Vector2 unitNormal = normal / normal.Length();
+                    return new MJIntersects(true, unitNormal);
+                }
+
             }
 
             return new MJIntersects(false, new Vector2(0, 0));
@@ -98,6 +113,21 @@ namespace SuperPong.MJFrameWork
             if (distance < maxDistance)
                 return true;
             return false;
+        }
+
+        public static Boolean CircleIntersectsRectangle(float radius, Vector2 position, MJRectangle rectangle)
+        {
+
+            if (position.X < rectangle.MinX - radius)
+                return false;
+            if (position.X > rectangle.MaxX + radius)
+                return false;
+            if (position.Y < rectangle.MinY - radius)
+                return false;
+            if (position.Y > rectangle.MaxX + radius)
+                return false;
+
+            return true;
         }
 
         public static Boolean RectanglesIntersect(MJRectangle first, MJRectangle second)
