@@ -42,30 +42,26 @@ namespace SuperPong
         public override void Initialize()
         {
             ball1 = new MJSprite(ballT);
-            ball1.Position = new Vector2(400, 200 - ball1.Size.X / 2);
+            ball1.Position = new Vector2(200, 100);
 
-            rectangle1 = new MJSprite(rectangleT);
-            rectangle1.Position = new Vector2(200, 200);
+            ball2 = new MJSprite(ballT);
+            ball2.Position = new Vector2(100, 100);
 
             MJPhysicsBody ball1Body = MJPhysicsBody.CircularMJPhysicsBody(ball1.Size.X / 2);
-            ball1Body.Bitmask = 1;
             ball1.AttachPhysicsBody(ball1Body);
 
-            MJPhysicsBody rect1Body = MJPhysicsBody.RectangularMJPhysicsBody(rectangle1.Size, new Vector2(0.5f, 0.5f));
-            rect1Body.Bitmask = 2;
-            rectangle1.AttachPhysicsBody(rect1Body);
+            MJPhysicsBody ball2Body = MJPhysicsBody.CircularMJPhysicsBody(ball2.Size.X / 2);
+            ball2.AttachPhysicsBody(ball2Body);
 
-            ball1Body.CollisionMask = rect1Body.Bitmask;
-
-            ball1Body.Velocity = new Vector2(-30, 10);         
+            ball1Body.Velocity = new Vector2(-30, 0);         
 
             AddChild(ball1);
-            AddChild(rectangle1);
+            AddChild(ball2);
         }
 
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
+            //base.Update(gameTime);
             /*if (!pressed) {
                 if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                 {
@@ -91,7 +87,7 @@ namespace SuperPong
                     pressed = false;
                 }
             }*/
-
+            /*
             if (!collided && ball1.PhysicsBody.ShouldCheckForCollision(rectangle1.PhysicsBody.Bitmask))
             {
                 int collisionResult = MJCollision.Intersects(ball1.PhysicsBody, rectangle1.PhysicsBody);
@@ -103,7 +99,16 @@ namespace SuperPong
                     collided = true;
                 }
 
-            }
+            }*/
+
+            float radius = 50;
+            Vector2 position = new Vector2(200, 150);
+
+            Vector2 na1 = new Vector2(100, 150);
+            Vector2 na2 = new Vector2(350, 150);
+            Vector2 na3 = new Vector2(200, 150);
+
+            Console.WriteLine(MJInteresection.LineIntersectsCircle(na1, na2, radius, position));
 
         }
     }

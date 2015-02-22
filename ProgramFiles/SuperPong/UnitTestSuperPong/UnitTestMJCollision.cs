@@ -377,6 +377,111 @@ namespace UnitTestSuperPong
 
 
         }
+
+        [TestMethod]
+        public void TestNewCollision()
+        {
+            MJNode node1 = new MJNode();
+            MJNode node2 = new MJNode();
+
+            MJPhysicsBody body1 = MJPhysicsBody.CircularMJPhysicsBody(20);
+            MJPhysicsBody body2 = MJPhysicsBody.CircularMJPhysicsBody(40);
+
+            node1.AttachPhysicsBody(body1);
+            node2.AttachPhysicsBody(body2);
+
+            Vector2 pos1 = new Vector2(0, 0);
+            Vector2 pos2 = new Vector2(60, 0);
+            Vector2 pos3 = new Vector2(59, 0);
+            Vector2 pos4 = new Vector2(60, 60);
+
+            node1.Position = pos1;
+            node2.Position = pos1;
+            Assert.AreEqual(new Vector2(0, 0), new Vector2(0, 0));  //Two vector with the same value are the same, good to know
+            Assert.AreEqual(MJInteresection.Collides(body1, body1), new MJIntersects(true, new Vector2(0,0)));
+            Assert.AreEqual(MJInteresection.Collides(body1, body2), new MJIntersects(true, new Vector2(0,0)));
+
+            node2.Position = pos2;
+            Assert.AreEqual(MJInteresection.Collides(body1, body2), new MJIntersects(false, new Vector2(0, 0)));
+            
+            node2.Position = pos3;
+            MJIntersects intersects = MJInteresection.Collides(body1, body2);
+            Assert.AreEqual(MJInteresection.Collides(body1, body2), new MJIntersects(true, new Vector2(0, 1)));
+            Assert.AreEqual(MJInteresection.Collides(body2, body1), new MJIntersects(true, new Vector2(0, -1)));
+
+            node2.Position = pos4;
+            Assert.AreEqual(MJInteresection.Collides(body1, body2), new MJIntersects(false, new Vector2(0, 0)));
+            Assert.AreEqual(MJInteresection.Collides(body2, body1), new MJIntersects(false, new Vector2(0, 0)));
+        }
+
+        [TestMethod]
+        public void TestNewPointInsideCircle()
+        {
+            float radius = 50;
+            Vector2 position = new Vector2(0, 0);
+
+            Assert.IsTrue(MJInteresection.PointInsideCircle(new Vector2(0, 0), radius, position));
+            Assert.IsFalse(MJInteresection.PointInsideCircle(new Vector2(50, 0), radius, position));
+        }
+
+        [TestMethod]
+        public void TestNewLineIntersectsCircle()
+        {
+
+            float radius = 50;
+            Vector2 position = new Vector2(200, 150);
+
+            Vector2 na1 = new Vector2(100, 150);
+            Vector2 na2 = new Vector2(350, 150);
+            Vector2 na3 = new Vector2(200, 150);
+            Vector2 nb1 = new Vector2(100, 50);
+            Vector2 nb2 = new Vector2(200, 50);
+            Vector2 nc1 = new Vector2(250, 100);
+            Vector2 nc2 = new Vector2(400, 50);
+            Vector2 nd1 = new Vector2(220, 170);
+            Vector2 nd2 = new Vector2(300, 250);
+            Vector2 ne1 = new Vector2(50, 100);
+            Vector2 ne2 = new Vector2(50, 250);
+            Vector2 nf1 = new Vector2(200, 190);
+            Vector2 nf2 = new Vector2(200, 300);
+
+            Assert.IsTrue(MJInteresection.LineIntersectsCircle(na1, na2, radius, position));
+            Assert.IsTrue(MJInteresection.LineIntersectsCircle(na3, na2, radius, position));
+            Assert.IsFalse(MJInteresection.LineIntersectsCircle(nb1, nb2, radius, position));
+            Assert.IsFalse(MJInteresection.LineIntersectsCircle(nc1, nc2, radius, position));
+            Assert.IsTrue(MJInteresection.LineIntersectsCircle(nd1, nd2, radius, position));
+            Assert.IsFalse(MJInteresection.LineIntersectsCircle(ne1, ne2, radius, position));
+            Assert.IsTrue(MJInteresection.LineIntersectsCircle(nf1, nf2, radius, position));
+        }
+
+        [TestMethod]
+        public void TestNewIntersection()
+        {
+            List<Vector2> path = new List<Vector2>();
+            path.Add(new Vector2(0, 0));
+            path.Add(new Vector2(-100, 0));
+            path.Add(new Vector2(0, 100));
+            path.Add(new Vector2(100, 100));
+            path.Add(new Vector2(150, 50));
+
+            MJNode polygon = new MJNode();
+            MJPhysicsBody polygonBody = MJPhysicsBody.PolygonPathMJPhysicsBody(path);
+            polygonBody.UpdatePolygons();
+            polygon.AttachPhysicsBody(polygonBody);
+
+            float radius = 50;
+            MJNode circle = new MJNode();
+            MJPhysicsBody circleBody = MJPhysicsBody.CircularMJPhysicsBody(radius);
+            circle.AttachPhysicsBody(circleBody);
+
+            Assert.AreEqual(MJInteresection.Collides(polygonBody, circleBody), new MJIntersects(true, new Vector2(0,-1)));
+
+            circle.Position = new Vector2(200, 50);
+            Assert.AreEqual(MJInteresection.Collides(polygonBody, circleBody), new MJIntersects(false, new Vector2(0, 0)));
+
+            circle.Position = new Vector2(150, 100);
+            Assert.AreEqual(MJInteresection.Collides(polygonBody, circleBody), new MJIntersects(true, new Vector2((float)Math.Sqrt(0.5f), (float)Math.Sqrt(0.5f))));
+        }
     
     }
 }

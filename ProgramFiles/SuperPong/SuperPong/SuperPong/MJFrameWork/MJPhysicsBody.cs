@@ -207,7 +207,7 @@ namespace SuperPong.MJFrameWork
             
         }
 
-        private void UpdatePolygons()
+        public void UpdatePolygons()
         {
             foreach (Vector2 v in PolygonPath)
             {
