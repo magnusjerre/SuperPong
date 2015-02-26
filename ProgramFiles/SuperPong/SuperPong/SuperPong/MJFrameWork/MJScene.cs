@@ -59,19 +59,19 @@ namespace SuperPong.MJFrameWork
                 physicsManager.Update(gameTime);
         }
 
-        public void CollisionBegan(MJCollisionPair pair)
+        public virtual void CollisionBegan(MJCollisionPair pair)
         {
         }
 
-        public void CollisionEndded(MJCollisionPair pair)
+        public virtual void CollisionEndded(MJCollisionPair pair)
         {
         }
 
-        public void IntersectionBegan(MJCollisionPair pair)
+        public virtual void IntersectionBegan(MJCollisionPair pair)
         {
         }
 
-        public void IntersectionEnded(MJCollisionPair pair)
+        public virtual void IntersectionEnded(MJCollisionPair pair)
         {
         }
     }

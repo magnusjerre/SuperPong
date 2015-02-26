@@ -124,8 +124,9 @@ namespace SuperPong.MJFrameWork
                 return false;
             if (position.Y < rectangle.MinY - radius)
                 return false;
-            if (position.Y > rectangle.MaxX + radius)
+            if (position.Y > rectangle.MaxY + radius)
                 return false;
+
 
             return true;
         }

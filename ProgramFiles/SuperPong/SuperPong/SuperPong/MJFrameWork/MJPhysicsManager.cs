@@ -28,6 +28,7 @@ namespace SuperPong.MJFrameWork
         private MJPhysicsManager()
         {
             collisionPairs = new List<MJCollisionPair>();
+            intersectionPairs = new List<MJCollisionPair>();
             allBodies = new List<MJPhysicsBody>();
         }
 
@@ -129,47 +130,51 @@ namespace SuperPong.MJFrameWork
         }
 
         public void Update(GameTime gameTime)
-        {            
-            for (int i = 0; i < allBodies.Count - 1; i++)
+        {
+            for (int i = 0; i < allBodies.Count ; i++)
             {
-                //Verify that a check for collision is needed
-                //The collision/intersection bitmask must include both objects in both objects
-                MJPhysicsBody body1 = allBodies[i];
-                MJPhysicsBody body2 = allBodies[i + 1];
-
-                if (body1.ShouldCheckForCollision(body2.Bitmask) || body1.ShouldCheckForIntersection(body2.Bitmask))
+                for (int j = i + 1; j < allBodies.Count; j++)
                 {
-                    MJCollisionPair collisionPair = new MJCollisionPair(body1, body2);
-                    MJIntersects intersects = MJInteresection.Collides(body1, body2);
-                    if (intersects.Intersects)
-                    {
-                        if (!collisionPairs.Contains(collisionPair))
-                        {
-                            collisionPairs.Add(collisionPair);
-                            Listener.CollisionBegan(collisionPair);
-                            BounceObjects(body1, body2, intersects.Normal, new Vector2(-intersects.Normal.Y, intersects.Normal.X));
-                        }
+                    //Verify that a check for collision is needed
+                    //The collision/intersection bitmask must include both objects in both objects
+                    MJPhysicsBody body1 = allBodies[i];
+                    MJPhysicsBody body2 = allBodies[j];
 
-                        if (!intersectionPairs.Contains(collisionPair))
+                    if (body1.ShouldCheckForCollision(body2.Bitmask) || body1.ShouldCheckForIntersection(body2.Bitmask))
+                    {
+                        MJCollisionPair collisionPair = new MJCollisionPair(body1, body2);
+                        MJIntersects intersects = MJInteresection.Collides(body1, body2);
+                        if (intersects.Intersects)
                         {
-                            intersectionPairs.Add(collisionPair);
-                            Listener.IntersectionBegan(collisionPair);
+                            if (body1.ShouldCheckForCollision(body2.Bitmask) && !collisionPairs.Contains(collisionPair))
+                            {
+                                collisionPairs.Add(collisionPair);
+                                Listener.CollisionBegan(collisionPair);
+                                BounceObjects(body1, body2, intersects.Normal, new Vector2(-intersects.Normal.Y, intersects.Normal.X));
+                            }
+
+                            if (body1.ShouldCheckForIntersection(body2.Bitmask) && !intersectionPairs.Contains(collisionPair))
+                            {
+                                intersectionPairs.Add(collisionPair);
+                                Listener.IntersectionBegan(collisionPair);
+                            }
+                        }
+                        else
+                        {
+                            if (body1.ShouldCheckForCollision(body2.Bitmask) && collisionPairs.Contains(collisionPair))
+                            {
+                                collisionPairs.Remove(collisionPair);
+                                Listener.CollisionEndded(collisionPair);
+                            }
+
+                            if (body1.ShouldCheckForIntersection(body2.Bitmask) && intersectionPairs.Contains(collisionPair))
+                            {
+                                intersectionPairs.Remove(collisionPair);
+                                Listener.IntersectionEnded(collisionPair);
+                            }
                         }
                     }
-                    else
-                    {
-                        if (collisionPairs.Contains(collisionPair))
-                        {
-                            collisionPairs.Remove(collisionPair);
-                            Listener.CollisionEndded(collisionPair);
-                        }
 
-                        if (intersectionPairs.Contains(collisionPair))
-                        {
-                            intersectionPairs.Remove(collisionPair);
-                            Listener.IntersectionEnded(collisionPair);
-                        }
-                    }
                 }
             }
 

@@ -72,6 +72,7 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GameScene.cs" />
     <Compile Include="MJFrameWork\Interfaces\MJDetachable.cs" />
     <Compile Include="MJFrameWork\Interfaces\MJDraw.cs" />
     <Compile Include="MJFrameWork\Interfaces\MJPhysicsEventListener.cs" />

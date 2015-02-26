@@ -27,9 +27,13 @@ namespace SuperPong
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferWidth = 1920;
+            graphics.PreferredBackBufferHeight = 1080;
+            graphics.ApplyChanges();
             Content.RootDirectory = "Content";
             //sceneManager = new MJSceneManager(new FirstScene(Content));
-            scene = new SecondScene(Content);
+            scene = new GameScene(Content);
+            //scene = new SecondScene(Content);
             //sceneManager.AddScene(new SecondScene(Content));
             Console.WriteLine("Constructor");
         }
