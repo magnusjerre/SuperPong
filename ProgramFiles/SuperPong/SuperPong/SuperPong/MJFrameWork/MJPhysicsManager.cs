@@ -137,7 +137,7 @@ namespace SuperPong.MJFrameWork
                 MJPhysicsBody body1 = allBodies[i];
                 MJPhysicsBody body2 = allBodies[i + 1];
 
-                if (body1.ShouldCheckForCollision(body2.Bitmask))
+                if (body1.ShouldCheckForCollision(body2.Bitmask) || body1.ShouldCheckForIntersection(body2.Bitmask))
                 {
                     MJCollisionPair collisionPair = new MJCollisionPair(body1, body2);
                     MJIntersects intersects = MJInteresection.Collides(body1, body2);
@@ -149,6 +149,12 @@ namespace SuperPong.MJFrameWork
                             Listener.CollisionBegan(collisionPair);
                             BounceObjects(body1, body2, intersects.Normal, new Vector2(-intersects.Normal.Y, intersects.Normal.X));
                         }
+
+                        if (!intersectionPairs.Contains(collisionPair))
+                        {
+                            intersectionPairs.Add(collisionPair);
+                            Listener.IntersectionBegan(collisionPair);
+                        }
                     }
                     else
                     {
@@ -156,6 +162,12 @@ namespace SuperPong.MJFrameWork
                         {
                             collisionPairs.Remove(collisionPair);
                             Listener.CollisionEndded(collisionPair);
+                        }
+
+                        if (intersectionPairs.Contains(collisionPair))
+                        {
+                            intersectionPairs.Remove(collisionPair);
+                            Listener.IntersectionEnded(collisionPair);
                         }
                     }
                 }
