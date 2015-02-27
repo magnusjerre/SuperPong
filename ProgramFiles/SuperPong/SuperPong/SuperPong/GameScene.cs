@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Content;
 
 namespace SuperPong
 {
-    public class GameScene : MJScene
+    public class GameScene : MJScene, ScoreObserver
     {
 
         MJSprite paddleLeft, paddleRight, ball;
@@ -20,6 +20,9 @@ namespace SuperPong
         const float STATIC_MASS = 1000000;
         int height = 1080, width = 1920;
         Vector2 wallSize, goalSize;
+        ScoreKeeper scoreKeeper;
+        int maxScore = 5;
+        Vector2 initialBallPosition, initialLeftPaddlePosition, initialRightPaddlePosition, initialVelocity;
 
         public GameScene(ContentManager content) : base(content, "GameScene")
         {
@@ -28,8 +31,16 @@ namespace SuperPong
 
         public override void Initialize()
         {
+            scoreKeeper = new ScoreKeeper(maxScore);
+            scoreKeeper.AddObserver(this);
+
+            initialBallPosition = new Vector2(width / 2, height / 2);
+            initialLeftPaddlePosition = new Vector2(100, height / 2);
+            initialRightPaddlePosition = new Vector2(width - 100, height / 2);
+            initialVelocity = new Vector2(500, 300); 
             wallSize = new Vector2(width, 100);
             goalSize = new Vector2(100, height);
+
 
             AttachPhysicsManager(MJPhysicsManager.getInstance());
 
@@ -127,6 +138,21 @@ namespace SuperPong
             return paddleRightShape;
         }
 
+        private void ResetAfterPointScored()
+        {
+            ball.Position = initialBallPosition;
+            ball.PhysicsBody.Velocity = initialVelocity;
+            ball.PhysicsBody.Acceleration = new Vector2();
+            paddleLeft.Position = initialLeftPaddlePosition;
+            paddleRight.Position = initialRightPaddlePosition;
+        }
+
+        private void ResetGame()
+        {
+            ResetAfterPointScored();
+            scoreKeeper.Reset();
+        }
+
         public override void LoadContent()
         {
             paddleTexture = LoadTexture2D("Paddle");
@@ -165,7 +191,8 @@ namespace SuperPong
 
         public override void IntersectionBegan(MJCollisionPair pair)
         {
-            Console.WriteLine("Intersection between: [" + pair.Body1.Parent.Name + ", " + pair.Body2.Parent.Name + "] began");   
+            Console.WriteLine("Intersection between: [" + pair.Body1.Parent.Name + ", " + pair.Body2.Parent.Name + "] began");
+            scoreKeeper.IncreaseScore(pair);
         }
 
         public override void IntersectionEnded(MJCollisionPair pair)
@@ -173,5 +200,23 @@ namespace SuperPong
             Console.WriteLine("Intersection between: [" + pair.Body1.Parent.Name + ", " + pair.Body2.Parent.Name + "] ended");
         }
 
+
+        public void NotifyMaxScoreReached(string playerReachingMaxScore)
+        {
+            Console.WriteLine("Game Over!");
+            ResetGame();
+        }
+
+        public void NotifyLeftPlayerScored(int newScore)
+        {
+            Console.WriteLine("Hoorah! LeftPlayer now has " + newScore + " points");
+            ResetAfterPointScored();
+        }
+
+        public void NotifyRightPlayerScored(int newScore)
+        {
+            Console.WriteLine("Hoorah! RightPlayer now has " + newScore + " points");
+            ResetAfterPointScored();
+        }
     }
 }
