@@ -72,6 +72,7 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Font.cs" />
     <Compile Include="GameScene.cs" />
     <Compile Include="MJFrameWork\Interfaces\MJDetachable.cs" />
     <Compile Include="MJFrameWork\Interfaces\MJDraw.cs" />
@@ -92,6 +93,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="ResetGame.cs" />
+    <Compile Include="ScoreFont.cs" />
     <Compile Include="ScoreKeeper.cs" />
     <Compile Include="ScoreObserver.cs" />
     <Compile Include="SecondScene.cs" />

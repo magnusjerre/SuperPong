@@ -12,7 +12,7 @@ namespace SuperPong.MJFrameWork
 {
     public class MJScene : MJNode, MJPhysicsEventListener
     {
-        private ContentManager content;
+        public ContentManager content;
         private MJPhysicsManager physicsManager;
 
         public MJScene(ContentManager content, string name) : base()

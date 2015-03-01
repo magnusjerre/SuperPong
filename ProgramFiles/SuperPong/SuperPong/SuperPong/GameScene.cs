@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Content;
 
 namespace SuperPong
 {
-    public class GameScene : MJScene, ScoreObserver
+    public class GameScene : MJScene, ScoreObserver, ResetGame
     {
 
         MJSprite paddleLeft, paddleRight, ball;
@@ -23,6 +23,9 @@ namespace SuperPong
         ScoreKeeper scoreKeeper;
         int maxScore = 5;
         Vector2 initialBallPosition, initialLeftPaddlePosition, initialRightPaddlePosition, initialVelocity;
+        SpriteFont font;
+        ScoreFont scoreFont;
+        Boolean gameIsOver = false;
 
         public GameScene(ContentManager content) : base(content, "GameScene")
         {
@@ -31,8 +34,7 @@ namespace SuperPong
 
         public override void Initialize()
         {
-            scoreKeeper = new ScoreKeeper(maxScore);
-            scoreKeeper.AddObserver(this);
+            
 
             initialBallPosition = new Vector2(width / 2, height / 2);
             initialLeftPaddlePosition = new Vector2(100, height / 2);
@@ -107,7 +109,14 @@ namespace SuperPong
             rightGoal.AttachPhysicsBody(MJPhysicsBody.RectangularMJPhysicsBody(goalSize, new Vector2(0, 0)));
             rightGoal.PhysicsBody.Bitmask = 2;
             rightGoal.PhysicsBody.IntersectionMask = 1;
+            
             AddChild(rightGoal);
+
+            scoreFont = new ScoreFont(new Vector2(width, height), font);
+
+            scoreKeeper = new ScoreKeeper(maxScore);
+            scoreKeeper.AddObserver(this);
+            scoreKeeper.AddObserver(scoreFont);
         }
 
         private List<Vector2> generatePaddleLeftShape()
@@ -147,16 +156,25 @@ namespace SuperPong
             paddleRight.Position = initialRightPaddlePosition;
         }
 
-        private void ResetGame()
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            base.Draw(spriteBatch);
+
+            scoreFont.Draw(spriteBatch);
+        }
+
+        public void ResetGame()
         {
             ResetAfterPointScored();
             scoreKeeper.Reset();
+            scoreFont.ResetGame();
         }
 
         public override void LoadContent()
         {
             paddleTexture = LoadTexture2D("Paddle");
             ballTexture = LoadTexture2D("ball");
+            font = content.Load<SpriteFont>("TheSpriteFont");
         }
 
         public override void Update(GameTime gameTime)
@@ -176,6 +194,13 @@ namespace SuperPong
                 paddleLeft.PhysicsBody.Velocity = new Vector2(0, -500);
             else
                 paddleLeft.PhysicsBody.Velocity = new Vector2(0, 0);
+
+            if (gameIsOver && Keyboard.GetState().IsKeyDown(Keys.R))
+            {
+                ResetGame();
+                gameIsOver = false;
+            }
+
 
         }
 
@@ -200,11 +225,10 @@ namespace SuperPong
             Console.WriteLine("Intersection between: [" + pair.Body1.Parent.Name + ", " + pair.Body2.Parent.Name + "] ended");
         }
 
-
         public void NotifyMaxScoreReached(string playerReachingMaxScore)
         {
             Console.WriteLine("Game Over!");
-            ResetGame();
+            gameIsOver = true;
         }
 
         public void NotifyLeftPlayerScored(int newScore)
@@ -218,5 +242,6 @@ namespace SuperPong
             Console.WriteLine("Hoorah! RightPlayer now has " + newScore + " points");
             ResetAfterPointScored();
         }
+
     }
 }
