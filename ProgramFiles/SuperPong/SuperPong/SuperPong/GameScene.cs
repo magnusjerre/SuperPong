@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Content;
 
 namespace SuperPong
 {
-    public class GameScene : MJScene, ScoreObserver, ResetGame
+    public class GameScene : MJScene, ScoreObserver, ResetGame, PointReset
     {
 
         MJSprite paddleLeft, paddleRight, ball;
@@ -22,10 +22,11 @@ namespace SuperPong
         Vector2 wallSize, goalSize;
         ScoreKeeper scoreKeeper;
         int maxScore = 5;
-        Vector2 initialBallPosition, initialLeftPaddlePosition, initialRightPaddlePosition, initialVelocity;
+        Vector2 initialBallPosition, initialLeftPaddlePosition, initialRightPaddlePosition;
         SpriteFont font;
         ScoreFont scoreFont;
         Boolean gameIsOver = false;
+        BallVelocityManager ballManager;
 
         public GameScene(ContentManager content) : base(content, "GameScene")
         {
@@ -34,12 +35,9 @@ namespace SuperPong
 
         public override void Initialize()
         {
-            
-
             initialBallPosition = new Vector2(width / 2, height / 2);
             initialLeftPaddlePosition = new Vector2(100, height / 2);
-            initialRightPaddlePosition = new Vector2(width - 100, height / 2);
-            initialVelocity = new Vector2(500, 300); 
+            initialRightPaddlePosition = new Vector2(width - 100, height / 2); 
             wallSize = new Vector2(width, 100);
             goalSize = new Vector2(100, height);
 
@@ -73,7 +71,6 @@ namespace SuperPong
             ball.PhysicsBody.Bitmask = 1;
             ball.PhysicsBody.CollisionMask = 1;
             ball.PhysicsBody.IntersectionMask = 2;
-            ball.PhysicsBody.Velocity = new Vector2(300, 400);
             ball.Position = new Vector2(width / 2, height / 2);
             AddChild(ball);
 
@@ -114,6 +111,8 @@ namespace SuperPong
 
             scoreFont = new ScoreFont(new Vector2(width, height), font);
 
+            ballManager = new BallVelocityManager(ball.PhysicsBody);
+
             scoreKeeper = new ScoreKeeper(maxScore);
             scoreKeeper.AddObserver(this);
             scoreKeeper.AddObserver(scoreFont);
@@ -147,27 +146,11 @@ namespace SuperPong
             return paddleRightShape;
         }
 
-        private void ResetAfterPointScored()
-        {
-            ball.Position = initialBallPosition;
-            ball.PhysicsBody.Velocity = initialVelocity;
-            ball.PhysicsBody.Acceleration = new Vector2();
-            paddleLeft.Position = initialLeftPaddlePosition;
-            paddleRight.Position = initialRightPaddlePosition;
-        }
-
         public override void Draw(SpriteBatch spriteBatch)
         {
             base.Draw(spriteBatch);
 
             scoreFont.Draw(spriteBatch);
-        }
-
-        public void ResetGame()
-        {
-            ResetAfterPointScored();
-            scoreKeeper.Reset();
-            scoreFont.ResetGame();
         }
 
         public override void LoadContent()
@@ -212,6 +195,7 @@ namespace SuperPong
         public override void CollisionEndded(MJCollisionPair pair)
         {
             Console.WriteLine("Collision between: [" + pair.Body1.Parent.Name + ", " + pair.Body2.Parent.Name + "] ended");
+            ballManager.CollisionEnded(pair);
         }
 
         public override void IntersectionBegan(MJCollisionPair pair)
@@ -234,14 +218,30 @@ namespace SuperPong
         public void NotifyLeftPlayerScored(int newScore)
         {
             Console.WriteLine("Hoorah! LeftPlayer now has " + newScore + " points");
-            ResetAfterPointScored();
+            ResetAfterPoint();
         }
 
         public void NotifyRightPlayerScored(int newScore)
         {
             Console.WriteLine("Hoorah! RightPlayer now has " + newScore + " points");
-            ResetAfterPointScored();
+            ResetAfterPoint();
         }
 
+        public void ResetGame()
+        {
+            ResetAfterPoint();
+            scoreKeeper.Reset();
+            scoreFont.ResetGame();
+            ballManager.ResetGame();
+        }
+
+        public void ResetAfterPoint()
+        {
+            ball.Position = initialBallPosition;
+            ball.PhysicsBody.Acceleration = new Vector2();
+            paddleLeft.Position = initialLeftPaddlePosition;
+            paddleRight.Position = initialRightPaddlePosition;
+            ballManager.ResetAfterPoint();
+        }
     }
 }
