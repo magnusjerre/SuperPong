@@ -1,13 +1,13 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using SuperPong.MJFrameWork;
+using SuperPong.Powerups;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
-using SuperPong.MJFrameWork;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Content;
 
 namespace SuperPong
 {
@@ -30,6 +30,7 @@ namespace SuperPong
         BallVelocityManager ballManager;
         PlayerCreator playerCreator;
         Vector2 moveDown = new Vector2(0, 1), moveUp = new Vector2(0, -1);
+        PowerupManager powerupManager;
 
         public GameScene(ContentManager content) : base(content, "GameScene")
         {
@@ -39,6 +40,7 @@ namespace SuperPong
             initialRightPaddlePosition = new Vector2(width - 100, height / 2); 
             wallSize = new Vector2(width, 100);
             goalSize = new Vector2(100, height);
+            powerupManager = new PowerupManager(content, width, height);
         }
 
         public override void Initialize()
@@ -135,6 +137,7 @@ namespace SuperPong
             base.Draw(spriteBatch);
 
             scoreFont.Draw(spriteBatch);
+            powerupManager.Draw(spriteBatch);
         }
 
         public override void LoadContent()
@@ -143,11 +146,14 @@ namespace SuperPong
             playerCreator.LoadTextures(paddleTexture, paddleTexture);
             ballTexture = LoadTexture2D("ball");
             font = content.Load<SpriteFont>("TheSpriteFont");
+            powerupManager.LoadContent();
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
+
+            powerupManager.Update(gameTime);
 
             if (Keyboard.GetState().IsKeyDown(Keys.Down))
                 paddleRight.Move(moveDown);
@@ -218,6 +224,7 @@ namespace SuperPong
             scoreKeeper.Reset();
             scoreFont.ResetGame();
             ballManager.ResetGame();
+            powerupManager.ResetGame();
         }
 
         public void ResetAfterPoint()
@@ -227,6 +234,7 @@ namespace SuperPong
             paddleLeft.Sprite.Position = initialLeftPaddlePosition;
             paddleRight.Sprite.Position = initialRightPaddlePosition;
             ballManager.ResetAfterPoint();
+            powerupManager.ResetPoint();
         }
     }
 }
