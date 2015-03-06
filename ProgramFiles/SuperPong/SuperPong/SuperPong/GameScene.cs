@@ -14,7 +14,8 @@ namespace SuperPong
     public class GameScene : MJScene, ScoreObserver, ResetGame, PointReset
     {
 
-        MJSprite paddleLeft, paddleRight, ball;
+        Player paddleLeft, paddleRight;
+        MJSprite ball;
         Texture2D paddleTexture, ballTexture;
         MJNode topWall, bottomWall, leftGoal, rightGoal;
         const float STATIC_MASS = 1000000;
@@ -27,44 +28,25 @@ namespace SuperPong
         ScoreFont scoreFont;
         Boolean gameIsOver = false;
         BallVelocityManager ballManager;
+        PlayerCreator playerCreator;
+        Vector2 moveDown = new Vector2(0, 1), moveUp = new Vector2(0, -1);
 
         public GameScene(ContentManager content) : base(content, "GameScene")
         {
-
-        }
-
-        public override void Initialize()
-        {
+            playerCreator = new PlayerCreator();
             initialBallPosition = new Vector2(width / 2, height / 2);
             initialLeftPaddlePosition = new Vector2(100, height / 2);
             initialRightPaddlePosition = new Vector2(width - 100, height / 2); 
             wallSize = new Vector2(width, 100);
             goalSize = new Vector2(100, height);
+        }
 
-
+        public override void Initialize()
+        {
             AttachPhysicsManager(MJPhysicsManager.getInstance());
-
-            paddleLeft = new MJSprite(paddleTexture);   //Points right
-            paddleLeft.Name = "PaddleLeft";
-            paddleLeft.origin = new Vector2(0.5f, 0.5f);
-            paddleLeft.AttachPhysicsBody(MJPhysicsBody.PolygonPathMJPhysicsBody(generatePaddleLeftShape()));
-            paddleLeft.PhysicsBody.Mass = STATIC_MASS;
-            paddleLeft.PhysicsBody.Bitmask = Bitmasks.PADDLE;
-            paddleLeft.PhysicsBody.CollisionMask = Bitmasks.BALL;
-            paddleLeft.PhysicsBody.IntersectionMask = Bitmasks.POWERUP;
-            paddleLeft.Position = new Vector2(100, 500);
+            paddleLeft = playerCreator.CreatePlayer1();
             AddChild(paddleLeft);
-
-            paddleRight = new MJSprite(paddleTexture);  //Points left
-            paddleRight.Name = "PaddleRight";
-            paddleRight.origin = new Vector2(0.5f, 0.5f);
-            paddleRight.SEffects = SpriteEffects.FlipHorizontally;
-            paddleRight.AttachPhysicsBody(MJPhysicsBody.PolygonPathMJPhysicsBody(generatePaddleRightShape()));
-            paddleRight.PhysicsBody.Mass = STATIC_MASS;
-            paddleRight.PhysicsBody.Bitmask = Bitmasks.PADDLE;
-            paddleRight.PhysicsBody.CollisionMask = Bitmasks.BALL;
-            paddleRight.PhysicsBody.IntersectionMask = Bitmasks.POWERUP;
-            paddleRight.Position = new Vector2(1800, 550);
+            paddleRight = playerCreator.CreatePlayer2();
             AddChild(paddleRight);
 
             ball = new MJSprite(ballTexture);
@@ -158,6 +140,7 @@ namespace SuperPong
         public override void LoadContent()
         {
             paddleTexture = LoadTexture2D("Paddle");
+            playerCreator.LoadTextures(paddleTexture, paddleTexture);
             ballTexture = LoadTexture2D("ball");
             font = content.Load<SpriteFont>("TheSpriteFont");
         }
@@ -167,19 +150,25 @@ namespace SuperPong
             base.Update(gameTime);
 
             if (Keyboard.GetState().IsKeyDown(Keys.Down))
-                paddleRight.PhysicsBody.Velocity = new Vector2(0, 500);
+                paddleRight.Move(moveDown);
+            //paddleRight.PhysicsBody.Velocity = new Vector2(0, 500);
             else if (Keyboard.GetState().IsKeyDown(Keys.Up))
-                paddleRight.PhysicsBody.Velocity = new Vector2(0, -500);
+                paddleRight.Move(moveUp);
+            //paddleRight.PhysicsBody.Velocity = new Vector2(0, -500);
             else
-                paddleRight.PhysicsBody.Velocity = new Vector2(0, 0);
+                paddleRight.StopMove();
+                //paddleRight.PhysicsBody.Velocity = new Vector2(0, 0);
 
             if (Keyboard.GetState().IsKeyDown(Keys.S))
-                paddleLeft.PhysicsBody.Velocity = new Vector2(0, 500);
+                paddleLeft.Move(moveDown);
+            //paddleLeft.PhysicsBody.Velocity = new Vector2(0, 500);
             else if (Keyboard.GetState().IsKeyDown(Keys.W))
-                paddleLeft.PhysicsBody.Velocity = new Vector2(0, -500);
+                paddleLeft.Move(moveUp);
+            //paddleLeft.PhysicsBody.Velocity = new Vector2(0, -500);
             else
-                paddleLeft.PhysicsBody.Velocity = new Vector2(0, 0);
-
+                paddleLeft.StopMove();
+                //paddleLeft.PhysicsBody.Velocity = new Vector2(0, 0);
+            
             if (gameIsOver && Keyboard.GetState().IsKeyDown(Keys.R))
             {
                 ResetGame();
@@ -241,8 +230,8 @@ namespace SuperPong
         {
             ball.Position = initialBallPosition;
             ball.PhysicsBody.Acceleration = new Vector2();
-            paddleLeft.Position = initialLeftPaddlePosition;
-            paddleRight.Position = initialRightPaddlePosition;
+            paddleLeft.Sprite.Position = initialLeftPaddlePosition;
+            paddleRight.Sprite.Position = initialRightPaddlePosition;
             ballManager.ResetAfterPoint();
         }
     }
