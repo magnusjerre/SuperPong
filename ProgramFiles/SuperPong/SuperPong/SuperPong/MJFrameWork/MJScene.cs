@@ -55,6 +55,7 @@ namespace SuperPong.MJFrameWork
 
         public override void Update(GameTime gameTime)
         {
+            base.Update(gameTime);
             if (physicsManager != null)
                 physicsManager.Update(gameTime);
         }

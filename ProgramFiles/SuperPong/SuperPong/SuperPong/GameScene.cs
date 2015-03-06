@@ -151,23 +151,17 @@ namespace SuperPong
 
             if (Keyboard.GetState().IsKeyDown(Keys.Down))
                 paddleRight.Move(moveDown);
-            //paddleRight.PhysicsBody.Velocity = new Vector2(0, 500);
             else if (Keyboard.GetState().IsKeyDown(Keys.Up))
                 paddleRight.Move(moveUp);
-            //paddleRight.PhysicsBody.Velocity = new Vector2(0, -500);
             else
                 paddleRight.StopMove();
-                //paddleRight.PhysicsBody.Velocity = new Vector2(0, 0);
 
             if (Keyboard.GetState().IsKeyDown(Keys.S))
                 paddleLeft.Move(moveDown);
-            //paddleLeft.PhysicsBody.Velocity = new Vector2(0, 500);
             else if (Keyboard.GetState().IsKeyDown(Keys.W))
                 paddleLeft.Move(moveUp);
-            //paddleLeft.PhysicsBody.Velocity = new Vector2(0, -500);
             else
                 paddleLeft.StopMove();
-                //paddleLeft.PhysicsBody.Velocity = new Vector2(0, 0);
             
             if (gameIsOver && Keyboard.GetState().IsKeyDown(Keys.R))
             {
