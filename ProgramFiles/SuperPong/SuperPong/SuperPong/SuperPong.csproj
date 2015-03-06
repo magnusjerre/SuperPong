@@ -73,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BallVelocityManager.cs" />
+    <Compile Include="Bitmasks.cs" />
     <Compile Include="Font.cs" />
     <Compile Include="GameScene.cs" />
     <Compile Include="MJFrameWork\Interfaces\MJDetachable.cs" />

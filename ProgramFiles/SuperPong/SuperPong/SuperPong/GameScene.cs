@@ -49,8 +49,9 @@ namespace SuperPong
             paddleLeft.origin = new Vector2(0.5f, 0.5f);
             paddleLeft.AttachPhysicsBody(MJPhysicsBody.PolygonPathMJPhysicsBody(generatePaddleLeftShape()));
             paddleLeft.PhysicsBody.Mass = STATIC_MASS;
-            paddleLeft.PhysicsBody.Bitmask = 1;
-            paddleLeft.PhysicsBody.CollisionMask = 1;
+            paddleLeft.PhysicsBody.Bitmask = Bitmasks.PADDLE;
+            paddleLeft.PhysicsBody.CollisionMask = Bitmasks.BALL;
+            paddleLeft.PhysicsBody.IntersectionMask = Bitmasks.POWERUP;
             paddleLeft.Position = new Vector2(100, 500);
             AddChild(paddleLeft);
 
@@ -60,17 +61,18 @@ namespace SuperPong
             paddleRight.SEffects = SpriteEffects.FlipHorizontally;
             paddleRight.AttachPhysicsBody(MJPhysicsBody.PolygonPathMJPhysicsBody(generatePaddleRightShape()));
             paddleRight.PhysicsBody.Mass = STATIC_MASS;
-            paddleRight.PhysicsBody.Bitmask = 1;
-            paddleRight.PhysicsBody.CollisionMask = 1;
+            paddleRight.PhysicsBody.Bitmask = Bitmasks.PADDLE;
+            paddleRight.PhysicsBody.CollisionMask = Bitmasks.BALL;
+            paddleRight.PhysicsBody.IntersectionMask = Bitmasks.POWERUP;
             paddleRight.Position = new Vector2(1800, 550);
             AddChild(paddleRight);
 
             ball = new MJSprite(ballTexture);
             ball.Name = "Ball";
             ball.AttachPhysicsBody(MJPhysicsBody.CircularMJPhysicsBody(ball.Size.X / 2));
-            ball.PhysicsBody.Bitmask = 1;
-            ball.PhysicsBody.CollisionMask = 1;
-            ball.PhysicsBody.IntersectionMask = 2;
+            ball.PhysicsBody.Bitmask = Bitmasks.BALL;
+            ball.PhysicsBody.CollisionMask = Bitmasks.WALL | Bitmasks.PADDLE;
+            ball.PhysicsBody.IntersectionMask = Bitmasks.GOAL;
             ball.Position = new Vector2(width / 2, height / 2);
             AddChild(ball);
 
@@ -79,8 +81,8 @@ namespace SuperPong
             topWall.Position = new Vector2(0, 0);
             topWall.AttachPhysicsBody(MJPhysicsBody.RectangularMJPhysicsBody(wallSize, new Vector2(0, 1)));   //Origin is at left bottom corner
             topWall.PhysicsBody.Mass = STATIC_MASS;
-            topWall.PhysicsBody.CollisionMask = 1;
-            topWall.PhysicsBody.Bitmask = 1;
+            topWall.PhysicsBody.Bitmask = Bitmasks.WALL;
+            topWall.PhysicsBody.CollisionMask = Bitmasks.BALL | Bitmasks.POWERUP;
             AddChild(topWall);
 
             bottomWall = new MJNode();
@@ -88,24 +90,24 @@ namespace SuperPong
             bottomWall.Position = new Vector2(0, height);
             bottomWall.AttachPhysicsBody(MJPhysicsBody.RectangularMJPhysicsBody(wallSize, new Vector2(0,0))); //Origin at top right corner
             bottomWall.PhysicsBody.Mass = STATIC_MASS;
-            bottomWall.PhysicsBody.CollisionMask = 1;
-            bottomWall.PhysicsBody.Bitmask = 1;
+            bottomWall.PhysicsBody.Bitmask = Bitmasks.WALL;
+            bottomWall.PhysicsBody.CollisionMask = Bitmasks.BALL | Bitmasks.POWERUP;
             AddChild(bottomWall);
 
             leftGoal = new MJNode();
             leftGoal.Name = "LeftGoal";
             leftGoal.Position = new Vector2(0, 0);
             leftGoal.AttachPhysicsBody(MJPhysicsBody.RectangularMJPhysicsBody(goalSize, new Vector2(1, 0)));
-            leftGoal.PhysicsBody.Bitmask = 2;
-            leftGoal.PhysicsBody.IntersectionMask = 1;
+            leftGoal.PhysicsBody.Bitmask = Bitmasks.GOAL;
+            leftGoal.PhysicsBody.IntersectionMask = Bitmasks.BALL | Bitmasks.POWERUP;
             AddChild(leftGoal);
 
             rightGoal = new MJNode();
             rightGoal.Name = "RightGoal";
             rightGoal.Position = new Vector2(width, 0);
             rightGoal.AttachPhysicsBody(MJPhysicsBody.RectangularMJPhysicsBody(goalSize, new Vector2(0, 0)));
-            rightGoal.PhysicsBody.Bitmask = 2;
-            rightGoal.PhysicsBody.IntersectionMask = 1;
+            rightGoal.PhysicsBody.Bitmask = Bitmasks.GOAL;
+            rightGoal.PhysicsBody.IntersectionMask = Bitmasks.BALL | Bitmasks.POWERUP;
             
             AddChild(rightGoal);
 
