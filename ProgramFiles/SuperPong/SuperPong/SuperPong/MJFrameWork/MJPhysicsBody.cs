@@ -177,7 +177,7 @@ namespace SuperPong.MJFrameWork
 
         public void DetachFromParent()
         {
-            Parent.DetachPhysicsBody();
+            this.Parent = null;
         }
 
         public void Update(Microsoft.Xna.Framework.GameTime gameTime)
