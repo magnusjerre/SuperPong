@@ -31,6 +31,7 @@ namespace SuperPong.Powerups
             floatingTextures = new Dictionary<PowerupType, Texture2D>();
             initialPosition = new Vector2(width / 2, height / 2);
             timeLeftToNextPowerup = GenerateNextTimeToPowerup();
+            MJPhysicsManager.getInstance().AddListener(this);
         }
 
         private PowerupType GenerateNextPowerupType()
@@ -82,17 +83,17 @@ namespace SuperPong.Powerups
 
         public void ResetGame()
         {
-            ResetPoint();
-        }
-
-        public void ResetPoint()
-        {
             timeLeftToNextPowerup = GenerateNextTimeToPowerup();
             if (floatingPowerup != null)
             {
                 floatingPowerup.DetachPhysicsBody();
                 floatingPowerup = null;
             }
+        }
+
+        public void ResetPoint()
+        {
+            
         }
 
         public void CollisionBegan(MJCollisionPair pair)
@@ -120,7 +121,9 @@ namespace SuperPong.Powerups
 
         private Boolean CaughtFloatingPowerup(MJCollisionPair pair)
         {
-            return pair.Body1 == floatingPowerup.PhysicsBody || pair.Body2 == floatingPowerup.PhysicsBody;
+            if (pair.Body1 != null && pair.Body2 != null && floatingPowerup != null)
+                return pair.Body1 == floatingPowerup.PhysicsBody || pair.Body2 == floatingPowerup.PhysicsBody;
+            return false;
         }
 
     }
