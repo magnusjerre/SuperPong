@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using SuperPong.MJFrameWork;
+using SuperPong.MJFrameWork.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ using System.Text;
 
 namespace SuperPong.Powerups
 {
-    public class PowerupManager : MJUpdate, MJDraw, ResetPoint, ResetGame
+    public class PowerupManager : MJUpdate, MJDraw, ResetPoint, ResetGame, MJPhysicsEventListener
     {
 
         ContentManager content;
@@ -20,6 +21,7 @@ namespace SuperPong.Powerups
         const int MAXTIMEBETWEENPOWERUPS = 5000;   //milliseconds
 
         FloatingPowerup floatingPowerup;
+        Boolean shouldRemoveFloatingPowerup = false;
         Vector2 initialPosition;
 
         public PowerupManager(ContentManager content, int width, int height)
@@ -55,16 +57,18 @@ namespace SuperPong.Powerups
             if (timeLeftToNextPowerup < 0)
             {
                 timeLeftToNextPowerup = GenerateNextTimeToPowerup();
-                PowerupType nextType = GenerateNextPowerupType();
-                if (floatingPowerup != null)
+                if (floatingPowerup == null)
                 {
-                    floatingPowerup.DetachPhysicsBody();
-                    floatingPowerup = null;
-                }
-                else
-                {
+                    PowerupType nextType = GenerateNextPowerupType();
                     floatingPowerup = new FloatingPowerup(floatingTextures[nextType], nextType, randomGenerator, initialPosition);
                 }
+            }
+
+            if (shouldRemoveFloatingPowerup)
+            {
+                shouldRemoveFloatingPowerup = false;
+                floatingPowerup.DetachPhysicsBody();
+                floatingPowerup = null;
             }
         }
 
@@ -90,5 +94,34 @@ namespace SuperPong.Powerups
                 floatingPowerup = null;
             }
         }
+
+        public void CollisionBegan(MJCollisionPair pair)
+        {
+            
+        }
+
+        public void CollisionEnded(MJCollisionPair pair)
+        {
+            
+        }
+
+        public void IntersectionBegan(MJCollisionPair pair)
+        {
+            if (CaughtFloatingPowerup(pair))
+            {
+                shouldRemoveFloatingPowerup = true;
+            }
+        }
+
+        public void IntersectionEnded(MJCollisionPair pair)
+        {
+            
+        }
+
+        private Boolean CaughtFloatingPowerup(MJCollisionPair pair)
+        {
+            return pair.Body1 == floatingPowerup.PhysicsBody || pair.Body2 == floatingPowerup.PhysicsBody;
+        }
+
     }
 }

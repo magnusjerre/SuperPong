@@ -19,7 +19,7 @@ namespace SuperPong.MJFrameWork
             return singleton;
         }
 
-        public MJPhysicsEventListener Listener { get; set; }
+        public List<MJPhysicsEventListener> listeners;
 
         public List<MJCollisionPair> collisionPairs;
         public List<MJCollisionPair> intersectionPairs;
@@ -30,6 +30,17 @@ namespace SuperPong.MJFrameWork
             collisionPairs = new List<MJCollisionPair>();
             intersectionPairs = new List<MJCollisionPair>();
             allBodies = new List<MJPhysicsBody>();
+            listeners = new List<MJPhysicsEventListener>();
+        }
+
+        public void AddListener(MJPhysicsEventListener newListener)
+        {
+            listeners.Add(newListener);
+        }
+
+        public void RemoveListener(MJPhysicsEventListener listener)
+        {
+            listeners.Remove(listener);
         }
 
         public void AddBody(MJPhysicsBody body)
@@ -149,14 +160,20 @@ namespace SuperPong.MJFrameWork
                             if (body1.ShouldCheckForCollision(body2.Bitmask) && !collisionPairs.Contains(collisionPair))
                             {
                                 collisionPairs.Add(collisionPair);
-                                Listener.CollisionBegan(collisionPair);
+                                foreach (MJPhysicsEventListener listener in listeners)
+                                {
+                                    listener.CollisionBegan(collisionPair);
+                                }
                                 BounceObjects(body1, body2, intersects.Normal, new Vector2(-intersects.Normal.Y, intersects.Normal.X));
                             }
 
                             if (body1.ShouldCheckForIntersection(body2.Bitmask) && !intersectionPairs.Contains(collisionPair))
                             {
                                 intersectionPairs.Add(collisionPair);
-                                Listener.IntersectionBegan(collisionPair);
+                                foreach (MJPhysicsEventListener listener in listeners)
+                                {
+                                    listener.IntersectionBegan(collisionPair);
+                                }
                             }
                         }
                         else
@@ -164,13 +181,19 @@ namespace SuperPong.MJFrameWork
                             if (body1.ShouldCheckForCollision(body2.Bitmask) && collisionPairs.Contains(collisionPair))
                             {
                                 collisionPairs.Remove(collisionPair);
-                                Listener.CollisionEndded(collisionPair);
+                                foreach (MJPhysicsEventListener listener in listeners)
+                                {
+                                    listener.CollisionEnded(collisionPair);
+                                }
                             }
 
                             if (body1.ShouldCheckForIntersection(body2.Bitmask) && intersectionPairs.Contains(collisionPair))
                             {
                                 intersectionPairs.Remove(collisionPair);
-                                Listener.IntersectionEnded(collisionPair);
+                                foreach (MJPhysicsEventListener listener in listeners)
+                                {
+                                    listener.IntersectionEnded(collisionPair);
+                                }
                             }
                         }
                     }

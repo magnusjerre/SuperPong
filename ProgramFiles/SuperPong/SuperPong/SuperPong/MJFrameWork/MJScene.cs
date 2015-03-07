@@ -44,12 +44,12 @@ namespace SuperPong.MJFrameWork
         public void AttachPhysicsManager(MJPhysicsManager manager)
         {
             this.physicsManager = manager;
-            this.physicsManager.Listener = this;
+            this.physicsManager.AddListener(this);
         }
 
         public void DetachPhysicsManager()
         {
-            this.physicsManager.Listener = null;
+            this.physicsManager.RemoveListener(this);
             this.physicsManager = null;
         }
 
@@ -64,7 +64,7 @@ namespace SuperPong.MJFrameWork
         {
         }
 
-        public virtual void CollisionEndded(MJCollisionPair pair)
+        public virtual void CollisionEnded(MJCollisionPair pair)
         {
         }
 
