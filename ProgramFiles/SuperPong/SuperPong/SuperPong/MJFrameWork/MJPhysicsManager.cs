@@ -24,6 +24,7 @@ namespace SuperPong.MJFrameWork
         public List<MJCollisionPair> collisionPairs;
         public List<MJCollisionPair> intersectionPairs;
         public List<MJPhysicsBody> allBodies;
+        public List<MJPhysicsBody> bodiesToRemove;
 
         private MJPhysicsManager()
         {
@@ -31,6 +32,7 @@ namespace SuperPong.MJFrameWork
             intersectionPairs = new List<MJCollisionPair>();
             allBodies = new List<MJPhysicsBody>();
             listeners = new List<MJPhysicsEventListener>();
+            bodiesToRemove = new List<MJPhysicsBody>();
         }
 
         public void AddListener(MJPhysicsEventListener newListener)
@@ -51,9 +53,25 @@ namespace SuperPong.MJFrameWork
             }
         }
 
-        public void RemoveBody(MJPhysicsBody body)
+        public void RemoveBodiesSafely()
         {
-            allBodies.Remove(body);
+            foreach (MJPhysicsBody body in bodiesToRemove)
+            {
+                MJNode parent = body.Parent;
+                parent.PhysicsBody = null;
+                body.Parent = null;
+                allBodies.Remove(body);
+            }
+
+            bodiesToRemove.Clear();
+        }
+
+        public void RemoveBodySafely(MJPhysicsBody body)
+        {
+            if (!bodiesToRemove.Contains(body))
+            {
+                bodiesToRemove.Add(body);
+            }
         }
 
         public static void ApplyForce(Vector2 force, MJPhysicsBody body)
@@ -151,6 +169,9 @@ namespace SuperPong.MJFrameWork
                     MJPhysicsBody body1 = allBodies[i];
                     MJPhysicsBody body2 = allBodies[j];
 
+                    if (body1.ToBeRemoved || body2.ToBeRemoved)
+                        continue;
+                        
                     if (body1.ShouldCheckForCollision(body2.Bitmask) || body1.ShouldCheckForIntersection(body2.Bitmask))
                     {
                         MJCollisionPair collisionPair = new MJCollisionPair(body1, body2);
@@ -200,6 +221,8 @@ namespace SuperPong.MJFrameWork
 
                 }
             }
+
+            RemoveBodiesSafely();
 
             foreach (MJPhysicsBody body in allBodies)
             {

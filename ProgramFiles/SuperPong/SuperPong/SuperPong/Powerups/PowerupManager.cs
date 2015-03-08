@@ -68,7 +68,8 @@ namespace SuperPong.Powerups
             if (shouldRemoveFloatingPowerup)
             {
                 shouldRemoveFloatingPowerup = false;
-                floatingPowerup.DetachPhysicsBody();
+                //floatingPowerup.DetachPhysicsBody();
+                floatingPowerup.DetachPhysicsBodySafely();
                 floatingPowerup = null;
             }
         }
@@ -86,7 +87,8 @@ namespace SuperPong.Powerups
             timeLeftToNextPowerup = GenerateNextTimeToPowerup();
             if (floatingPowerup != null)
             {
-                floatingPowerup.DetachPhysicsBody();
+                //floatingPowerup.DetachPhysicsBody();
+                //floatingPowerup.DetachPhysicsBodySafely();
                 floatingPowerup = null;
             }
         }
@@ -111,6 +113,7 @@ namespace SuperPong.Powerups
             if (CaughtFloatingPowerup(pair))
             {
                 shouldRemoveFloatingPowerup = true;
+                floatingPowerup.DetachPhysicsBodySafely();
             }
         }
 
