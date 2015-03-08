@@ -44,12 +44,12 @@ namespace SuperPong.MJFrameWork
         public void AttachPhysicsManager(MJPhysicsManager manager)
         {
             this.physicsManager = manager;
-            this.physicsManager.AddListener(this);
+            this.physicsManager.AddListenerSafely(this);
         }
 
         public void DetachPhysicsManager()
         {
-            this.physicsManager.RemoveListener(this);
+            this.physicsManager.RemoveListenerSafely(this);
             this.physicsManager = null;
         }
 

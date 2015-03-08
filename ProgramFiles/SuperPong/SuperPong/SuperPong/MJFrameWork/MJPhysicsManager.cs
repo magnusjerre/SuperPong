@@ -20,11 +20,15 @@ namespace SuperPong.MJFrameWork
         }
 
         public List<MJPhysicsEventListener> listeners;
+        public List<MJPhysicsEventListener> listenersToRemove;
+        public List<MJPhysicsEventListener> listenersToAdd;
 
         public List<MJCollisionPair> collisionPairs;
         public List<MJCollisionPair> intersectionPairs;
+        
         public List<MJPhysicsBody> allBodies;
         public List<MJPhysicsBody> bodiesToRemove;
+        public List<MJPhysicsBody> bodiesToAdd;
 
         private MJPhysicsManager()
         {
@@ -32,28 +36,64 @@ namespace SuperPong.MJFrameWork
             intersectionPairs = new List<MJCollisionPair>();
             allBodies = new List<MJPhysicsBody>();
             listeners = new List<MJPhysicsEventListener>();
+            listenersToRemove = new List<MJPhysicsEventListener>();
+            listenersToAdd = new List<MJPhysicsEventListener>();
             bodiesToRemove = new List<MJPhysicsBody>();
+            bodiesToAdd = new List<MJPhysicsBody>();
         }
 
-        public void AddListener(MJPhysicsEventListener newListener)
+        private void AddListenersSafely()
         {
-            listeners.Add(newListener);
-        }
-
-        public void RemoveListener(MJPhysicsEventListener listener)
-        {
-            listeners.Remove(listener);
-        }
-
-        public void AddBody(MJPhysicsBody body)
-        {
-            if (!allBodies.Contains(body))
+            foreach (MJPhysicsEventListener listener in listenersToAdd)
             {
-                allBodies.Add(body);
+                listeners.Add(listener);
+            }
+            listenersToAdd.Clear();
+        }
+
+        private void RemoveListenersSafely()
+        {
+            foreach (MJPhysicsEventListener listener in listenersToRemove)
+            {
+                listeners.Remove(listener);
+            }
+            listenersToRemove.Clear();
+        }
+
+        public void AddListenerSafely(MJPhysicsEventListener newListener)
+        {
+            if (!listeners.Contains(newListener))
+            {
+                listenersToAdd.Add(newListener);
             }
         }
 
-        public void RemoveBodiesSafely()
+        public void RemoveListenerSafely(MJPhysicsEventListener listener)
+        {
+            if (listeners.Contains(listener))
+            {
+                listenersToRemove.Add(listener);
+            }
+        }
+
+        public void AddBodySafely(MJPhysicsBody body)
+        {
+            if (!allBodies.Contains(body))
+            {
+                bodiesToAdd.Add(body);
+            }
+        }
+
+        private void AddBodiesSafely()
+        {
+            foreach (MJPhysicsBody body in bodiesToAdd)
+            {
+                allBodies.Add(body);
+            }
+            bodiesToAdd.Clear();
+        }
+
+        private void RemoveBodiesSafely()
         {
             foreach (MJPhysicsBody body in bodiesToRemove)
             {
@@ -223,6 +263,10 @@ namespace SuperPong.MJFrameWork
             }
 
             RemoveBodiesSafely();
+            AddBodiesSafely();
+
+            RemoveListenersSafely();
+            AddListenersSafely();
 
             foreach (MJPhysicsBody body in allBodies)
             {

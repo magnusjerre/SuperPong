@@ -120,7 +120,7 @@ namespace SuperPong.MJFrameWork
         {
             this.PhysicsBody = physicsBody;
             this.PhysicsBody.Parent = this;
-            MJPhysicsManager.getInstance().AddBody(physicsBody);
+            MJPhysicsManager.getInstance().AddBodySafely(physicsBody);
         }
 
         public void DetachPhysicsBodySafely()

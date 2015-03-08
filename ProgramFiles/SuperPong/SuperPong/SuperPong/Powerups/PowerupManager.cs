@@ -31,7 +31,8 @@ namespace SuperPong.Powerups
             floatingTextures = new Dictionary<PowerupType, Texture2D>();
             initialPosition = new Vector2(width / 2, height / 2);
             timeLeftToNextPowerup = GenerateNextTimeToPowerup();
-            MJPhysicsManager.getInstance().AddListener(this);
+            MJPhysicsManager.getInstance().AddListenerSafely(this);
+            
         }
 
         private PowerupType GenerateNextPowerupType()
@@ -87,8 +88,6 @@ namespace SuperPong.Powerups
             timeLeftToNextPowerup = GenerateNextTimeToPowerup();
             if (floatingPowerup != null)
             {
-                //floatingPowerup.DetachPhysicsBody();
-                //floatingPowerup.DetachPhysicsBodySafely();
                 floatingPowerup = null;
             }
         }
