@@ -40,7 +40,7 @@ namespace SuperPong
             initialRightPaddlePosition = new Vector2(width - 100, height / 2); 
             wallSize = new Vector2(width, 100);
             goalSize = new Vector2(100, height);
-            powerupManager = new PowerupManager(content, width, height);
+            powerupManager = new PowerupManager(this, content, width, height);
         }
 
         public override void Initialize()
@@ -137,7 +137,6 @@ namespace SuperPong
             base.Draw(spriteBatch);
 
             scoreFont.Draw(spriteBatch);
-            powerupManager.Draw(spriteBatch);
         }
 
         public override void LoadContent()

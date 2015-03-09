@@ -10,29 +10,35 @@ using System.Text;
 
 namespace SuperPong.Powerups
 {
-    public class PowerupManager : MJUpdate, MJDraw, ResetPoint, ResetGame, MJPhysicsEventListener
+    public class PowerupManager : MJUpdate, ResetPoint, ResetGame
     {
 
         ContentManager content;
-        Dictionary<PowerupType, Texture2D> floatingTextures;
+        Dictionary<string, Texture2D> floatingTextures;
         
         Random randomGenerator;
         int timeLeftToNextPowerup;
         const int MAXTIMEBETWEENPOWERUPS = 5000;   //milliseconds
+        Boolean canAddNewPowerup = true;
 
-        FloatingPowerup floatingPowerup;
-        Boolean shouldRemoveFloatingPowerup = false;
         Vector2 initialPosition;
 
-        public PowerupManager(ContentManager content, int width, int height)
+        Powerup player1Powerup, player2Powerup;
+        PowerupDisplay player1PowerupDisplay, player2PowerupDisplay;
+        Vector2 player1PowerupDisplayPosition, player2PowerupDisplayPosition;
+
+        MJScene scene;
+
+        public PowerupManager(MJScene scene, ContentManager content, int width, int height)
         {
+            this.scene = scene;
             this.content = content;
             randomGenerator = new Random(2);
-            floatingTextures = new Dictionary<PowerupType, Texture2D>();
+            floatingTextures = new Dictionary<string, Texture2D>();
             initialPosition = new Vector2(width / 2, height / 2);
             timeLeftToNextPowerup = GenerateNextTimeToPowerup();
-            MJPhysicsManager.getInstance().AddListenerSafely(this);
-            
+            player1PowerupDisplayPosition = new Vector2(200, 100);
+            player2PowerupDisplayPosition = new Vector2(width - 200, 100);
         }
 
         private PowerupType GenerateNextPowerupType()
@@ -49,84 +55,73 @@ namespace SuperPong.Powerups
 
         public void LoadContent()
         {
-            floatingTextures.Add(PowerupType.LINE, content.Load<Texture2D>("line_floating_powerup"));
-            floatingTextures.Add(PowerupType.SQUARE, content.Load<Texture2D>("square_floating_powerup"));
+            floatingTextures.Add(PowerupType.LINE.ToString(), content.Load<Texture2D>("line_floating_powerup"));
+            floatingTextures.Add(PowerupType.SQUARE.ToString(), content.Load<Texture2D>("square_floating_powerup"));
+            floatingTextures.Add("frame", content.Load<Texture2D>("frame"));
         }
 
         public void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
             timeLeftToNextPowerup -= gameTime.ElapsedGameTime.Milliseconds;
-            if (timeLeftToNextPowerup < 0)
+            if (timeLeftToNextPowerup < 0 && canAddNewPowerup)
             {
                 timeLeftToNextPowerup = GenerateNextTimeToPowerup();
-                if (floatingPowerup == null)
-                {
-                    PowerupType nextType = GenerateNextPowerupType();
-                    floatingPowerup = new FloatingPowerup(floatingTextures[nextType], nextType, randomGenerator, initialPosition);
-                }
-            }
-
-            if (shouldRemoveFloatingPowerup)
-            {
-                shouldRemoveFloatingPowerup = false;
-                //floatingPowerup.DetachPhysicsBody();
-                floatingPowerup.DetachPhysicsBodySafely();
-                floatingPowerup = null;
-            }
-        }
-
-        public void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch)
-        {
-            if (floatingPowerup != null)
-            {
-                floatingPowerup.Draw(spriteBatch);
+                PowerupType nextType = GenerateNextPowerupType();
+                scene.AddChild(new FloatingPowerup(this, floatingTextures[nextType.ToString()], nextType, randomGenerator, initialPosition));
+                canAddNewPowerup = false;
             }
         }
 
         public void ResetGame()
         {
             timeLeftToNextPowerup = GenerateNextTimeToPowerup();
-            if (floatingPowerup != null)
-            {
-                floatingPowerup = null;
-            }
         }
 
         public void ResetPoint()
         {
             
         }
-
-        public void CollisionBegan(MJCollisionPair pair)
+        
+        public void NotifyPowerupStopped(Powerup powerup)
         {
-            
-        }
-
-        public void CollisionEnded(MJCollisionPair pair)
-        {
-            
-        }
-
-        public void IntersectionBegan(MJCollisionPair pair)
-        {
-            if (CaughtFloatingPowerup(pair))
+            if (powerup == player1Powerup)
             {
-                shouldRemoveFloatingPowerup = true;
-                floatingPowerup.DetachPhysicsBodySafely();
+                player1Powerup = null;
+                player1PowerupDisplay = null;
+            }
+            
+            else if (powerup == player2Powerup)
+            {
+                player2Powerup = null;
+                player2PowerupDisplay = null;
             }
         }
 
-        public void IntersectionEnded(MJCollisionPair pair)
-        {
-            
+        public void NotifyPowerupCaught(MJPhysicsBody otherBody, FloatingPowerup floatingPowerup) {
+            floatingPowerup.RemoveFromParent();
+            canAddNewPowerup = true;
+            if (Player1CaughtPowerup(otherBody))
+            {
+                player1PowerupDisplay = new PowerupDisplay(floatingTextures["frame"], floatingTextures[floatingPowerup.PowerupType.ToString()]);
+                player1PowerupDisplay.Position = player1PowerupDisplayPosition;
+                scene.AddChild(player1PowerupDisplay);
+            }
+            else if (Player2CaughtPowerup(otherBody))
+            {
+                player2PowerupDisplay = new PowerupDisplay(floatingTextures["frame"], floatingTextures[floatingPowerup.PowerupType.ToString()]);
+                player2PowerupDisplay.Position = player2PowerupDisplayPosition;
+                scene.AddChild(player2PowerupDisplay);
+            }            
         }
 
-        private Boolean CaughtFloatingPowerup(MJCollisionPair pair)
+        private Boolean Player1CaughtPowerup(MJPhysicsBody otherBody)
         {
-            if (pair.Body1 != null && pair.Body2 != null && floatingPowerup != null)
-                return pair.Body1 == floatingPowerup.PhysicsBody || pair.Body2 == floatingPowerup.PhysicsBody;
-            return false;
+            return otherBody.Parent.Name.Equals("PaddleLeft");
         }
 
+        private Boolean Player2CaughtPowerup(MJPhysicsBody otherBody)
+        {
+            return otherBody.Parent.Name.Equals("PaddleRight");
+        }
     }
 }
