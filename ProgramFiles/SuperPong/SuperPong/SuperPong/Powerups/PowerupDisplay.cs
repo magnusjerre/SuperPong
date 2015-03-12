@@ -10,9 +10,12 @@ namespace SuperPong.Powerups
     public class PowerupDisplay : MJSprite
     {
 
-        public PowerupDisplay(Texture2D frameTexture, Texture2D powerupTexture)
+        public PowerupType PowerupType { get; set; }
+
+        public PowerupDisplay(Texture2D frameTexture, Texture2D powerupTexture, PowerupType type)
             : base(frameTexture)
         {
+            PowerupType = type;
             MJSprite powerup = new MJSprite(powerupTexture);
             AddChild(powerup);
             Name = "PowerupDisplay";

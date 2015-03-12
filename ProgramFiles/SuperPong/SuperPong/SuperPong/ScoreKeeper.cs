@@ -80,12 +80,17 @@ namespace SuperPong
 
         private Boolean IsLeftGoalIntersection(MJCollisionPair collisionPair)
         {
+            if (collisionPair.Body1.Bitmask != Bitmasks.BALL && collisionPair.Body2.Bitmask != Bitmasks.BALL)
+                return false;
+
             return collisionPair.Body1.Parent.Name.Equals(LEFT_GOAL) ||
                 collisionPair.Body2.Parent.Name.Equals(LEFT_GOAL);
         }
 
         private Boolean IsRightGoalIntersection(MJCollisionPair collisionPair)
         {
+            if (collisionPair.Body1.Bitmask != Bitmasks.BALL && collisionPair.Body2.Bitmask != Bitmasks.BALL)
+                return false;
             return collisionPair.Body1.Parent.Name.Equals(RIGHT_GOAL) ||
                 collisionPair.Body2.Parent.Name.Equals(RIGHT_GOAL);
         }

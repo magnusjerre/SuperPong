@@ -19,7 +19,7 @@ namespace SuperPong
         Texture2D paddleTexture, ballTexture;
         MJNode topWall, bottomWall, leftGoal, rightGoal;
         const float STATIC_MASS = 1000000;
-        int height = 1080, width = 1920;
+        int height = 576, width = 1024;
         Vector2 wallSize, goalSize;
         ScoreKeeper scoreKeeper;
         int maxScore = 5;
@@ -158,6 +158,8 @@ namespace SuperPong
                 paddleRight.Move(moveDown);
             else if (Keyboard.GetState().IsKeyDown(Keys.Up))
                 paddleRight.Move(moveUp);
+            else if (Keyboard.GetState().IsKeyDown(Keys.Q))
+                powerupManager.UsePowerup(paddleLeft, new Vector2(400, 250));
             else
                 paddleRight.StopMove();
 
@@ -165,6 +167,8 @@ namespace SuperPong
                 paddleLeft.Move(moveDown);
             else if (Keyboard.GetState().IsKeyDown(Keys.W))
                 paddleLeft.Move(moveUp);
+            else if (Keyboard.GetState().IsKeyDown(Keys.M))
+                powerupManager.UsePowerup(paddleRight, new Vector2(400, 250));
             else
                 paddleLeft.StopMove();
             

@@ -60,8 +60,7 @@ namespace SuperPong
 
         private Boolean IsBallCollision(MJCollisionPair collisionPair)
         {
-            return collisionPair.Body1.Parent.Name.Equals("Ball") || 
-                collisionPair.Body2.Parent.Name.Equals("Ball");
+            return collisionPair.Body1.Bitmask == Bitmasks.BALL || collisionPair.Body2.Bitmask == Bitmasks.BALL;
         }
 
         public void ResetGame()

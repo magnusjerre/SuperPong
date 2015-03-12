@@ -5,8 +5,8 @@ using System.Text;
 
 namespace SuperPong.Powerups
 {
-    public interface DrawablePowerup : Powerup
+    public interface PowerupObserver
     {
-        void Draw(Microsoft.Xna.Framework.Graphics.SpriteBatch spriteBatch);
+        void NotifyPowerupEnded(Powerup powerup);
     }
 }

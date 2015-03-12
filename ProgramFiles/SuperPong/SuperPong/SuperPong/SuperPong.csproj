@@ -94,13 +94,15 @@
     <Compile Include="MJFrameWork\MJUtils.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="PlayerCreator.cs" />
-    <Compile Include="Powerups\DrawablePowerup.cs" />
     <Compile Include="Powerups\FloatingPowerup.cs" />
-    <Compile Include="Powerups\HitCountPowerup.cs" />
+    <Compile Include="Powerups\HitCounter.cs" />
     <Compile Include="Powerups\Powerup.cs" />
     <Compile Include="Powerups\PowerupDisplay.cs" />
+    <Compile Include="Powerups\PowerupFactory.cs" />
     <Compile Include="Powerups\PowerupManager.cs" />
+    <Compile Include="Powerups\PowerupObserver.cs" />
     <Compile Include="Powerups\PowerupType.cs" />
+    <Compile Include="Powerups\Timer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />

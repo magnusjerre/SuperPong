@@ -32,6 +32,7 @@ namespace SuperPong
             paddleLeftSprite.PhysicsBody.IntersectionMask = Bitmasks.POWERUP;
             paddleLeftSprite.Position = new Vector2(100, 500);
             Player leftPlayer = new Player(paddleLeftSprite);
+            leftPlayer.Name = "PaddleLeft";
             return leftPlayer;
         }
 
@@ -62,6 +63,7 @@ namespace SuperPong
             paddleRight.PhysicsBody.IntersectionMask = Bitmasks.POWERUP;
             paddleRight.Position = new Vector2(1800, 550);
             Player rightPlayer = new Player(paddleRight);
+            rightPlayer.Name = "PaddleRight";
             return rightPlayer;
         }
 
