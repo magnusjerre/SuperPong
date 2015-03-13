@@ -10,18 +10,23 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace SuperPong
 {
-    public class Player : MJNode
+    public class Player : MJNode, ResetPoint, ResetGame
     {
         private MJSprite sprite;
         public MJSprite Sprite { get { return sprite; } }
 
+        public Vector2 InitialPosition { get; set; }
         public Vector2 OriginalMovementVelocity { get; set; }   //Absolute values of velocity
         public Vector2 CurrentMovementVelcoity { get; set; }    //Absolute values of velocity  
 
-        public Player(MJSprite sprite)
+        public Player(MJSprite sprite, MJPhysicsBody body, Vector2 initialPosition)
         {
             this.sprite = sprite;
             AddChild(this.sprite);
+            
+            AttachPhysicsBody(body);
+            
+            InitialPosition = initialPosition;
             OriginalMovementVelocity = new Vector2(0, 500);
             CurrentMovementVelcoity = new Vector2(0, 0);
         }
@@ -29,7 +34,7 @@ namespace SuperPong
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            sprite.PhysicsBody.Velocity = CurrentMovementVelcoity;
+            PhysicsBody.Velocity = CurrentMovementVelcoity;
         }
 
         public void Move(Vector2 direction) //positive y = downwards, negative y = upwards
@@ -40,6 +45,16 @@ namespace SuperPong
         public void StopMove()
         {
             CurrentMovementVelcoity = new Vector2(0, 0);
+        }
+
+        public void ResetPoint()
+        {
+            Position = InitialPosition;
+        }
+
+        public void ResetGame()
+        {
+            ResetPoint();
         }
     }
 }

@@ -23,7 +23,7 @@ namespace SuperPong
         Vector2 wallSize, goalSize;
         ScoreKeeper scoreKeeper;
         int maxScore = 5;
-        Vector2 initialBallPosition, initialLeftPaddlePosition, initialRightPaddlePosition;
+        Vector2 initialBallPosition;
         SpriteFont font;
         ScoreFont scoreFont;
         Boolean gameIsOver = false;
@@ -34,10 +34,8 @@ namespace SuperPong
 
         public GameScene(ContentManager content) : base(content, "GameScene")
         {
-            playerCreator = new PlayerCreator();
+            playerCreator = new PlayerCreator(new Vector2(100, height / 2), new Vector2(width - 100, height / 2));
             initialBallPosition = new Vector2(width / 2, height / 2);
-            initialLeftPaddlePosition = new Vector2(100, height / 2);
-            initialRightPaddlePosition = new Vector2(width - 100, height / 2); 
             wallSize = new Vector2(width, 100);
             goalSize = new Vector2(100, height);
             powerupManager = new PowerupManager(this, content, width, height);
@@ -234,8 +232,8 @@ namespace SuperPong
         {
             ball.Position = initialBallPosition;
             ball.PhysicsBody.Acceleration = new Vector2();
-            paddleLeft.Sprite.Position = initialLeftPaddlePosition;
-            paddleRight.Sprite.Position = initialRightPaddlePosition;
+            paddleLeft.ResetPoint();
+            paddleRight.ResetPoint();
             ballManager.ResetAfterPoint();
             powerupManager.ResetPoint();
         }

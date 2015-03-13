@@ -14,10 +14,12 @@ namespace SuperPong
     {
         protected static int STATIC_MASS = 1000000;
         protected Texture2D player1Texture, player2Texture;
+        protected Vector2 leftPosition, rightPosition;
 
-        public PlayerCreator()
+        public PlayerCreator(Vector2 leftPosition, Vector2 rightPosition)
         {
-
+            this.leftPosition = leftPosition;
+            this.rightPosition = rightPosition;
         }
 
         public Player CreatePlayer1()
@@ -25,14 +27,16 @@ namespace SuperPong
             MJSprite paddleLeftSprite = new MJSprite(player1Texture);   //Points right
             paddleLeftSprite.Name = "PaddleLeft";
             paddleLeftSprite.origin = new Vector2(0.5f, 0.5f);
-            paddleLeftSprite.AttachPhysicsBody(MJPhysicsBody.PolygonPathMJPhysicsBody(generatePlayer1Shape()));
-            paddleLeftSprite.PhysicsBody.Mass = STATIC_MASS;
-            paddleLeftSprite.PhysicsBody.Bitmask = Bitmasks.PADDLE;
-            paddleLeftSprite.PhysicsBody.CollisionMask = Bitmasks.BALL;
-            paddleLeftSprite.PhysicsBody.IntersectionMask = Bitmasks.POWERUP;
-            paddleLeftSprite.Position = new Vector2(100, 500);
-            Player leftPlayer = new Player(paddleLeftSprite);
+            
+            MJPhysicsBody body = MJPhysicsBody.PolygonPathMJPhysicsBody(generatePlayer1Shape());
+            body.Mass = STATIC_MASS;
+            body.Bitmask = Bitmasks.PADDLE;
+            body.CollisionMask = Bitmasks.BALL;
+            body.IntersectionMask = Bitmasks.POWERUP;
+            
+            Player leftPlayer = new Player(paddleLeftSprite, body, leftPosition);
             leftPlayer.Name = "PaddleLeft";
+            leftPlayer.Position = leftPosition;
             return leftPlayer;
         }
 
@@ -56,14 +60,15 @@ namespace SuperPong
             paddleRight.Name = "PaddleRight";
             paddleRight.origin = new Vector2(0.5f, 0.5f);
             paddleRight.SEffects = SpriteEffects.FlipHorizontally;
-            paddleRight.AttachPhysicsBody(MJPhysicsBody.PolygonPathMJPhysicsBody(generatePlayer2Shape()));
-            paddleRight.PhysicsBody.Mass = STATIC_MASS;
-            paddleRight.PhysicsBody.Bitmask = Bitmasks.PADDLE;
-            paddleRight.PhysicsBody.CollisionMask = Bitmasks.BALL;
-            paddleRight.PhysicsBody.IntersectionMask = Bitmasks.POWERUP;
-            paddleRight.Position = new Vector2(1800, 550);
-            Player rightPlayer = new Player(paddleRight);
+            MJPhysicsBody body = MJPhysicsBody.PolygonPathMJPhysicsBody(generatePlayer2Shape());
+            body.Mass = STATIC_MASS;
+            body.Bitmask = Bitmasks.PADDLE;
+            body.CollisionMask = Bitmasks.BALL;
+            body.IntersectionMask = Bitmasks.POWERUP;
+            
+            Player rightPlayer = new Player(paddleRight, body, rightPosition);
             rightPlayer.Name = "PaddleRight";
+            rightPlayer.Position = rightPosition;
             return rightPlayer;
         }
 
