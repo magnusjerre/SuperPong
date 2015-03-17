@@ -183,8 +183,23 @@ namespace SuperPong.MJFrameWork
             float v1tFinal = v1t;
             float v2tFinal = v2t;
 
-            float v1nFinal = (v1n * (body1.Mass - body2.Mass) + 2 * v2n * body2.Mass) / (body1.Mass + body2.Mass);
-            float v2nFinal = (v2n * (body2.Mass - body1.Mass) + 2 * v1n * body1.Mass) / (body1.Mass + body2.Mass);
+            float v1nFinal = 0f;
+            float v2nFinal = 0f;
+            if (body1.IsStatic)
+            {
+                v1nFinal = v1n;
+                v2nFinal = 2 * v1n - v2n;
+            }
+            else if (body2.IsStatic)
+            {
+                v1nFinal = 2 * v2n - v1n;
+                v2nFinal = v2n;
+            }
+            else
+            {
+                v1nFinal = (v1n * (body1.Mass - body2.Mass) + 2 * v2n * body2.Mass) / (body1.Mass + body2.Mass);
+                v2nFinal = (v2n * (body2.Mass - body1.Mass) + 2 * v1n * body1.Mass) / (body1.Mass + body2.Mass);
+            }
 
             Vector2 v1nFinalVector = unitNormal * v1nFinal;
             Vector2 v1tFinalVector = unitTangent * v1tFinal;

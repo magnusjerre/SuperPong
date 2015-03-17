@@ -12,7 +12,6 @@ namespace SuperPong
 {
     public class PlayerCreator
     {
-        protected static int STATIC_MASS = 1000000;
         protected Texture2D player1Texture, player2Texture;
         protected Vector2 leftPosition, rightPosition;
 
@@ -29,7 +28,7 @@ namespace SuperPong
             paddleLeftSprite.origin = new Vector2(0.5f, 0.5f);
             
             MJPhysicsBody body = MJPhysicsBody.PolygonPathMJPhysicsBody(generatePlayer1Shape());
-            body.Mass = STATIC_MASS;
+            body.IsStatic = true;
             body.Bitmask = Bitmasks.PADDLE;
             body.CollisionMask = Bitmasks.BALL;
             body.IntersectionMask = Bitmasks.POWERUP;
@@ -61,7 +60,7 @@ namespace SuperPong
             paddleRight.origin = new Vector2(0.5f, 0.5f);
             paddleRight.SEffects = SpriteEffects.FlipHorizontally;
             MJPhysicsBody body = MJPhysicsBody.PolygonPathMJPhysicsBody(generatePlayer2Shape());
-            body.Mass = STATIC_MASS;
+            body.IsStatic = true;
             body.Bitmask = Bitmasks.PADDLE;
             body.CollisionMask = Bitmasks.BALL;
             body.IntersectionMask = Bitmasks.POWERUP;

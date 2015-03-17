@@ -45,7 +45,7 @@ namespace SuperPong.Powerups
             MJPhysicsBody body = MJPhysicsBody.RectangularMJPhysicsBody(sprite.Size, sprite.GetOrigin());
             body.Bitmask = Bitmasks.WALL;
             body.CollisionMask = Bitmasks.BALL | Bitmasks.POWERUP;
-            body.Mass = 1000000;
+            body.IsStatic = true;
             Powerup powerup = new Powerup(sprite, body);
             powerup.HitCounter = new HitCounter(1, powerup);
 
@@ -59,7 +59,7 @@ namespace SuperPong.Powerups
             body.Bitmask = Bitmasks.WALL;
             body.CollisionMask = Bitmasks.BALL | Bitmasks.POWERUP;
             body.RotationalSpeed = 1f;
-            body.Mass = 1000000;
+            body.IsStatic = true;
             Powerup powerup = new Powerup(sprite, body);
             powerup.HitCounter = new HitCounter(1, powerup);
             return powerup;

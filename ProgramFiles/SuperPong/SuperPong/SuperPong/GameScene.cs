@@ -18,7 +18,6 @@ namespace SuperPong
         MJSprite ball;
         Texture2D paddleTexture, ballTexture;
         MJNode topWall, bottomWall, leftGoal, rightGoal;
-        const float STATIC_MASS = 1000000;
         int height = 576, width = 1024;
         Vector2 wallSize, goalSize;
         ScoreKeeper scoreKeeper;
@@ -62,7 +61,7 @@ namespace SuperPong
             topWall.Name = "TopWall";
             topWall.Position = new Vector2(0, 0);
             topWall.AttachPhysicsBody(MJPhysicsBody.RectangularMJPhysicsBody(wallSize, new Vector2(0, 1)));   //Origin is at left bottom corner
-            topWall.PhysicsBody.Mass = STATIC_MASS;
+            topWall.PhysicsBody.IsStatic = true;
             topWall.PhysicsBody.Bitmask = Bitmasks.WALL;
             topWall.PhysicsBody.CollisionMask = Bitmasks.BALL | Bitmasks.POWERUP;
             AddChild(topWall);
@@ -71,7 +70,7 @@ namespace SuperPong
             bottomWall.Name = "BottomWall";
             bottomWall.Position = new Vector2(0, height);
             bottomWall.AttachPhysicsBody(MJPhysicsBody.RectangularMJPhysicsBody(wallSize, new Vector2(0,0))); //Origin at top right corner
-            bottomWall.PhysicsBody.Mass = STATIC_MASS;
+            bottomWall.PhysicsBody.IsStatic = true;
             bottomWall.PhysicsBody.Bitmask = Bitmasks.WALL;
             bottomWall.PhysicsBody.CollisionMask = Bitmasks.BALL | Bitmasks.POWERUP;
             AddChild(bottomWall);
