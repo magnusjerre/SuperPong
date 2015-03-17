@@ -216,6 +216,7 @@ namespace SuperPong.MJFrameWork
                     {
                         MJCollisionPair collisionPair = new MJCollisionPair(body1, body2);
                         MJIntersects intersects = MJInteresection.Collides(body1, body2);
+                        //MJIntersects intersects = MJIntersection.Intersects(body1, body2);
                         if (intersects.Intersects)
                         {
                             if (body1.ShouldCheckForCollision(body2.Bitmask) && !collisionPairs.Contains(collisionPair))

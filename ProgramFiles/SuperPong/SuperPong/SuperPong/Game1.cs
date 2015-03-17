@@ -32,6 +32,7 @@ namespace SuperPong
             graphics.ApplyChanges();
             Content.RootDirectory = "Content";            
             scene = new GameScene(Content);
+            //scene = new CollisionScene(Content);
         }
 
         /// <summary>
