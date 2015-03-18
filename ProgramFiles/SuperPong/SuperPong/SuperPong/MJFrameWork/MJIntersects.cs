@@ -11,12 +11,7 @@ namespace SuperPong.MJFrameWork
         public Boolean Intersects { get; set; }
         public Vector2 Normal { get; set; }
         public float Mtv { get; set; }
-
-        public MJIntersects(Boolean intersects, Vector2 normal)
-            : this(intersects, normal, 0f)
-        {
-        }
-
+        
         public MJIntersects(Boolean intersects, Vector2 normal, float mtv)
         {
             Intersects = intersects;

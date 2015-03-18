@@ -76,15 +76,11 @@
     <Compile Include="Bitmasks.cs" />
     <Compile Include="Font.cs" />
     <Compile Include="GameScene.cs" />
-    <Compile Include="CollisionScene.cs" />
     <Compile Include="MJFrameWork\Interfaces\MJDetachable.cs" />
     <Compile Include="MJFrameWork\Interfaces\MJDraw.cs" />
     <Compile Include="MJFrameWork\Interfaces\MJPhysicsEventListener.cs" />
     <Compile Include="MJFrameWork\MJAbs.cs" />
-    <Compile Include="MJFrameWork\MJCollision.cs" />
-    <Compile Include="MJFrameWork\MJInteresection.cs" />
     <Compile Include="MJFrameWork\MJCollisionPair.cs" />
-    <Compile Include="MJFrameWork\MJIntersection.cs" />
     <Compile Include="MJFrameWork\MJIntersects.cs" />
     <Compile Include="MJFrameWork\MJNode.cs" />
     <Compile Include="MJFrameWork\MJPhysicsBody.cs" />
@@ -115,7 +111,6 @@
     <Compile Include="ScoreFont.cs" />
     <Compile Include="ScoreKeeper.cs" />
     <Compile Include="ScoreObserver.cs" />
-    <Compile Include="SecondScene.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

@@ -56,7 +56,6 @@
   <ItemGroup>
     <Compile Include="Observer.cs" />
     <Compile Include="UnitTestScoreKeeper.cs" />
-    <Compile Include="UnitTestMJCollision.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
