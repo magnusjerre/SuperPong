@@ -8,7 +8,7 @@ namespace SuperPong.MJFrameWork
 {
     public class MJSat
     {
-        public static MJIntersects Collides(MJPhysicsBody body1, MJPhysicsBody body2)
+        public static MJIntersection Collides(MJPhysicsBody body1, MJPhysicsBody body2)
         {
             if (body1.IsCircleBody() && body2.IsCircleBody())
                 return CirclesCollide(body1, body2);
@@ -18,7 +18,7 @@ namespace SuperPong.MJFrameWork
                 return PolygonsCollide(body1, body2);
         }
 
-        public static MJIntersects CirclesCollide(MJPhysicsBody body1, MJPhysicsBody body2)
+        public static MJIntersection CirclesCollide(MJPhysicsBody body1, MJPhysicsBody body2)
         {
             Vector2 body1Center = body1.Parent.absoluteCoordinateSystem.Position;
             Vector2 body2Center = body2.Parent.absoluteCoordinateSystem.Position;
@@ -26,15 +26,15 @@ namespace SuperPong.MJFrameWork
 
             float maxDistanceBetweenCenters = body1.Radius + body2.Radius;
             if (distanceBetweenCenters.LengthSquared() > maxDistanceBetweenCenters * maxDistanceBetweenCenters)
-                return new MJIntersects(false, new Vector2(), 0f);
+                return new MJIntersection(false, new Vector2(), 0f, body1, body2);
 
             Vector2 unitDistance = distanceBetweenCenters / distanceBetweenCenters.Length();
             float mtv = maxDistanceBetweenCenters - distanceBetweenCenters.Length();
 
-            return new MJIntersects(true, unitDistance, -mtv);
+            return new MJIntersection(true, unitDistance, -mtv, body1, body2);
         }
 
-        public static MJIntersects PolygonAndCircleCollide(MJPhysicsBody body1, MJPhysicsBody body2)
+        public static MJIntersection PolygonAndCircleCollide(MJPhysicsBody body1, MJPhysicsBody body2)
         {
             MJPhysicsBody circleBody = body1.IsCircleBody() ? body1 : body2;
             MJPhysicsBody polygonBody = body1.IsPolygonBody() ? body1 : body2;
@@ -68,7 +68,7 @@ namespace SuperPong.MJFrameWork
 
                 float overlap = Overlap(polygonMinProj, polygonMaxProj, circleMinProj, circleMaxProj);
                 if (overlap < 0)
-                    return new MJIntersects(false, new Vector2(), 0);
+                    return new MJIntersection(false, new Vector2(), 0, body1, body2);
                 else
                 {
                     if (overlap < mtv)
@@ -81,10 +81,10 @@ namespace SuperPong.MJFrameWork
 
             }
 
-            return new MJIntersects(collision, resultNormal, mtv);
+            return new MJIntersection(collision, resultNormal, mtv, body1, body2);
         }
 
-        public static MJIntersects PolygonsCollide(MJPhysicsBody body1, MJPhysicsBody body2)
+        public static MJIntersection PolygonsCollide(MJPhysicsBody body1, MJPhysicsBody body2)
         {
             float mtv = float.MaxValue;
             Vector2 resultNormal = new Vector2();
@@ -121,7 +121,7 @@ namespace SuperPong.MJFrameWork
                 //Calculate the overlap of the bodies onto the projection
                 float overlap = Overlap(body1MinProj, body1MaxProj, body2MinProj, body2MaxProj);
                 if (overlap < 0)
-                    return new MJIntersects(false, new Vector2(), 0);
+                    return new MJIntersection(false, new Vector2(), 0, body1, body2);
                 else
                 {
                     if (overlap < mtv)
@@ -133,7 +133,7 @@ namespace SuperPong.MJFrameWork
                 }
             }
 
-            return new MJIntersects(collision, resultNormal, mtv);
+            return new MJIntersection(collision, resultNormal, mtv, body1, body2);
         }
 
         private static float Overlap(float min1, float max1, float min2, float max2)

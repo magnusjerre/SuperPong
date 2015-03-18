@@ -41,15 +41,15 @@ namespace SuperPong.Powerups
             return unitVector * speed;
         }
 
-        public void CollisionBegan(MJCollisionPair pair)
+        public void CollisionBegan(MJIntersection pair)
         {
         }
 
-        public void CollisionEnded(MJCollisionPair pair)
+        public void CollisionEnded(MJIntersection pair)
         {
         }
 
-        public void IntersectionBegan(MJCollisionPair pair)
+        public void IntersectionBegan(MJIntersection pair)
         {
             if (!IntersectionWithThis(pair))
                 return;
@@ -60,17 +60,17 @@ namespace SuperPong.Powerups
             manager.NotifyPowerupCaught(otherBody, this);
         }
 
-        private Boolean IntersectionWithThis(MJCollisionPair pair) 
+        private Boolean IntersectionWithThis(MJIntersection pair) 
         {
             return pair.Body1 == PhysicsBody || pair.Body2 == PhysicsBody;
         }
 
-        private MJPhysicsBody GetOtherBody(MJCollisionPair pair)
+        private MJPhysicsBody GetOtherBody(MJIntersection pair)
         {
             return pair.Body1 == PhysicsBody ? pair.Body2 : pair.Body1;
         }
 
-        public void IntersectionEnded(MJCollisionPair pair)
+        public void IntersectionEnded(MJIntersection pair)
         {   
         }
     }

@@ -178,24 +178,24 @@ namespace SuperPong
 
         }
 
-        public override void CollisionBegan(MJCollisionPair pair)
+        public override void CollisionBegan(MJIntersection pair)
         {
             Console.WriteLine("Collision between: [" + pair.Body1.Parent.Name + ", " + pair.Body2.Parent.Name + "] began");
         }
 
-        public override void CollisionEnded(MJCollisionPair pair)
+        public override void CollisionEnded(MJIntersection pair)
         {
             Console.WriteLine("Collision between: [" + pair.Body1.Parent.Name + ", " + pair.Body2.Parent.Name + "] ended");
             ballManager.CollisionEnded(pair);
         }
 
-        public override void IntersectionBegan(MJCollisionPair pair)
+        public override void IntersectionBegan(MJIntersection pair)
         {
             Console.WriteLine("Intersection between: [" + pair.Body1.Parent.Name + ", " + pair.Body2.Parent.Name + "] began");
             scoreKeeper.IncreaseScore(pair);
         }
 
-        public override void IntersectionEnded(MJCollisionPair pair)
+        public override void IntersectionEnded(MJIntersection pair)
         {
             Console.WriteLine("Intersection between: [" + pair.Body1.Parent.Name + ", " + pair.Body2.Parent.Name + "] ended");
         }

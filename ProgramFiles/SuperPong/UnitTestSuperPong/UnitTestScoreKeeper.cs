@@ -23,8 +23,8 @@ namespace UnitTestSuperPong
             other.Name = "OtherNode";
             other.AttachPhysicsBody(MJPhysicsBody.CircularMJPhysicsBody(10));
 
-            MJCollisionPair scorePair = new MJCollisionPair(ball.PhysicsBody, leftGoal.PhysicsBody);
-            MJCollisionPair otherPair = new MJCollisionPair(ball.PhysicsBody, other.PhysicsBody);
+            MJIntersection scorePair = new MJIntersection(ball.PhysicsBody, leftGoal.PhysicsBody);
+            MJIntersection otherPair = new MJIntersection(ball.PhysicsBody, other.PhysicsBody);
 
             ScoreKeeper scoreKeeper = new ScoreKeeper(5);
             Observer observer = new Observer();
@@ -72,9 +72,9 @@ namespace UnitTestSuperPong
             other.Name = "OtherNode";
             other.AttachPhysicsBody(MJPhysicsBody.CircularMJPhysicsBody(10));
 
-            MJCollisionPair leftGoalScore = new MJCollisionPair(ball.PhysicsBody, leftGoal.PhysicsBody);
-            MJCollisionPair rightGoalScore = new MJCollisionPair(ball.PhysicsBody, rightGoal.PhysicsBody);
-            MJCollisionPair otherPair = new MJCollisionPair(ball.PhysicsBody, other.PhysicsBody);
+            MJIntersection leftGoalScore = new MJIntersection(ball.PhysicsBody, leftGoal.PhysicsBody);
+            MJIntersection rightGoalScore = new MJIntersection(ball.PhysicsBody, rightGoal.PhysicsBody);
+            MJIntersection otherPair = new MJIntersection(ball.PhysicsBody, other.PhysicsBody);
 
             ScoreKeeper scoreKeeper = new ScoreKeeper(5);
             Observer observer = new Observer();
@@ -153,9 +153,9 @@ namespace UnitTestSuperPong
             other.Name = "OtherNode";
             other.AttachPhysicsBody(MJPhysicsBody.CircularMJPhysicsBody(10));
 
-            MJCollisionPair leftGoalScore = new MJCollisionPair(ball.PhysicsBody, leftGoal.PhysicsBody);
-            MJCollisionPair rightGoalScore = new MJCollisionPair(ball.PhysicsBody, rightGoal.PhysicsBody);
-            MJCollisionPair otherPair = new MJCollisionPair(ball.PhysicsBody, other.PhysicsBody);
+            MJIntersection leftGoalScore = new MJIntersection(ball.PhysicsBody, leftGoal.PhysicsBody);
+            MJIntersection rightGoalScore = new MJIntersection(ball.PhysicsBody, rightGoal.PhysicsBody);
+            MJIntersection otherPair = new MJIntersection(ball.PhysicsBody, other.PhysicsBody);
 
             ScoreKeeper scoreKeeper = new ScoreKeeper(5);
             Observer observer = new Observer();

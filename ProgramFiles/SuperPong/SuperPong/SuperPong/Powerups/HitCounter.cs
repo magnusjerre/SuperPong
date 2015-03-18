@@ -31,7 +31,7 @@ namespace SuperPong.Powerups
             powerup = null;
         }
 
-        public void CollisionBegan(MJFrameWork.MJCollisionPair pair)
+        public void CollisionBegan(MJFrameWork.MJIntersection pair)
         {
             if (pair.Body1 == powerup.PhysicsBody || pair.Body2 == powerup.PhysicsBody)
             {
@@ -43,15 +43,15 @@ namespace SuperPong.Powerups
             }
         }
 
-        public void CollisionEnded(MJFrameWork.MJCollisionPair pair)
+        public void CollisionEnded(MJFrameWork.MJIntersection pair)
         {
         }
 
-        public void IntersectionBegan(MJFrameWork.MJCollisionPair pair)
+        public void IntersectionBegan(MJFrameWork.MJIntersection pair)
         {
         }
 
-        public void IntersectionEnded(MJFrameWork.MJCollisionPair pair)
+        public void IntersectionEnded(MJFrameWork.MJIntersection pair)
         {
         }
     }

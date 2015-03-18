@@ -43,7 +43,7 @@ namespace SuperPong
                 observers.Remove(observerToRemove);
         }
 
-        public void IncreaseScore(MJCollisionPair collisionPair)
+        public void IncreaseScore(MJIntersection collisionPair)
         {
             if (IsLeftGoalIntersection(collisionPair))
                 NotifyPlayerScored(ref rightPlayerScore, RIGHT_PLAYER);
@@ -78,7 +78,7 @@ namespace SuperPong
             return playerScore >= maxScore;
         }
 
-        private Boolean IsLeftGoalIntersection(MJCollisionPair collisionPair)
+        private Boolean IsLeftGoalIntersection(MJIntersection collisionPair)
         {
             if (collisionPair.Body1.Bitmask != Bitmasks.BALL && collisionPair.Body2.Bitmask != Bitmasks.BALL)
                 return false;
@@ -87,7 +87,7 @@ namespace SuperPong
                 collisionPair.Body2.Parent.Name.Equals(LEFT_GOAL);
         }
 
-        private Boolean IsRightGoalIntersection(MJCollisionPair collisionPair)
+        private Boolean IsRightGoalIntersection(MJIntersection collisionPair)
         {
             if (collisionPair.Body1.Bitmask != Bitmasks.BALL && collisionPair.Body2.Bitmask != Bitmasks.BALL)
                 return false;

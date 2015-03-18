@@ -42,7 +42,7 @@ namespace SuperPong
             ResetAfterPoint();
         }
 
-        public void CollisionEnded(MJCollisionPair collisionPair)
+        public void CollisionEnded(MJIntersection collisionPair)
         {
             if (IsBallCollision(collisionPair))
             {
@@ -58,7 +58,7 @@ namespace SuperPong
             }
         }
 
-        private Boolean IsBallCollision(MJCollisionPair collisionPair)
+        private Boolean IsBallCollision(MJIntersection collisionPair)
         {
             return collisionPair.Body1.Bitmask == Bitmasks.BALL || collisionPair.Body2.Bitmask == Bitmasks.BALL;
         }

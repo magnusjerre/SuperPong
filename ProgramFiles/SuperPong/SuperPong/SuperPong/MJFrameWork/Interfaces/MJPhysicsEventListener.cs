@@ -7,10 +7,10 @@ namespace SuperPong.MJFrameWork.Interfaces
 {
     public interface MJPhysicsEventListener
     {
-        void CollisionBegan(MJCollisionPair pair);
-        void CollisionEnded(MJCollisionPair pair);
+        void CollisionBegan(MJIntersection pair);
+        void CollisionEnded(MJIntersection pair);
 
-        void IntersectionBegan(MJCollisionPair pair);
-        void IntersectionEnded(MJCollisionPair pair);
+        void IntersectionBegan(MJIntersection pair);
+        void IntersectionEnded(MJIntersection pair);
     }
 }
