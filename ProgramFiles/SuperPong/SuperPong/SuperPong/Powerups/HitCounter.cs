@@ -43,10 +43,6 @@ namespace SuperPong.Powerups
             }
         }
 
-        public void CollisionEnded(MJFrameWork.MJIntersection pair)
-        {
-        }
-
         public void IntersectionBegan(MJFrameWork.MJIntersection pair)
         {
         }

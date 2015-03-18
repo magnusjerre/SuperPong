@@ -183,12 +183,6 @@ namespace SuperPong
             Console.WriteLine("Collision between: [" + pair.Body1.Parent.Name + ", " + pair.Body2.Parent.Name + "] began");
         }
 
-        public override void CollisionEnded(MJIntersection pair)
-        {
-            Console.WriteLine("Collision between: [" + pair.Body1.Parent.Name + ", " + pair.Body2.Parent.Name + "] ended");
-            ballManager.CollisionEnded(pair);
-        }
-
         public override void IntersectionBegan(MJIntersection pair)
         {
             Console.WriteLine("Intersection between: [" + pair.Body1.Parent.Name + ", " + pair.Body2.Parent.Name + "] began");

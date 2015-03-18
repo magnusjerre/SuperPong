@@ -45,10 +45,6 @@ namespace SuperPong.Powerups
         {
         }
 
-        public void CollisionEnded(MJIntersection pair)
-        {
-        }
-
         public void IntersectionBegan(MJIntersection pair)
         {
             if (!IntersectionWithThis(pair))

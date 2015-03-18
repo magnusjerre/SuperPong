@@ -23,7 +23,6 @@ namespace SuperPong.MJFrameWork
         public List<MJPhysicsEventListener> listenersToRemove;
         public List<MJPhysicsEventListener> listenersToAdd;
 
-        public List<MJIntersection> collisionPairs;
         public List<MJIntersection> intersectionPairs;
         
         public List<MJPhysicsBody> allBodies;
@@ -32,7 +31,6 @@ namespace SuperPong.MJFrameWork
 
         private MJPhysicsManager()
         {
-            collisionPairs = new List<MJIntersection>();
             intersectionPairs = new List<MJIntersection>();
             allBodies = new List<MJPhysicsBody>();
             listeners = new List<MJPhysicsEventListener>();
@@ -235,16 +233,24 @@ namespace SuperPong.MJFrameWork
                         
                     if (body1.ShouldCheckForCollision(body2.Bitmask) || body1.ShouldCheckForIntersection(body2.Bitmask))
                     {
-                        //MJIntersection collisionPair = new MJIntersection(body1, body2);
                         MJIntersection intersectionPair = MJSat.Collides(body1, body2);
                         if (intersectionPair.Intersects)
                         {
-                            if (body1.ShouldCheckForCollision(body2.Bitmask) && !collisionPairs.Contains(intersectionPair))
+                            if (body1.ShouldCheckForCollision(body2.Bitmask))
                             {
-                                collisionPairs.Add(intersectionPair);
+                                
                                 foreach (MJPhysicsEventListener listener in listeners)
                                 {
                                     listener.CollisionBegan(intersectionPair);
+                                }
+                                //Use MTV to translate object out
+                                if (body1.IsStatic)
+                                {
+                                    body2.Parent.Position += intersectionPair.Normal * intersectionPair.Mtv;
+                                }
+                                else if (body2.IsStatic)
+                                {
+                                    body1.Parent.Position += intersectionPair.Normal * intersectionPair.Mtv;
                                 }
                                 BounceObjects(body1, body2, intersectionPair.Normal, new Vector2(-intersectionPair.Normal.Y, intersectionPair.Normal.X));
                             }
@@ -260,15 +266,6 @@ namespace SuperPong.MJFrameWork
                         }
                         else
                         {
-                            if (body1.ShouldCheckForCollision(body2.Bitmask) && collisionPairs.Contains(intersectionPair))
-                            {
-                                collisionPairs.Remove(intersectionPair);
-                                foreach (MJPhysicsEventListener listener in listeners)
-                                {
-                                    listener.CollisionEnded(intersectionPair);
-                                }
-                            }
-
                             if (body1.ShouldCheckForIntersection(body2.Bitmask) && intersectionPairs.Contains(intersectionPair))
                             {
                                 intersectionPairs.Remove(intersectionPair);
