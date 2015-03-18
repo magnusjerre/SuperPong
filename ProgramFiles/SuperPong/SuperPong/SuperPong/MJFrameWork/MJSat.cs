@@ -38,8 +38,8 @@ namespace SuperPong.MJFrameWork
         {
             MJPhysicsBody circleBody = body1.IsCircleBody() ? body1 : body2;
             MJPhysicsBody polygonBody = body1.IsPolygonBody() ? body1 : body2;
-            //if (PolygonAndCircleCannotCollide(circleBody, polygonBody))
-            //    return new MJIntersection(false, Vector2.Zero, 0f, body1, body2);
+            if (PolygonAndCircleCannotCollide(circleBody, polygonBody))
+                return new MJIntersection(false, Vector2.Zero, 0f, body1, body2);
 
             Vector2 circleCenter = circleBody.Parent.absoluteCoordinateSystem.Position;
 
@@ -144,13 +144,13 @@ namespace SuperPong.MJFrameWork
         private static Boolean PolygonAndCircleCannotCollide(MJPhysicsBody circleBody, MJPhysicsBody polygonBody)
         {
             Vector2 circleCenter = circleBody.Parent.absoluteCoordinateSystem.Position;
-            if (polygonBody.AxisAlignedBoundingBox.MaxX < circleCenter.X - circleBody.Radius)
+            if (polygonBody.AxisAlignedBoundingBox.MaxX < circleCenter.X - circleBody.Radius - 10)
                 return true;
-            if (polygonBody.AxisAlignedBoundingBox.MinX > circleCenter.X + circleBody.Radius)
+            if (polygonBody.AxisAlignedBoundingBox.MinX > circleCenter.X + circleBody.Radius + 10)
                 return true;
-            if (polygonBody.AxisAlignedBoundingBox.MaxY < circleCenter.Y - circleBody.Radius)
+            if (polygonBody.AxisAlignedBoundingBox.MaxY < circleCenter.Y - circleBody.Radius - 10)
                 return true;
-            if (polygonBody.AxisAlignedBoundingBox.MinY > circleCenter.Y + circleBody.Radius)
+            if (polygonBody.AxisAlignedBoundingBox.MinY > circleCenter.Y + circleBody.Radius + 10)
                 return true;
             return false;
         }

@@ -166,7 +166,8 @@ namespace SuperPong.MJFrameWork
                         minX = point.X;
                     else if (point.X > maxX)
                         maxX = point.X;
-                    else if (point.Y < minY)
+                    
+                    if (point.Y < minY)
                         minY = point.Y;
                     else if (point.Y > maxY)
                         maxY = point.Y;
