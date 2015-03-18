@@ -151,6 +151,12 @@ namespace SuperPong.MJFrameWork
             return polygonPath;
         }
 
+        protected void CalculateAxisAlignedBoundingBoxForCircle() 
+        {
+            Vector2 position = Parent.absoluteCoordinateSystem.Position;
+            AxisAlignedBoundingBox = new MJRectangle(position.X - Radius, position.Y - Radius, position.X + Radius, position.Y + Radius);
+        }
+
         protected void CalculateAxisAlignedBoundingBox()
         {
             if (PolygonPath.Count > 1)
@@ -202,6 +208,10 @@ namespace SuperPong.MJFrameWork
                 UpdateMatrix();
                 UpdatePolygons();
                 CalculateAxisAlignedBoundingBox();
+            }
+            else
+            {
+                CalculateAxisAlignedBoundingBoxForCircle();
             }
         }
 
