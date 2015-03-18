@@ -38,6 +38,8 @@ namespace SuperPong.MJFrameWork
         {
             MJPhysicsBody circleBody = body1.IsCircleBody() ? body1 : body2;
             MJPhysicsBody polygonBody = body1.IsPolygonBody() ? body1 : body2;
+            //if (PolygonAndCircleCannotCollide(circleBody, polygonBody))
+            //    return new MJIntersection(false, Vector2.Zero, 0f, body1, body2);
 
             Vector2 circleCenter = circleBody.Parent.absoluteCoordinateSystem.Position;
 
@@ -86,6 +88,9 @@ namespace SuperPong.MJFrameWork
 
         public static MJIntersection PolygonsCollide(MJPhysicsBody body1, MJPhysicsBody body2)
         {
+            if (PolygonsCannotCollide(body1, body2))
+                return new MJIntersection(false, Vector2.Zero, 0f, body1, body2);
+
             float mtv = float.MaxValue;
             Vector2 resultNormal = new Vector2();
             Boolean collision = false;
@@ -134,6 +139,33 @@ namespace SuperPong.MJFrameWork
             }
 
             return new MJIntersection(collision, resultNormal, mtv, body1, body2);
+        }
+
+        private static Boolean PolygonAndCircleCannotCollide(MJPhysicsBody circleBody, MJPhysicsBody polygonBody)
+        {
+            Vector2 circleCenter = circleBody.Parent.absoluteCoordinateSystem.Position;
+            if (polygonBody.AxisAlignedBoundingBox.MaxX < circleCenter.X - circleBody.Radius)
+                return true;
+            if (polygonBody.AxisAlignedBoundingBox.MinX > circleCenter.X + circleBody.Radius)
+                return true;
+            if (polygonBody.AxisAlignedBoundingBox.MaxY < circleCenter.Y - circleBody.Radius)
+                return true;
+            if (polygonBody.AxisAlignedBoundingBox.MinY > circleCenter.Y + circleBody.Radius)
+                return true;
+            return false;
+        }
+        
+        private static Boolean PolygonsCannotCollide(MJPhysicsBody body1, MJPhysicsBody body2)
+        {
+            if (body1.AxisAlignedBoundingBox.MaxX < body2.AxisAlignedBoundingBox.MinX)
+                return true;
+            if (body1.AxisAlignedBoundingBox.MinX > body2.AxisAlignedBoundingBox.MaxX)
+                return true;
+            if (body1.AxisAlignedBoundingBox.MaxY < body2.AxisAlignedBoundingBox.MinY)
+                return true;
+            if (body1.AxisAlignedBoundingBox.MinY > body2.AxisAlignedBoundingBox.MaxY)
+                return true;
+            return false;
         }
 
         private static float Overlap(float min1, float max1, float min2, float max2)
