@@ -249,6 +249,16 @@ namespace SuperPong.MJFrameWork
         {
             return (otherBitmask & IntersectionMask) > 0;
         }
+
+        public bool IsCircleBody()
+        {
+            return Radius > 0;
+        }
+
+        public bool IsPolygonBody()
+        {
+            return PolygonPath.Count > 0;
+        }
     } 
 
 }

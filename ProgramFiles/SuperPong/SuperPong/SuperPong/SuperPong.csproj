@@ -90,6 +90,7 @@
     <Compile Include="MJFrameWork\MJPhysicsBody.cs" />
     <Compile Include="MJFrameWork\MJPhysicsManager.cs" />
     <Compile Include="MJFrameWork\MJRectangle.cs" />
+    <Compile Include="MJFrameWork\MJSat.cs" />
     <Compile Include="MJFrameWork\MJScene.cs" />
     <Compile Include="MJFrameWork\MJSprite.cs" />
     <Compile Include="MJFrameWork\Interfaces\MJUpdate.cs" />
