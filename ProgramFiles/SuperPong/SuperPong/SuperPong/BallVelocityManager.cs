@@ -18,6 +18,8 @@ namespace SuperPong
 
         public Vector2 InitialDirection { get; set; }
 
+        public float MaxMultiplier { get; set; }
+        public float TotalMultiplier { get; set; }
         public float Multiplier { get; set; }
         public int MultiplyRate { get; set; }
         private int counter;
@@ -25,32 +27,35 @@ namespace SuperPong
 
         private MJPhysicsBody ball;
 
-        public BallVelocityManager(MJPhysicsBody ball, float initialSpeed, Vector2 initialDirection, float multiplier, int multiplyRate, int seed)
+        public BallVelocityManager(MJPhysicsBody ball, float initialSpeed, Vector2 initialDirection, float multiplier, int multiplyRate, int seed, float maxMultiplier)
         {
             this.ball = ball;
             this.InitialSpeed = initialSpeed;
             this.InitialDirection = initialDirection;
             this.Multiplier = multiplier;
             this.MultiplyRate = multiplyRate;
+            this.MaxMultiplier = maxMultiplier;
+            TotalMultiplier = 1f;
             random = new Random(seed);
             speed = InitialSpeed;
             counter = 0;
         }
 
-        public BallVelocityManager(MJPhysicsBody ball) : this(ball, 550f, new Vector2(), 1.1f, 5, 2)
+        public BallVelocityManager(MJPhysicsBody ball) : this(ball, 550f, new Vector2(), 1.1f, 5, 2, 1.6f)
         {
             ResetAfterPoint();
         }
 
-        public void CollisionEnded(MJIntersection collisionPair)
+        public void Collision(MJIntersection collisionPair)
         {
             if (IsBallCollision(collisionPair))
             {
                 counter++;
-                if (counter == MultiplyRate)
+                if (counter == MultiplyRate && TotalMultiplier < MaxMultiplier)
                 {
                     counter = 0;
                     speed *= Multiplier;
+                    TotalMultiplier *= Multiplier;
 
                     Vector2 ballVelocityNormalized = ball.Velocity / ball.Velocity.Length();
                     ball.Velocity = ballVelocityNormalized * speed;
@@ -74,6 +79,7 @@ namespace SuperPong
             
             speed = InitialSpeed;
             ball.Velocity = InitialDirection * speed;
+            TotalMultiplier = 1f;
 
             counter = 0;
         }

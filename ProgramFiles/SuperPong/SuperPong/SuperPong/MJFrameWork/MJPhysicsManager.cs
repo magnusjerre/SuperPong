@@ -186,18 +186,24 @@ namespace SuperPong.MJFrameWork
             if (body1.IsStatic)
             {
                 //The commented out code removes the speed increase/decrease from moving static
-                //v1nFinal = v1n;
-                //v2nFinal = 2 * v1n - v2n;
+                /*v1nFinal = v1n;
                 v1nFinal = 0;
+                v1tFinal = 0;
+                v2nFinal = 2 * v1n - v2n;*/
+                v1nFinal = 0;
+                v1tFinal = 0;
                 v2nFinal = -v2n;
             }
             else if (body2.IsStatic)
             {
                 //The commented out code removes the speed increase/decrease from moving static
-                //v1nFinal = 2 * v2n - v1n;
-                //v2nFinal = v2n;
+                /*v1nFinal = 2 * v2n - v1n;
+                v2nFinal = v2n;
+                v2nFinal = 0;
+                v2tFinal = 0;*/
                 v1nFinal = -v1n;
                 v2nFinal = 0;
+                v2tFinal = 0;
             }
             else
             {

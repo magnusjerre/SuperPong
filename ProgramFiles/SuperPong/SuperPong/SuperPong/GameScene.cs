@@ -30,6 +30,7 @@ namespace SuperPong
         PlayerCreator playerCreator;
         Vector2 moveDown = new Vector2(0, 1), moveUp = new Vector2(0, -1);
         PowerupManager powerupManager;
+        int countDownPlayerLeft = 0, countDownPlayerRight = 0;
 
         public GameScene(ContentManager content) : base(content, "GameScene")
         {
@@ -149,26 +150,34 @@ namespace SuperPong
         {
             base.Update(gameTime);
 
-            powerupManager.Update(gameTime);
+            //powerupManager.Update(gameTime);
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Down))
-                paddleRight.Move(moveDown);
-            else if (Keyboard.GetState().IsKeyDown(Keys.Up))
-                paddleRight.Move(moveUp);
-            else if (Keyboard.GetState().IsKeyDown(Keys.Q))
-                powerupManager.UsePowerup(paddleLeft, new Vector2(400, 250));
-            else
-                paddleRight.StopMove();
+            countDownPlayerLeft -= gameTime.ElapsedGameTime.Milliseconds;
+            countDownPlayerRight -= gameTime.ElapsedGameTime.Milliseconds;
+            if (countDownPlayerRight < 1)
+            {
+                if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                    paddleRight.Move(moveDown);
+                else if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                    paddleRight.Move(moveUp);
+                else if (Keyboard.GetState().IsKeyDown(Keys.Q))
+                    powerupManager.UsePowerup(paddleLeft, new Vector2(400, 250));
+                else
+                    paddleRight.StopMove();
+            }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.S))
-                paddleLeft.Move(moveDown);
-            else if (Keyboard.GetState().IsKeyDown(Keys.W))
-                paddleLeft.Move(moveUp);
-            else if (Keyboard.GetState().IsKeyDown(Keys.M))
-                powerupManager.UsePowerup(paddleRight, new Vector2(400, 250));
-            else
-                paddleLeft.StopMove();
+            if (countDownPlayerLeft < 1) {
+                if (Keyboard.GetState().IsKeyDown(Keys.S))
+                    paddleLeft.Move(moveDown);
+                else if (Keyboard.GetState().IsKeyDown(Keys.W))
+                    paddleLeft.Move(moveUp);
+                else if (Keyboard.GetState().IsKeyDown(Keys.M))
+                    powerupManager.UsePowerup(paddleRight, new Vector2(400, 250));
+                else
+                    paddleLeft.StopMove();
             
+            }
+
             if (gameIsOver && Keyboard.GetState().IsKeyDown(Keys.R))
             {
                 ResetGame();
@@ -181,6 +190,21 @@ namespace SuperPong
         public override void CollisionBegan(MJIntersection pair)
         {
             Console.WriteLine("Collision between: [" + pair.Body1.Parent.Name + ", " + pair.Body2.Parent.Name + "] began");
+            ballManager.Collision(pair);
+            /*
+            if ((pair.Body1.Bitmask == Bitmasks.BALL || pair.Body2.Bitmask == Bitmasks.BALL) )
+            {
+                if (pair.Body1.Parent.Name.Equals("PaddleLeft") || pair.Body2.Parent.Name.Equals("PaddleLeft")) 
+                {
+                    countDownPlayerLeft = 250;    //ms
+                    paddleLeft.CurrentMovementVelcoity = Vector2.Zero;
+                }
+                else if (pair.Body1.Parent.Name.Equals("PaddleRight") || pair.Body2.Parent.Name.Equals("PaddleRight"))
+                {
+                    countDownPlayerRight = 250;    //ms
+                    paddleRight.CurrentMovementVelcoity = Vector2.Zero;
+                }
+            }*/
         }
 
         public override void IntersectionBegan(MJIntersection pair)
