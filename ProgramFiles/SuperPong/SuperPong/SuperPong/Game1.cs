@@ -31,7 +31,7 @@ namespace SuperPong
             graphics.PreferredBackBufferHeight = 576;
             graphics.ApplyChanges();
             Content.RootDirectory = "Content";            
-            scene = new GameScene(Content);
+            scene = new GameScene(Content, 576, 1024);
             //scene = new CollisionScene(Content);
         }
 

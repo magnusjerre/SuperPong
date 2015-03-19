@@ -18,7 +18,6 @@ namespace SuperPong
         MJSprite ball;
         Texture2D paddleTexture, ballTexture;
         MJNode topWall, bottomWall, leftGoal, rightGoal;
-        int height = 576, width = 1024;
         Vector2 wallSize, goalSize;
         ScoreKeeper scoreKeeper;
         int maxScore = 5;
@@ -31,14 +30,17 @@ namespace SuperPong
         Vector2 moveDown = new Vector2(0, 1), moveUp = new Vector2(0, -1);
         PowerupManager powerupManager;
         int countDownPlayerLeft = 0, countDownPlayerRight = 0;
+        public static int Height, Width;
 
-        public GameScene(ContentManager content) : base(content, "GameScene")
+        public GameScene(ContentManager content, int height, int width) : base(content, "GameScene")
         {
-            playerCreator = new PlayerCreator(new Vector2(100, height / 2), new Vector2(width - 100, height / 2));
-            initialBallPosition = new Vector2(width / 2, height / 2);
+            Height = height;
+            Width = width;
+            playerCreator = new PlayerCreator(new Vector2(100, Height / 2), new Vector2(Width - 100, Height / 2));
+            initialBallPosition = new Vector2(Width / 2, Height / 2);
             wallSize = new Vector2(width, 100);
             goalSize = new Vector2(100, height);
-            powerupManager = new PowerupManager(this, content, width, height);
+            powerupManager = new PowerupManager(this, content, Width, Height);
         }
 
         public override void Initialize()
@@ -55,7 +57,7 @@ namespace SuperPong
             ball.PhysicsBody.Bitmask = Bitmasks.BALL;
             ball.PhysicsBody.CollisionMask = Bitmasks.WALL | Bitmasks.PADDLE;
             ball.PhysicsBody.IntersectionMask = Bitmasks.GOAL;
-            ball.Position = new Vector2(width / 2, height / 2);
+            ball.Position = new Vector2(Width / 2, Height / 2);
             AddChild(ball);
 
             topWall = new MJNode();
@@ -69,7 +71,7 @@ namespace SuperPong
 
             bottomWall = new MJNode();
             bottomWall.Name = "BottomWall";
-            bottomWall.Position = new Vector2(0, height);
+            bottomWall.Position = new Vector2(0, Height);
             bottomWall.AttachPhysicsBody(MJPhysicsBody.RectangularMJPhysicsBody(wallSize, new Vector2(0,0))); //Origin at top right corner
             bottomWall.PhysicsBody.IsStatic = true;
             bottomWall.PhysicsBody.Bitmask = Bitmasks.WALL;
@@ -86,14 +88,14 @@ namespace SuperPong
 
             rightGoal = new MJNode();
             rightGoal.Name = "RightGoal";
-            rightGoal.Position = new Vector2(width, 0);
+            rightGoal.Position = new Vector2(Width, 0);
             rightGoal.AttachPhysicsBody(MJPhysicsBody.RectangularMJPhysicsBody(goalSize, new Vector2(0, 0)));
             rightGoal.PhysicsBody.Bitmask = Bitmasks.GOAL;
             rightGoal.PhysicsBody.IntersectionMask = Bitmasks.BALL | Bitmasks.POWERUP;
             
             AddChild(rightGoal);
 
-            scoreFont = new ScoreFont(new Vector2(width, height), font);
+            scoreFont = new ScoreFont(new Vector2(Width, Height), font);
 
             ballManager = new BallVelocityManager(ball.PhysicsBody);
 

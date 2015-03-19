@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Content;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using SuperPong.MJFrameWork;
 using System;
@@ -26,20 +27,20 @@ namespace SuperPong.Powerups
             textures.Add(PowerupType.SQUARE.ToString(), content.Load<Texture2D>("square"));
         }
 
-        public Powerup CreatePowerup(PowerupType type) {
+        public Powerup CreatePowerup(PowerupType type, Player player, Vector2 rightStickPosition) {
             if (type == PowerupType.LINE) 
             {
-                return CreateLinePowerup();
+                return CreateLinePowerup(player);
             }
             else if (type == PowerupType.SQUARE)
             {
-                return CreateSquarePowerup();
+                return CreateSquarePowerup(rightStickPosition);
             }
 
             return null;
         }
 
-        public Powerup CreateLinePowerup()
+        public Powerup CreateLinePowerup(Player powerupOwner)
         {
             MJSprite sprite = new MJSprite(textures[PowerupType.LINE.ToString()]);
             MJPhysicsBody body = MJPhysicsBody.RectangularMJPhysicsBody(sprite.Size, sprite.GetOrigin());
@@ -49,10 +50,15 @@ namespace SuperPong.Powerups
             Powerup powerup = new Powerup(sprite, body);
             powerup.HitCounter = new HitCounter(1, powerup);
 
+            if (powerupOwner.Name.Equals("PaddleLeft"))
+                powerup.Position = new Vector2(powerupOwner.absoluteCoordinateSystem.Position.X - 100, GameScene.Height / 2);
+            else if (powerupOwner.Name.Equals("PaddleRight"))
+                powerup.Position = new Vector2(powerupOwner.absoluteCoordinateSystem.Position.X + 100, GameScene.Height / 2);
+
             return powerup;
         }
 
-        public Powerup CreateSquarePowerup()
+        public Powerup CreateSquarePowerup(Vector2 position)
         {
             MJSprite sprite = new MJSprite(textures[PowerupType.SQUARE.ToString()]);
             MJPhysicsBody body = MJPhysicsBody.RectangularMJPhysicsBody(sprite.Size, sprite.GetOrigin());
@@ -62,6 +68,7 @@ namespace SuperPong.Powerups
             body.IsStatic = true;
             Powerup powerup = new Powerup(sprite, body);
             powerup.HitCounter = new HitCounter(1, powerup);
+            powerup.Position = position;
             return powerup;
         }
     }

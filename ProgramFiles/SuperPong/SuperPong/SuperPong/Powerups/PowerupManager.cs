@@ -118,8 +118,7 @@ namespace SuperPong.Powerups
         {
             if (player.Name.Equals("PaddleLeft") && player1PowerupDisplay != null)
             {
-                Powerup powerup = factory.CreatePowerup(player1PowerupDisplay.PowerupType);
-                powerup.Position = rightStickPosition;
+                Powerup powerup = factory.CreatePowerup(player1PowerupDisplay.PowerupType, player, rightStickPosition);
                 scene.AddChild(powerup);
 
                 player1PowerupDisplay.RemoveFromParent();
@@ -128,8 +127,7 @@ namespace SuperPong.Powerups
 
             else if (player.Name.Equals("PaddleRight") && player2PowerupDisplay != null)
             {
-                Powerup powerup = factory.CreatePowerup(player2PowerupDisplay.PowerupType);
-                powerup.Position = rightStickPosition;
+                Powerup powerup = factory.CreatePowerup(player2PowerupDisplay.PowerupType, player, rightStickPosition);
                 scene.AddChild(powerup);
 
                 player2PowerupDisplay.RemoveFromParent();
