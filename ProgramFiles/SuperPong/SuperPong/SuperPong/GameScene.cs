@@ -150,7 +150,7 @@ namespace SuperPong
         {
             base.Update(gameTime);
 
-            //powerupManager.Update(gameTime);
+            powerupManager.Update(gameTime);
 
             countDownPlayerLeft -= gameTime.ElapsedGameTime.Milliseconds;
             countDownPlayerRight -= gameTime.ElapsedGameTime.Milliseconds;
@@ -189,33 +189,16 @@ namespace SuperPong
 
         public override void CollisionBegan(MJIntersection pair)
         {
-            Console.WriteLine("Collision between: [" + pair.Body1.Parent.Name + ", " + pair.Body2.Parent.Name + "] began");
             ballManager.Collision(pair);
-            /*
-            if ((pair.Body1.Bitmask == Bitmasks.BALL || pair.Body2.Bitmask == Bitmasks.BALL) )
-            {
-                if (pair.Body1.Parent.Name.Equals("PaddleLeft") || pair.Body2.Parent.Name.Equals("PaddleLeft")) 
-                {
-                    countDownPlayerLeft = 250;    //ms
-                    paddleLeft.CurrentMovementVelcoity = Vector2.Zero;
-                }
-                else if (pair.Body1.Parent.Name.Equals("PaddleRight") || pair.Body2.Parent.Name.Equals("PaddleRight"))
-                {
-                    countDownPlayerRight = 250;    //ms
-                    paddleRight.CurrentMovementVelcoity = Vector2.Zero;
-                }
-            }*/
         }
 
         public override void IntersectionBegan(MJIntersection pair)
         {
-            Console.WriteLine("Intersection between: [" + pair.Body1.Parent.Name + ", " + pair.Body2.Parent.Name + "] began");
             scoreKeeper.IncreaseScore(pair);
         }
 
         public override void IntersectionEnded(MJIntersection pair)
         {
-            Console.WriteLine("Intersection between: [" + pair.Body1.Parent.Name + ", " + pair.Body2.Parent.Name + "] ended");
         }
 
         public void NotifyMaxScoreReached(string playerReachingMaxScore)

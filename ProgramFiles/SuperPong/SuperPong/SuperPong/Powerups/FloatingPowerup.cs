@@ -34,6 +34,10 @@ namespace SuperPong.Powerups
         private Vector2 GenerateRandomInitialVelocity(Random randomGenerator)
         {
             int xDirection = randomGenerator.Next(201) - 100;
+            if (-1 < xDirection && xDirection < 30)
+                xDirection += 30;
+            else if (-30 < xDirection && xDirection < 0)
+                xDirection -= 30;
             int yDirection = randomGenerator.Next(201) - 100;
             float length = (float)Math.Sqrt(xDirection * xDirection + yDirection * yDirection);
             Vector2 unitVector = new Vector2(xDirection / length, yDirection / length);
