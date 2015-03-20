@@ -77,11 +77,36 @@ namespace SuperPong.Powerups
         public void ResetGame()
         {
             timeLeftToNextPowerup = GenerateNextTimeToPowerup();
+
+            if (player1Powerup != null)
+            {
+                player1Powerup.StopAndRemovePowerup();
+                player1Powerup = null;
+            }
+
+            if (player1PowerupDisplay != null)
+            {
+                player1PowerupDisplay.RemoveFromParent();
+                player1PowerupDisplay = null;
+            }
+
+            if (player2Powerup != null)
+            {
+                player2Powerup.StopAndRemovePowerup();
+                player2Powerup = null;
+            }
+
+            if (player2PowerupDisplay != null)
+            {
+                player2PowerupDisplay.RemoveFromParent();
+                player2PowerupDisplay = null;
+            }
+
+
         }
 
         public void ResetPoint()
         {
-            
         }
 
         public void NotifyPowerupCaught(MJPhysicsBody otherBody, FloatingPowerup floatingPowerup) {
