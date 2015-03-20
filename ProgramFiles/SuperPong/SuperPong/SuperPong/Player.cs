@@ -29,6 +29,7 @@ namespace SuperPong
             InitialPosition = initialPosition;
             OriginalMovementVelocity = new Vector2(0, 500);
             CurrentMovementVelcoity = new Vector2(0, 0);
+
         }
 
         public override void Update(GameTime gameTime)
@@ -44,7 +45,8 @@ namespace SuperPong
                 CurrentMovementVelcoity = Vector2.Zero;
                 Position = new Vector2(absoluteCoordinateSystem.Position.X, GameScene.Height - Sprite.Size.Y / 2);
             }
-            
+
+           
             PhysicsBody.Velocity = CurrentMovementVelcoity;
             base.Update(gameTime);
         }

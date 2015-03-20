@@ -14,9 +14,12 @@ namespace SuperPong
     public class GameScene : MJScene, ScoreObserver, ResetGame, PointReset, InputListener
     {
 
-        Player paddleLeft, paddleRight;
+        Player player1, player2;
+        Cursor player1Cursor, player2Cursor;
+        public MJNode CursorLayer, HUDLayer, GameLayer;
+        const String CURSORLAYERNAME = "CURSOR_LAYER", HUDLAYERNAME = "HUD_LAYER", GAMELAYERNAME = "GAME_LAYER";
         MJSprite ball;
-        Texture2D paddleTexture, ballTexture;
+        Texture2D paddleTexture, ballTexture, cursorTexture;
         MJNode topWall, bottomWall, leftGoal, rightGoal;
         Vector2 wallSize, goalSize;
         ScoreKeeper scoreKeeper;
@@ -42,15 +45,24 @@ namespace SuperPong
             goalSize = new Vector2(100, height);
             powerupManager = new PowerupManager(this, content, Width, Height);
             inputHandler = new InputHandler(this, InputType.KEYBOARD);
+            CursorLayer = new MJNode();
+            CursorLayer.Name = CURSORLAYERNAME;
+            HUDLayer = new MJNode();
+            HUDLayer.Name = HUDLAYERNAME;
+            GameLayer = new MJNode();
+            GameLayer.Name = GAMELAYERNAME;
+            AddChild(GameLayer);
+            AddChild(HUDLayer);
+            AddChild(CursorLayer);
         }
 
         public override void Initialize()
         {
             AttachPhysicsManager(MJPhysicsManager.getInstance());
-            paddleLeft = playerCreator.CreatePlayer1();
-            AddChild(paddleLeft);
-            paddleRight = playerCreator.CreatePlayer2();
-            AddChild(paddleRight);
+            player1 = playerCreator.CreatePlayer1();
+            AddToGameLayer(player1);
+            player2 = playerCreator.CreatePlayer2();
+            AddToGameLayer(player2);
 
             ball = new MJSprite(ballTexture);
             ball.Name = "Ball";
@@ -59,7 +71,7 @@ namespace SuperPong
             ball.PhysicsBody.CollisionMask = Bitmasks.WALL | Bitmasks.PADDLE;
             ball.PhysicsBody.IntersectionMask = Bitmasks.GOAL;
             ball.Position = new Vector2(Width / 2, Height / 2);
-            AddChild(ball);
+            AddToGameLayer(ball);
 
             topWall = new MJNode();
             topWall.Name = "TopWall";
@@ -68,7 +80,7 @@ namespace SuperPong
             topWall.PhysicsBody.IsStatic = true;
             topWall.PhysicsBody.Bitmask = Bitmasks.WALL;
             topWall.PhysicsBody.CollisionMask = Bitmasks.BALL | Bitmasks.POWERUP;
-            AddChild(topWall);
+            AddToGameLayer(topWall);
 
             bottomWall = new MJNode();
             bottomWall.Name = "BottomWall";
@@ -77,7 +89,7 @@ namespace SuperPong
             bottomWall.PhysicsBody.IsStatic = true;
             bottomWall.PhysicsBody.Bitmask = Bitmasks.WALL;
             bottomWall.PhysicsBody.CollisionMask = Bitmasks.BALL | Bitmasks.POWERUP;
-            AddChild(bottomWall);
+            AddToGameLayer(bottomWall);
 
             leftGoal = new MJNode();
             leftGoal.Name = "LeftGoal";
@@ -85,7 +97,7 @@ namespace SuperPong
             leftGoal.AttachPhysicsBody(MJPhysicsBody.RectangularMJPhysicsBody(goalSize, new Vector2(1, 0)));
             leftGoal.PhysicsBody.Bitmask = Bitmasks.GOAL;
             leftGoal.PhysicsBody.IntersectionMask = Bitmasks.BALL | Bitmasks.POWERUP;
-            AddChild(leftGoal);
+            AddToGameLayer(leftGoal);
 
             rightGoal = new MJNode();
             rightGoal.Name = "RightGoal";
@@ -93,8 +105,8 @@ namespace SuperPong
             rightGoal.AttachPhysicsBody(MJPhysicsBody.RectangularMJPhysicsBody(goalSize, new Vector2(0, 0)));
             rightGoal.PhysicsBody.Bitmask = Bitmasks.GOAL;
             rightGoal.PhysicsBody.IntersectionMask = Bitmasks.BALL | Bitmasks.POWERUP;
-            
-            AddChild(rightGoal);
+
+            AddToGameLayer(rightGoal);
 
             scoreFont = new ScoreFont(new Vector2(Width, Height), font);
 
@@ -103,6 +115,17 @@ namespace SuperPong
             scoreKeeper = new ScoreKeeper(maxScore);
             scoreKeeper.AddObserver(this);
             scoreKeeper.AddObserver(scoreFont);
+
+            player1Cursor = new Cursor(cursorTexture);
+            player1Cursor.ColorTint = Color.Green;
+            player1Cursor.Position = player1.Position;
+            AddToCursorLayer(player1Cursor);
+
+            player2Cursor = new Cursor(cursorTexture);
+            player2Cursor.ColorTint = Color.Blue;
+            player2Cursor.Position = player2.Position;
+            AddToCursorLayer(player2Cursor);
+
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -117,6 +140,7 @@ namespace SuperPong
             paddleTexture = LoadTexture2D("Paddle");
             playerCreator.LoadTextures(paddleTexture, paddleTexture);
             ballTexture = LoadTexture2D("ball");
+            cursorTexture = LoadTexture2D("stick-cursor");
             font = content.Load<SpriteFont>("TheSpriteFont");
             powerupManager.LoadContent();
         }
@@ -175,8 +199,8 @@ namespace SuperPong
         {
             ball.Position = initialBallPosition;
             ball.PhysicsBody.Acceleration = new Vector2();
-            paddleLeft.ResetPoint();
-            paddleRight.ResetPoint();
+            player1.ResetPoint();
+            player2.ResetPoint();
             ballManager.ResetAfterPoint();
             powerupManager.ResetPoint();
         }
@@ -184,43 +208,54 @@ namespace SuperPong
         public void MovePlayer(int playerNumber, Vector2 direction)
         {
             if (playerNumber == 1)
-                paddleLeft.Move(direction);
+                player1.Move(direction);
             else
-                paddleRight.Move(direction);
+                player2.Move(direction);
         }
 
         public void StopPlayerMovement(int playerNumber)
         {
             if (playerNumber == 1)
-                paddleLeft.StopMove();
+                player1.StopMove();
             else
-                paddleRight.StopMove();
+                player2.StopMove();
         }
 
         public void UsePowerup(int playerNumber)
         {
             if (playerNumber == 1)
-                powerupManager.UsePowerup(paddleLeft, new Vector2(100, 100));
+                powerupManager.UsePowerup(player1, player1Cursor.absoluteCoordinateSystem.Position);
             else
-                powerupManager.UsePowerup(paddleRight, new Vector2(200, 300));
+                powerupManager.UsePowerup(player2, player2Cursor.absoluteCoordinateSystem.Position);
         }
 
         public void MovePlayerStick(int playerNumber, Vector2 direction)
         {
             if (playerNumber == 1)
-            {
-                //Do something
-            }
+                player1Cursor.Move(direction);
             else
-            {
-                //DO something else
-            }
+                player2Cursor.Move(direction);
         }
 
         public void RestartGame()
         {
             ResetGame();
             gameIsOver = false;
+        }
+
+        public void AddToGameLayer(MJNode node)
+        {
+            GameLayer.AddChild(node);
+        }
+
+        public void AddToHudLayer(MJNode node)
+        {
+            HUDLayer.AddChild(node);
+        }
+
+        public void AddToCursorLayer(MJNode node)
+        {
+            CursorLayer.AddChild(node);
         }
     }
 }

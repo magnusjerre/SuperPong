@@ -12,7 +12,7 @@ namespace SuperPong.Powerups
 {
     public class PowerupManager : MJUpdate, ResetPoint, ResetGame, PowerupObserver
     {
-        MJScene scene;
+        GameScene scene;
         ContentManager content;
         Dictionary<string, Texture2D> floatingTextures;
         
@@ -29,7 +29,7 @@ namespace SuperPong.Powerups
 
         PowerupFactory factory;
 
-        public PowerupManager(MJScene scene, ContentManager content, int width, int height)
+        public PowerupManager(GameScene scene, ContentManager content, int width, int height)
         {
             this.scene = scene;
             this.content = content;
@@ -69,7 +69,7 @@ namespace SuperPong.Powerups
             {
                 timeLeftToNextPowerup = GenerateNextTimeToPowerup();
                 PowerupType nextType = GenerateNextPowerupType();
-                scene.AddChild(new FloatingPowerup(this, floatingTextures[nextType.ToString()], nextType, randomGenerator, initialPositionFLoatingPowerup));
+                scene.AddToGameLayer(new FloatingPowerup(this, floatingTextures[nextType.ToString()], nextType, randomGenerator, initialPositionFLoatingPowerup));
                 canAddNewPowerup = false;
             }
         }
@@ -94,7 +94,7 @@ namespace SuperPong.Powerups
 
                 player1PowerupDisplay = new PowerupDisplay(floatingTextures["frame"], floatingTextures[floatingPowerup.PowerupType.ToString()], floatingPowerup.PowerupType);
                 player1PowerupDisplay.Position = player1PowerupDisplayPosition;
-                scene.AddChild(player1PowerupDisplay);
+                scene.AddToGameLayer(player1PowerupDisplay);
             }
             else if (Player2CaughtPowerup(otherBody))
             {
@@ -103,7 +103,7 @@ namespace SuperPong.Powerups
                 
                 player2PowerupDisplay = new PowerupDisplay(floatingTextures["frame"], floatingTextures[floatingPowerup.PowerupType.ToString()], floatingPowerup.PowerupType);
                 player2PowerupDisplay.Position = player2PowerupDisplayPosition;
-                scene.AddChild(player2PowerupDisplay);
+                scene.AddToGameLayer(player2PowerupDisplay);
             }            
         }
 
@@ -129,7 +129,7 @@ namespace SuperPong.Powerups
                     player1Powerup.StopAndRemovePowerup();
 
                 player1Powerup = factory.CreatePowerup(player1PowerupDisplay.PowerupType, player, rightStickPosition);
-                scene.AddChild(player1Powerup);
+                scene.AddToGameLayer(player1Powerup);
 
                 player1PowerupDisplay.RemoveFromParent();
                 player1PowerupDisplay = null;
@@ -141,7 +141,7 @@ namespace SuperPong.Powerups
                     player2Powerup.StopAndRemovePowerup();
 
                 player2Powerup = factory.CreatePowerup(player2PowerupDisplay.PowerupType, player, rightStickPosition);
-                scene.AddChild(player2Powerup);
+                scene.AddToGameLayer(player2Powerup);
 
                 player2PowerupDisplay.RemoveFromParent();
                 player2PowerupDisplay = null;

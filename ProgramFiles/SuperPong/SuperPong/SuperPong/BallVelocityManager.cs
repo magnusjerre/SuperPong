@@ -24,7 +24,7 @@ namespace SuperPong
         public int MultiplyRate { get; set; }
         private int counter;
         private Random random;
-
+        
         private MJPhysicsBody ball;
 
         public BallVelocityManager(MJPhysicsBody ball, float initialSpeed, Vector2 initialDirection, float multiplier, int multiplyRate, int seed, float maxMultiplier)

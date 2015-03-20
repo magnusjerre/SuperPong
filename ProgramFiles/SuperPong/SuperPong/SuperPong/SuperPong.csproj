@@ -74,6 +74,7 @@
   <ItemGroup>
     <Compile Include="BallVelocityManager.cs" />
     <Compile Include="Bitmasks.cs" />
+    <Compile Include="Cursor.cs" />
     <Compile Include="Font.cs" />
     <Compile Include="GameScene.cs" />
     <Compile Include="InputHandler.cs" />

@@ -85,7 +85,7 @@ namespace SuperPong
                 listener.StopPlayerMovement(player1);
 
             //Stick movement
-            Vector2 rightStickP1 = new Vector2();
+            Vector2 rightStickP1 = Vector2.Zero;
             if (Keyboard.GetState().IsKeyDown(Keys.Y))
                 rightStickP1 = new Vector2(rightStickP1.X, rightStickP1.Y - 1);
             if (Keyboard.GetState().IsKeyDown(Keys.H))
@@ -94,7 +94,9 @@ namespace SuperPong
                 rightStickP1 = new Vector2(rightStickP1.X - 1, rightStickP1.Y);
             if (Keyboard.GetState().IsKeyDown(Keys.J))
                 rightStickP1 = new Vector2(rightStickP1.X + 1, rightStickP1.Y);
-            listener.MovePlayerStick(player1, rightStickP1);
+
+            if (rightStickP1.X != 0 || rightStickP1.Y != 0)
+                listener.MovePlayerStick(player1, rightStickP1);
 
             //Powerup
             if (Keyboard.GetState().IsKeyDown(Keys.Q))
@@ -111,15 +113,16 @@ namespace SuperPong
 
             //Stick movement
             Vector2 rightStickP2 = new Vector2();
-            if (Keyboard.GetState().IsKeyDown(Keys.Y))
+            if (Keyboard.GetState().IsKeyDown(Keys.NumPad8))
                 rightStickP2 = new Vector2(rightStickP2.X, rightStickP2.Y - 1);
-            if (Keyboard.GetState().IsKeyDown(Keys.H))
+            if (Keyboard.GetState().IsKeyDown(Keys.NumPad2))
                 rightStickP2 = new Vector2(rightStickP2.X, rightStickP2.Y + 1);
-            if (Keyboard.GetState().IsKeyDown(Keys.G))
+            if (Keyboard.GetState().IsKeyDown(Keys.NumPad4))
                 rightStickP2 = new Vector2(rightStickP2.X - 1, rightStickP2.Y);
-            if (Keyboard.GetState().IsKeyDown(Keys.J))
+            if (Keyboard.GetState().IsKeyDown(Keys.NumPad6))
                 rightStickP2 = new Vector2(rightStickP2.X + 1, rightStickP2.Y);
-            listener.MovePlayerStick(player2, rightStickP2);
+            if (rightStickP2.X != 0 || rightStickP2.Y != 0)
+                listener.MovePlayerStick(player2, rightStickP2);
 
             //Powerup
             if (Keyboard.GetState().IsKeyDown(Keys.M))
