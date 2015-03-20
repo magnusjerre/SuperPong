@@ -199,6 +199,8 @@ namespace SuperPong
             scoreFont.ResetGame();
             ballManager.ResetGame();
             powerupManager.ResetGame();
+            player1Cursor.Position = player1.Position;
+            player2Cursor.Position = player2.Position;
         }
 
         public void ResetAfterPoint()
