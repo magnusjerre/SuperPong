@@ -11,7 +11,7 @@ using System.Text;
 
 namespace SuperPong
 {
-    public class GameScene : MJScene, ScoreObserver, ResetGame, PointReset
+    public class GameScene : MJScene, ScoreObserver, ResetGame, PointReset, InputListener
     {
 
         Player paddleLeft, paddleRight;
@@ -29,7 +29,7 @@ namespace SuperPong
         PlayerCreator playerCreator;
         Vector2 moveDown = new Vector2(0, 1), moveUp = new Vector2(0, -1);
         PowerupManager powerupManager;
-        int countDownPlayerLeft = 0, countDownPlayerRight = 0;
+        InputHandler inputHandler;
         public static int Height, Width;
 
         public GameScene(ContentManager content, int height, int width) : base(content, "GameScene")
@@ -41,6 +41,7 @@ namespace SuperPong
             wallSize = new Vector2(width, 100);
             goalSize = new Vector2(100, height);
             powerupManager = new PowerupManager(this, content, Width, Height);
+            inputHandler = new InputHandler(this, InputType.KEYBOARD);
         }
 
         public override void Initialize()
@@ -104,34 +105,6 @@ namespace SuperPong
             scoreKeeper.AddObserver(scoreFont);
         }
 
-        private List<Vector2> generatePaddleLeftShape()
-        {
-            List<Vector2> paddleLeftShape = new List<Vector2>();
-            paddleLeftShape.Add(new Vector2(50, -50));
-            paddleLeftShape.Add(new Vector2(0, -100));
-            paddleLeftShape.Add(new Vector2(-50, -100));
-            paddleLeftShape.Add(new Vector2(0, -50));
-            paddleLeftShape.Add(new Vector2(0, 50));
-            paddleLeftShape.Add(new Vector2(-50, 100));
-            paddleLeftShape.Add(new Vector2(0, 100));
-            paddleLeftShape.Add(new Vector2(50, 50));
-            return paddleLeftShape;
-        }
-
-        private List<Vector2> generatePaddleRightShape()
-        {
-            List<Vector2> paddleRightShape = new List<Vector2>();
-            paddleRightShape.Add(new Vector2(-50, -50));    //0
-            paddleRightShape.Add(new Vector2(-50, 50));     //1
-            paddleRightShape.Add(new Vector2(0, 100));      //2
-            paddleRightShape.Add(new Vector2(50, 100));     //3
-            paddleRightShape.Add(new Vector2(0, 50));       //4
-            paddleRightShape.Add(new Vector2(0, -50));      //5
-            paddleRightShape.Add(new Vector2(50, -100));    //6
-            paddleRightShape.Add(new Vector2(0, -100));     //7
-            return paddleRightShape;
-        }
-
         public override void Draw(SpriteBatch spriteBatch)
         {
             base.Draw(spriteBatch);
@@ -154,39 +127,7 @@ namespace SuperPong
 
             powerupManager.Update(gameTime);
 
-            countDownPlayerLeft -= gameTime.ElapsedGameTime.Milliseconds;
-            countDownPlayerRight -= gameTime.ElapsedGameTime.Milliseconds;
-            if (countDownPlayerRight < 1)
-            {
-                if (Keyboard.GetState().IsKeyDown(Keys.Down))
-                    paddleRight.Move(moveDown);
-                else if (Keyboard.GetState().IsKeyDown(Keys.Up))
-                    paddleRight.Move(moveUp);
-                else if (Keyboard.GetState().IsKeyDown(Keys.Q))
-                    powerupManager.UsePowerup(paddleLeft, new Vector2(400, 250));
-                else
-                    paddleRight.StopMove();
-            }
-
-            if (countDownPlayerLeft < 1) {
-                if (Keyboard.GetState().IsKeyDown(Keys.S))
-                    paddleLeft.Move(moveDown);
-                else if (Keyboard.GetState().IsKeyDown(Keys.W))
-                    paddleLeft.Move(moveUp);
-                else if (Keyboard.GetState().IsKeyDown(Keys.M))
-                    powerupManager.UsePowerup(paddleRight, new Vector2(400, 250));
-                else
-                    paddleLeft.StopMove();
-            
-            }
-
-            if (gameIsOver && Keyboard.GetState().IsKeyDown(Keys.R))
-            {
-                ResetGame();
-                gameIsOver = false;
-            }
-
-
+            inputHandler.Update(gameTime);
         }
 
         public override void CollisionBegan(MJIntersection pair)
@@ -238,6 +179,48 @@ namespace SuperPong
             paddleRight.ResetPoint();
             ballManager.ResetAfterPoint();
             powerupManager.ResetPoint();
+        }
+
+        public void MovePlayer(int playerNumber, Vector2 direction)
+        {
+            if (playerNumber == 1)
+                paddleLeft.Move(direction);
+            else
+                paddleRight.Move(direction);
+        }
+
+        public void StopPlayerMovement(int playerNumber)
+        {
+            if (playerNumber == 1)
+                paddleLeft.StopMove();
+            else
+                paddleRight.StopMove();
+        }
+
+        public void UsePowerup(int playerNumber)
+        {
+            if (playerNumber == 1)
+                powerupManager.UsePowerup(paddleLeft, new Vector2(100, 100));
+            else
+                powerupManager.UsePowerup(paddleRight, new Vector2(200, 300));
+        }
+
+        public void MovePlayerStick(int playerNumber, Vector2 direction)
+        {
+            if (playerNumber == 1)
+            {
+                //Do something
+            }
+            else
+            {
+                //DO something else
+            }
+        }
+
+        public void RestartGame()
+        {
+            ResetGame();
+            gameIsOver = false;
         }
     }
 }

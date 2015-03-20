@@ -76,6 +76,8 @@
     <Compile Include="Bitmasks.cs" />
     <Compile Include="Font.cs" />
     <Compile Include="GameScene.cs" />
+    <Compile Include="InputHandler.cs" />
+    <Compile Include="InputListener.cs" />
     <Compile Include="MJFrameWork\Interfaces\MJDetachable.cs" />
     <Compile Include="MJFrameWork\Interfaces\MJDraw.cs" />
     <Compile Include="MJFrameWork\Interfaces\MJPhysicsEventListener.cs" />

@@ -33,8 +33,20 @@ namespace SuperPong
 
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
+            float endY = absoluteCoordinateSystem.Position.Y + CurrentMovementVelcoity.Y * (gameTime.ElapsedGameTime.Milliseconds / 1000f);
+            if (endY <= Sprite.Size.Y / 2)
+            {
+                CurrentMovementVelcoity = Vector2.Zero;
+                Position = new Vector2(absoluteCoordinateSystem.Position.X, Sprite.Size.Y / 2);
+            }
+            else if (endY >= GameScene.Height - Sprite.Size.Y / 2)
+            {
+                CurrentMovementVelcoity = Vector2.Zero;
+                Position = new Vector2(absoluteCoordinateSystem.Position.X, GameScene.Height - Sprite.Size.Y / 2);
+            }
+            
             PhysicsBody.Velocity = CurrentMovementVelcoity;
+            base.Update(gameTime);
         }
 
         public void Move(Vector2 direction) //positive y = downwards, negative y = upwards
