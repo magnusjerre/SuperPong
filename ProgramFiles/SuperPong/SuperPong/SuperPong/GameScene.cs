@@ -32,6 +32,7 @@ namespace SuperPong
         PlayerCreator playerCreator;
         Vector2 moveDown = new Vector2(0, 1), moveUp = new Vector2(0, -1);
         PowerupManager powerupManager;
+        List<InputHandler> inputHandlers;
         InputHandler inputHandler;
         public static int Height, Width;
 
@@ -44,7 +45,9 @@ namespace SuperPong
             wallSize = new Vector2(width, 100);
             goalSize = new Vector2(100, height);
             powerupManager = new PowerupManager(this, content, Width, Height);
-            inputHandler = new InputHandler(this, InputType.KEYBOARD);
+            inputHandlers = new List<InputHandler>();
+            inputHandlers.Add(new InputHandler(this, 1));
+            inputHandlers.Add(new InputHandler(this, 2));
             CursorLayer = new MJNode();
             CursorLayer.Name = CURSORLAYERNAME;
             HUDLayer = new MJNode();
@@ -151,7 +154,10 @@ namespace SuperPong
 
             powerupManager.Update(gameTime);
 
-            inputHandler.Update(gameTime);
+            foreach (InputHandler inputHandler in inputHandlers)
+            {
+                inputHandler.Update(gameTime);
+            }
         }
 
         public override void CollisionBegan(MJIntersection pair)

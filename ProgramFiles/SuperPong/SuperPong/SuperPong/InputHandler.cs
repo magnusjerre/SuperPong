@@ -11,18 +11,16 @@ namespace SuperPong
     public class InputHandler
     {
         
-        InputMethod handler;        
+        InputMethod handler;
 
-        public InputHandler(InputListener listener, InputType inputType)
+        public InputHandler(InputListener listener, int playerNumber)
         {
-            if (inputType == InputType.KEYBOARD)
-            {
-                handler = new KeyboardHandler(listener);
-            }
-            else
-            {
-                handler = new GamePadHandler(listener);
-            }
+            handler = new GamePadHandler(listener, playerNumber);
+        }
+
+        public InputHandler(InputListener listener)
+        {
+            handler = new KeyboardHandler(listener);
         }
 
         public void Update(GameTime gameTime)
@@ -54,15 +52,39 @@ namespace SuperPong
 
     public class GamePadHandler : InputMethod
     {
-        
-        public GamePadHandler(InputListener listener)
+        protected int playerNumber;
+        protected PlayerIndex index;
+
+        public GamePadHandler(InputListener listener, int playerNumber)
             : base(listener)
         {
+            this.playerNumber = playerNumber;
+            
+            if (playerNumber == 1)
+                this.index = PlayerIndex.One;
+            else
+                this.index = PlayerIndex.Two;
         }
 
         public override void Update(GameTime gameTime)
         {
-            throw new NotImplementedException();
+            GamePadState state = GamePad.GetState(index);
+            Vector2 leftStick = state.ThumbSticks.Left;
+            Vector2 rightStick = state.ThumbSticks.Right;
+           
+            if (leftStick.Y != 0)
+                listener.MovePlayer(playerNumber, new Vector2(leftStick.X, -leftStick.Y));
+            else
+                listener.StopPlayerMovement(playerNumber);
+
+            if (rightStick.X != 0 || rightStick.Y != 0)
+                listener.MovePlayerStick(playerNumber, new Vector2(rightStick.X, -rightStick.Y));
+
+            if (state.IsButtonDown(Buttons.A))
+                listener.UsePowerup(playerNumber);
+
+            if (state.IsButtonDown(Buttons.Y))
+                listener.RestartGame();
         }
     }
 
