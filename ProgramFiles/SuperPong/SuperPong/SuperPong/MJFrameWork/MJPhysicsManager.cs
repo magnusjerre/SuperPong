@@ -109,6 +109,7 @@ namespace SuperPong.MJFrameWork
             if (!bodiesToRemove.Contains(body))
             {
                 bodiesToRemove.Add(body);
+                body.ToBeRemoved = true;
             }
         }
 

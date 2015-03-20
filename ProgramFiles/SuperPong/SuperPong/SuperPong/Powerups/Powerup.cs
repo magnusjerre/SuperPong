@@ -28,9 +28,10 @@ namespace SuperPong.Powerups
             HitCounter = new HitCounter();
         }
 
-        public void StopPowerup()
+        public void StopAndRemovePowerup()
         {
-            DetachPhysicsBodySafely();
+            NotifyAllOfEnd();
+            RemoveFromParent();
         }
 
         public void NotifyAllOfEnd()

@@ -67,7 +67,7 @@ namespace SuperPong.Powerups
             body.RotationalSpeed = 1f;
             body.IsStatic = true;
             Powerup powerup = new Powerup(sprite, body);
-            powerup.HitCounter = new HitCounter(1, powerup);
+            powerup.HitCounter = new HitCounter(3, powerup);
             powerup.Position = position;
             return powerup;
         }
