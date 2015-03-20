@@ -27,20 +27,20 @@ namespace SuperPong.Powerups
             textures.Add(PowerupType.SQUARE.ToString(), content.Load<Texture2D>("square"));
         }
 
-        public Powerup CreatePowerup(PowerupType type, Player player, Vector2 rightStickPosition) {
+        public Powerup CreatePowerup(PowerupType type) {
             if (type == PowerupType.LINE) 
             {
-                return CreateLinePowerup(player);
+                return CreateLinePowerup();
             }
             else if (type == PowerupType.SQUARE)
             {
-                return CreateSquarePowerup(rightStickPosition);
+                return CreateSquarePowerup();
             }
 
             return null;
         }
 
-        public Powerup CreateLinePowerup(Player powerupOwner)
+        public Powerup CreateLinePowerup()
         {
             MJSprite sprite = new MJSprite(textures[PowerupType.LINE.ToString()]);
             MJPhysicsBody body = MJPhysicsBody.RectangularMJPhysicsBody(sprite.Size, sprite.GetOrigin());
@@ -50,15 +50,10 @@ namespace SuperPong.Powerups
             Powerup powerup = new Powerup(sprite, body);
             powerup.HitCounter = new HitCounter(1, powerup);
 
-            if (powerupOwner.Name.Equals("PaddleLeft"))
-                powerup.Position = new Vector2(powerupOwner.absoluteCoordinateSystem.Position.X - 100, GameScene.Height / 2);
-            else if (powerupOwner.Name.Equals("PaddleRight"))
-                powerup.Position = new Vector2(powerupOwner.absoluteCoordinateSystem.Position.X + 100, GameScene.Height / 2);
-
             return powerup;
         }
 
-        public Powerup CreateSquarePowerup(Vector2 position)
+        public Powerup CreateSquarePowerup()
         {
             MJSprite sprite = new MJSprite(textures[PowerupType.SQUARE.ToString()]);
             MJPhysicsBody body = MJPhysicsBody.RectangularMJPhysicsBody(sprite.Size, sprite.GetOrigin());
@@ -68,7 +63,7 @@ namespace SuperPong.Powerups
             body.IsStatic = true;
             Powerup powerup = new Powerup(sprite, body);
             powerup.HitCounter = new HitCounter(3, powerup);
-            powerup.Position = position;
+            
             return powerup;
         }
     }

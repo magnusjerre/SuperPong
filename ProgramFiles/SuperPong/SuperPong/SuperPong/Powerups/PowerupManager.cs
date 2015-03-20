@@ -128,7 +128,11 @@ namespace SuperPong.Powerups
                 if (player1Powerup != null)
                     player1Powerup.StopAndRemovePowerup();
 
-                player1Powerup = factory.CreatePowerup(player1PowerupDisplay.PowerupType, player, rightStickPosition);
+                player1Powerup = factory.CreatePowerup(player1PowerupDisplay.PowerupType);
+                if (player1PowerupDisplay.PowerupType == PowerupType.LINE)
+                    player1Powerup.Position = new Vector2(10, GameScene.Height / 2);
+                else
+                    player1Powerup.Position = rightStickPosition;
                 scene.AddToGameLayer(player1Powerup);
 
                 player1PowerupDisplay.RemoveFromParent();
@@ -140,7 +144,11 @@ namespace SuperPong.Powerups
                 if (player2Powerup != null)
                     player2Powerup.StopAndRemovePowerup();
 
-                player2Powerup = factory.CreatePowerup(player2PowerupDisplay.PowerupType, player, rightStickPosition);
+                player2Powerup = factory.CreatePowerup(player2PowerupDisplay.PowerupType);
+                if (player2PowerupDisplay.PowerupType == PowerupType.LINE)
+                    player2Powerup.Position = new Vector2(GameScene.Width - 10, GameScene.Height / 2);
+                else
+                    player2Powerup.Position = rightStickPosition;
                 scene.AddToGameLayer(player2Powerup);
 
                 player2PowerupDisplay.RemoveFromParent();
