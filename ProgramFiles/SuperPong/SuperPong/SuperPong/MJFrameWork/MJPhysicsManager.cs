@@ -301,5 +301,18 @@ namespace SuperPong.MJFrameWork
 
             
         }
+
+        public void Clear()
+        {
+            foreach (MJPhysicsBody body in allBodies)
+            {
+                RemoveBodySafely(body);
+            }
+
+            foreach (MJPhysicsEventListener listener in listeners)
+            {
+                RemoveListenerSafely(listener);
+            }
+        }
     }
 }

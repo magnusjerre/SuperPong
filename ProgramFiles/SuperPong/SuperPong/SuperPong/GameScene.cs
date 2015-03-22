@@ -151,6 +151,12 @@ namespace SuperPong
             scoreFont.Draw(spriteBatch);
         }
 
+        public override void UnloadContent()
+        {
+            base.UnloadContent();
+            MJPhysicsManager.getInstance().Clear();
+        }
+
         public override void LoadContent()
         {
             paddleTexture = LoadTexture2D("Paddle");

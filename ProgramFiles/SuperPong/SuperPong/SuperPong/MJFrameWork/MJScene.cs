@@ -30,7 +30,7 @@ namespace SuperPong.MJFrameWork
             LoadContent();
         }
 
-        public void UnloadContent()
+        public virtual void UnloadContent()
         {
             if (Content != null)
                 Content.Unload();
