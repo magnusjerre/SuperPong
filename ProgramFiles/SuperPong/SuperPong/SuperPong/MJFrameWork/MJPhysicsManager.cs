@@ -226,6 +226,12 @@ namespace SuperPong.MJFrameWork
 
         public void Update(GameTime gameTime)
         {
+
+            foreach (MJPhysicsBody body in allBodies)
+            {
+                body.Update(gameTime);
+            }
+
             for (int i = 0; i < allBodies.Count ; i++)
             {
                 for (int j = i + 1; j < allBodies.Count; j++)
@@ -293,10 +299,7 @@ namespace SuperPong.MJFrameWork
             RemoveListenersSafely();
             AddListenersSafely();
 
-            foreach (MJPhysicsBody body in allBodies)
-            {
-                body.Update(gameTime);
-            }
+            
         }
     }
 }

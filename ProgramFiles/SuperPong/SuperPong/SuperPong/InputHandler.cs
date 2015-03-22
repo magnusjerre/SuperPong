@@ -85,6 +85,9 @@ namespace SuperPong
 
             if (state.IsButtonDown(Buttons.Y))
                 listener.RestartGame();
+
+            if (state.IsButtonDown(Buttons.Back))
+                listener.BackButtonPressed();
         }
     }
 

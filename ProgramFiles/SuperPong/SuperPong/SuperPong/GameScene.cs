@@ -36,32 +36,43 @@ namespace SuperPong
         InputHandler inputHandler;
         public static int Height, Width;
 
-        public GameScene(ContentManager content, int height, int width) : base(content, "GameScene")
+        public GameScene(int height, int width) : base("GameScene")
         {
             Height = height;
             Width = width;
-            playerCreator = new PlayerCreator(new Vector2(100, Height / 2), new Vector2(Width - 100, Height / 2));
-            initialBallPosition = new Vector2(Width / 2, Height / 2);
-            wallSize = new Vector2(width, 100);
-            goalSize = new Vector2(100, height);
-            powerupManager = new PowerupManager(this, content, Width, Height);
-            inputHandlers = new List<InputHandler>();
-            inputHandlers.Add(new InputHandler(this, 1));
-            inputHandlers.Add(new InputHandler(this, 2));
-            CursorLayer = new MJNode();
-            CursorLayer.Name = CURSORLAYERNAME;
-            HUDLayer = new MJNode();
-            HUDLayer.Name = HUDLAYERNAME;
-            GameLayer = new MJNode();
-            GameLayer.Name = GAMELAYERNAME;
-            AddChild(GameLayer);
-            AddChild(HUDLayer);
-            AddChild(CursorLayer);
+            
         }
 
         public override void Initialize()
         {
+            playerCreator = new PlayerCreator(new Vector2(100, Height / 2), new Vector2(Width - 100, Height / 2));
+            initialBallPosition = new Vector2(Width / 2, Height / 2);
+            powerupManager = new PowerupManager(this, Content, Width, Height);
+            
+            wallSize = new Vector2(Width, 100);
+            goalSize = new Vector2(100, Height);
+            
+            inputHandlers = new List<InputHandler>();
+            inputHandlers.Add(new InputHandler(this, 1));
+            inputHandlers.Add(new InputHandler(this, 2));
+            
+            CursorLayer = new MJNode();
+            CursorLayer.Name = CURSORLAYERNAME;
+            
+            HUDLayer = new MJNode();
+            HUDLayer.Name = HUDLAYERNAME;
+            
+            GameLayer = new MJNode();
+            GameLayer.Name = GAMELAYERNAME;
+            
+            AddChild(GameLayer);
+            AddChild(HUDLayer);
+            AddChild(CursorLayer);
+
             AttachPhysicsManager(MJPhysicsManager.getInstance());
+
+            base.Initialize();
+
             player1 = playerCreator.CreatePlayer1();
             AddToGameLayer(player1);
             player2 = playerCreator.CreatePlayer2();
@@ -88,7 +99,7 @@ namespace SuperPong
             bottomWall = new MJNode();
             bottomWall.Name = "BottomWall";
             bottomWall.Position = new Vector2(0, Height);
-            bottomWall.AttachPhysicsBody(MJPhysicsBody.RectangularMJPhysicsBody(wallSize, new Vector2(0,0))); //Origin at top right corner
+            bottomWall.AttachPhysicsBody(MJPhysicsBody.RectangularMJPhysicsBody(wallSize, new Vector2(0, 0))); //Origin at top right corner
             bottomWall.PhysicsBody.IsStatic = true;
             bottomWall.PhysicsBody.Bitmask = Bitmasks.WALL;
             bottomWall.PhysicsBody.CollisionMask = Bitmasks.BALL | Bitmasks.POWERUP;
@@ -144,7 +155,7 @@ namespace SuperPong
             playerCreator.LoadTextures(paddleTexture, paddleTexture);
             ballTexture = LoadTexture2D("ball");
             cursorTexture = LoadTexture2D("stick-cursor");
-            font = content.Load<SpriteFont>("TheSpriteFont");
+            font = Content.Load<SpriteFont>("TheSpriteFont");
             powerupManager.LoadContent();
         }
 
@@ -264,6 +275,12 @@ namespace SuperPong
         public void AddToCursorLayer(MJNode node)
         {
             CursorLayer.AddChild(node);
+        }
+
+
+        public void BackButtonPressed()
+        {
+            MJSceneManager.GetInstance().PopScene();
         }
     }
 }

@@ -90,6 +90,7 @@
     <Compile Include="MJFrameWork\MJRectangle.cs" />
     <Compile Include="MJFrameWork\MJSat.cs" />
     <Compile Include="MJFrameWork\MJScene.cs" />
+    <Compile Include="MJFrameWork\MJSceneManager.cs" />
     <Compile Include="MJFrameWork\MJSprite.cs" />
     <Compile Include="MJFrameWork\Interfaces\MJUpdate.cs" />
     <Compile Include="MJFrameWork\MJUtils.cs" />
@@ -113,6 +114,7 @@
     <Compile Include="ScoreFont.cs" />
     <Compile Include="ScoreKeeper.cs" />
     <Compile Include="ScoreObserver.cs" />
+    <Compile Include="StartMenuScene.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

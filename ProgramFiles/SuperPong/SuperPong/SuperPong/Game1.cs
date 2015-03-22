@@ -22,8 +22,8 @@ namespace SuperPong
         SpriteBatch spriteBatch;
         MJSprite sprite, sprite2, sprite3;        
         int elapsedButtonPressTime = 0;
-        MJScene scene;
-
+        //MJScene scene;
+        MJSceneManager sceneManager;
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -31,7 +31,10 @@ namespace SuperPong
             graphics.PreferredBackBufferHeight = 576;
             graphics.ApplyChanges();
             Content.RootDirectory = "Content";            
-            scene = new GameScene(Content, 576, 1024);
+            //scene = new GameScene(Content, 576, 1024);
+            MJSceneManager.Init(Content);
+            sceneManager = MJSceneManager.GetInstance();
+            sceneManager.PushScene(new StartMenuScene(576, 1024));
             //scene = new CollisionScene(Content);
         }
 
@@ -46,7 +49,7 @@ namespace SuperPong
             // TODO: Add your initialization logic here
 
             base.Initialize();
-            scene.Initialize();            
+            //scene.Initialize();            
         }
 
         /// <summary>
@@ -57,7 +60,7 @@ namespace SuperPong
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            scene.LoadContent();
+            //scene.LoadContent();
         }
 
         /// <summary>
@@ -77,13 +80,14 @@ namespace SuperPong
         protected override void Update(GameTime gameTime)
         {
             // Allows the game to exit
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                this.Exit();
+            //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
+            //    this.Exit();
 
             // TODO: Add your update logic here
 
             base.Update(gameTime);
-            scene.Update(gameTime);
+            //scene.Update(gameTime);
+            sceneManager.Update(gameTime);
         }
 
         /// <summary>
@@ -98,7 +102,7 @@ namespace SuperPong
 
             base.Draw(gameTime);
             spriteBatch.Begin();
-            scene.Draw(spriteBatch);
+            sceneManager.Draw(spriteBatch);
             spriteBatch.End();
         }
     }
