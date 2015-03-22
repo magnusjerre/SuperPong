@@ -42,14 +42,10 @@ namespace SuperPong
         private List<Vector2> generatePlayer1Shape()
         {
             List<Vector2> paddleLeftShape = new List<Vector2>();
-            paddleLeftShape.Add(new Vector2(50, -50));
-            paddleLeftShape.Add(new Vector2(0, -100));
-            paddleLeftShape.Add(new Vector2(-50, -100));
-            paddleLeftShape.Add(new Vector2(0, -50));
-            paddleLeftShape.Add(new Vector2(0, 50));
-            paddleLeftShape.Add(new Vector2(-50, 100));
-            paddleLeftShape.Add(new Vector2(0, 100));
-            paddleLeftShape.Add(new Vector2(50, 50));
+            paddleLeftShape.Add(new Vector2(-22, -92));
+            paddleLeftShape.Add(new Vector2(-22, 92));
+            paddleLeftShape.Add(new Vector2(23, 46));
+            paddleLeftShape.Add(new Vector2(23, -47));
             return paddleLeftShape;
         }
 
@@ -74,14 +70,11 @@ namespace SuperPong
         private List<Vector2> generatePlayer2Shape()
         {
             List<Vector2> paddleRightShape = new List<Vector2>();
-            paddleRightShape.Add(new Vector2(-50, -50));    //0
-            paddleRightShape.Add(new Vector2(-50, 50));     //1
-            paddleRightShape.Add(new Vector2(0, 100));      //2
-            paddleRightShape.Add(new Vector2(50, 100));     //3
-            paddleRightShape.Add(new Vector2(0, 50));       //4
-            paddleRightShape.Add(new Vector2(0, -50));      //5
-            paddleRightShape.Add(new Vector2(50, -100));    //6
-            paddleRightShape.Add(new Vector2(0, -100));     //7
+            paddleRightShape.Add(new Vector2(-23, -47));    //0
+            paddleRightShape.Add(new Vector2(-23, 46));     //1
+            paddleRightShape.Add(new Vector2(22, 93));      //2
+            paddleRightShape.Add(new Vector2(22, -92));     //3
+
             return paddleRightShape;
         }
 

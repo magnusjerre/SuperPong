@@ -35,7 +35,7 @@ namespace SuperPong
         List<InputHandler> inputHandlers;
         InputHandler inputHandler;
         public static int Height, Width;
-        MJNode replayGameNode;
+        MJSprite replayGameNode;
 
         public GameScene(int height, int width) : base("GameScene")
         {
@@ -141,7 +141,8 @@ namespace SuperPong
             player2Cursor.Position = player2.Position;
             AddToCursorLayer(player2Cursor);
 
-            replayGameNode = new ReplayGameNode(aButtonTexture, bButtonTexture, replayBackgroundTexture, font);
+            replayGameNode = new MJSprite(replayBackgroundTexture);
+            replayGameNode.Position = new Vector2(Width / 2, Height / 2);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -159,15 +160,13 @@ namespace SuperPong
 
         public override void LoadContent()
         {
-            paddleTexture = LoadTexture2D("Paddle");
+            paddleTexture = LoadTexture2D("paddle");
             playerCreator.LoadTextures(paddleTexture, paddleTexture);
             ballTexture = LoadTexture2D("ball");
             cursorTexture = LoadTexture2D("stick-cursor");
             font = Content.Load<SpriteFont>("TheSpriteFont");
             powerupManager.LoadContent();
-            aButtonTexture = LoadTexture2D("a-button");
-            bButtonTexture = LoadTexture2D("b-button");
-            replayBackgroundTexture = LoadTexture2D("replay-background");
+            replayBackgroundTexture = LoadTexture2D("replay");
         }
 
         public override void Update(GameTime gameTime)

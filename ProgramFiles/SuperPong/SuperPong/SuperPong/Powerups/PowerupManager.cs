@@ -56,8 +56,8 @@ namespace SuperPong.Powerups
 
         public void LoadContent()
         {
-            floatingTextures.Add(PowerupType.LINE.ToString(), content.Load<Texture2D>("line_floating_powerup"));
-            floatingTextures.Add(PowerupType.SQUARE.ToString(), content.Load<Texture2D>("square_floating_powerup"));
+            floatingTextures.Add(PowerupType.LINE.ToString(), content.Load<Texture2D>("floating-powerup-line"));
+            floatingTextures.Add(PowerupType.SQUARE.ToString(), content.Load<Texture2D>("floating-powerup-square"));
             floatingTextures.Add("frame", content.Load<Texture2D>("frame"));
             factory.LoadContent();
         }
