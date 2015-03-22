@@ -202,7 +202,8 @@ namespace SuperPong
             gameIsOver = true;
             ball.Position = new Vector2(-1000, -1000);
             ball.PhysicsBody.Velocity = Vector2.Zero;
-            AddToGameLayer(replayGameNode);
+            AddToHudLayer(replayGameNode);
+            powerupManager.NotifyGameOver();
         }
 
         public void NotifyLeftPlayerScored(int newScore)

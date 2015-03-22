@@ -23,6 +23,7 @@ namespace SuperPong.Powerups
 
         Vector2 initialPositionFLoatingPowerup;
 
+        FloatingPowerup floatingPowerup;
         PowerupDisplay player1PowerupDisplay, player2PowerupDisplay;
         Vector2 player1PowerupDisplayPosition, player2PowerupDisplayPosition;
         Powerup player1Powerup, player2Powerup;
@@ -69,55 +70,32 @@ namespace SuperPong.Powerups
             {
                 timeLeftToNextPowerup = GenerateNextTimeToPowerup();
                 PowerupType nextType = GenerateNextPowerupType();
-                scene.AddToGameLayer(new FloatingPowerup(this, floatingTextures[nextType.ToString()], nextType, randomGenerator, initialPositionFLoatingPowerup));
+                floatingPowerup = new FloatingPowerup(this, floatingTextures[nextType.ToString()], nextType, randomGenerator, initialPositionFLoatingPowerup);
+                scene.AddToGameLayer(floatingPowerup);
                 canAddNewPowerup = false;
             }
         }
 
         public void ResetGame()
         {
+            canAddNewPowerup = true;
             timeLeftToNextPowerup = GenerateNextTimeToPowerup();
-
-            if (player1Powerup != null)
-            {
-                player1Powerup.StopAndRemovePowerup();
-                player1Powerup = null;
-            }
-
-            if (player1PowerupDisplay != null)
-            {
-                player1PowerupDisplay.RemoveFromParent();
-                player1PowerupDisplay = null;
-            }
-
-            if (player2Powerup != null)
-            {
-                player2Powerup.StopAndRemovePowerup();
-                player2Powerup = null;
-            }
-
-            if (player2PowerupDisplay != null)
-            {
-                player2PowerupDisplay.RemoveFromParent();
-                player2PowerupDisplay = null;
-            }
-
-
+            Clear();
         }
 
         public void ResetPoint()
         {
         }
 
-        public void NotifyPowerupCaught(MJPhysicsBody otherBody, FloatingPowerup floatingPowerup) {
-            floatingPowerup.RemoveFromParent();
+        public void NotifyPowerupCaught(MJPhysicsBody otherBody, FloatingPowerup floatingPowerupParamter) {
+            floatingPowerupParamter.RemoveFromParent();
             canAddNewPowerup = true;
             if (Player1CaughtPowerup(otherBody))
             {
                 if (player1PowerupDisplay != null)
                     player1PowerupDisplay.RemoveFromParent();
 
-                player1PowerupDisplay = new PowerupDisplay(floatingTextures["frame"], floatingTextures[floatingPowerup.PowerupType.ToString()], floatingPowerup.PowerupType);
+                player1PowerupDisplay = new PowerupDisplay(floatingTextures["frame"], floatingTextures[floatingPowerupParamter.PowerupType.ToString()], floatingPowerupParamter.PowerupType);
                 player1PowerupDisplay.Position = player1PowerupDisplayPosition;
                 scene.AddToGameLayer(player1PowerupDisplay);
             }
@@ -125,8 +103,8 @@ namespace SuperPong.Powerups
             {
                 if (player2PowerupDisplay != null)
                     player2PowerupDisplay.RemoveFromParent();
-                
-                player2PowerupDisplay = new PowerupDisplay(floatingTextures["frame"], floatingTextures[floatingPowerup.PowerupType.ToString()], floatingPowerup.PowerupType);
+
+                player2PowerupDisplay = new PowerupDisplay(floatingTextures["frame"], floatingTextures[floatingPowerupParamter.PowerupType.ToString()], floatingPowerupParamter.PowerupType);
                 player2PowerupDisplay.Position = player2PowerupDisplayPosition;
                 scene.AddToGameLayer(player2PowerupDisplay);
             }            
@@ -183,5 +161,44 @@ namespace SuperPong.Powerups
 
         }
 
+
+        internal void NotifyGameOver()
+        {
+            canAddNewPowerup = false;
+            Clear();
+        }
+
+        private void Clear()
+        {
+            if (player1Powerup != null)
+            {
+                player1Powerup.StopAndRemovePowerup();
+                player1Powerup = null;
+            }
+
+            if (player1PowerupDisplay != null)
+            {
+                player1PowerupDisplay.RemoveFromParent();
+                player1PowerupDisplay = null;
+            }
+
+            if (player2Powerup != null)
+            {
+                player2Powerup.StopAndRemovePowerup();
+                player2Powerup = null;
+            }
+
+            if (player2PowerupDisplay != null)
+            {
+                player2PowerupDisplay.RemoveFromParent();
+                player2PowerupDisplay = null;
+            }
+
+            if (floatingPowerup != null)
+            {
+                floatingPowerup.RemoveFromParent();
+                floatingPowerup = null;
+            }
+        }
     }
 }
