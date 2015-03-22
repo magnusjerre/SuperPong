@@ -81,12 +81,12 @@ namespace SuperPong
                 listener.MovePlayerStick(playerNumber, new Vector2(rightStick.X, -rightStick.Y));
 
             if (state.IsButtonDown(Buttons.A))
-                listener.UsePowerup(playerNumber);
+                listener.AButtonPressed(playerNumber);
 
             if (state.IsButtonDown(Buttons.Y))
                 listener.RestartGame();
 
-            if (state.IsButtonDown(Buttons.Back))
+            if (state.IsButtonDown(Buttons.B))
                 listener.BackButtonPressed();
         }
     }
@@ -125,7 +125,7 @@ namespace SuperPong
 
             //Powerup
             if (Keyboard.GetState().IsKeyDown(Keys.Q))
-                listener.UsePowerup(player1);
+                listener.AButtonPressed(player1);
 
             //Player 2 - Right paddle
             //Paddle movement
@@ -151,7 +151,7 @@ namespace SuperPong
 
             //Powerup
             if (Keyboard.GetState().IsKeyDown(Keys.M))
-                listener.UsePowerup(player2);
+                listener.AButtonPressed(player2);
 
             //Not player related
             if (Keyboard.GetState().IsKeyDown(Keys.R))

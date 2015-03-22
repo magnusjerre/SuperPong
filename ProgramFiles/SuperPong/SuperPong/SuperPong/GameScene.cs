@@ -19,7 +19,7 @@ namespace SuperPong
         public MJNode CursorLayer, HUDLayer, GameLayer;
         const String CURSORLAYERNAME = "CURSOR_LAYER", HUDLAYERNAME = "HUD_LAYER", GAMELAYERNAME = "GAME_LAYER";
         MJSprite ball;
-        Texture2D paddleTexture, ballTexture, cursorTexture;
+        Texture2D paddleTexture, ballTexture, cursorTexture, replayBackgroundTexture, aButtonTexture, bButtonTexture;
         MJNode topWall, bottomWall, leftGoal, rightGoal;
         Vector2 wallSize, goalSize;
         ScoreKeeper scoreKeeper;
@@ -35,6 +35,7 @@ namespace SuperPong
         List<InputHandler> inputHandlers;
         InputHandler inputHandler;
         public static int Height, Width;
+        MJNode replayGameNode;
 
         public GameScene(int height, int width) : base("GameScene")
         {
@@ -140,6 +141,7 @@ namespace SuperPong
             player2Cursor.Position = player2.Position;
             AddToCursorLayer(player2Cursor);
 
+            replayGameNode = new ReplayGameNode(aButtonTexture, bButtonTexture, replayBackgroundTexture, font);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -157,6 +159,9 @@ namespace SuperPong
             cursorTexture = LoadTexture2D("stick-cursor");
             font = Content.Load<SpriteFont>("TheSpriteFont");
             powerupManager.LoadContent();
+            aButtonTexture = LoadTexture2D("a-button");
+            bButtonTexture = LoadTexture2D("b-button");
+            replayBackgroundTexture = LoadTexture2D("replay-background");
         }
 
         public override void Update(GameTime gameTime)
@@ -178,7 +183,8 @@ namespace SuperPong
 
         public override void IntersectionBegan(MJIntersection pair)
         {
-            scoreKeeper.IncreaseScore(pair);
+            if (pair.Body1.Bitmask == Bitmasks.BALL || pair.Body2.Bitmask == Bitmasks.BALL)
+                scoreKeeper.IncreaseScore(pair);
         }
 
         public override void IntersectionEnded(MJIntersection pair)
@@ -189,6 +195,9 @@ namespace SuperPong
         {
             Console.WriteLine("Game Over!");
             gameIsOver = true;
+            ball.Position = new Vector2(-1000, -1000);
+            ball.PhysicsBody.Velocity = Vector2.Zero;
+            AddToGameLayer(replayGameNode);
         }
 
         public void NotifyLeftPlayerScored(int newScore)
@@ -240,14 +249,6 @@ namespace SuperPong
                 player2.StopMove();
         }
 
-        public void UsePowerup(int playerNumber)
-        {
-            if (playerNumber == 1)
-                powerupManager.UsePowerup(player1, player1Cursor.absoluteCoordinateSystem.Position);
-            else
-                powerupManager.UsePowerup(player2, player2Cursor.absoluteCoordinateSystem.Position);
-        }
-
         public void MovePlayerStick(int playerNumber, Vector2 direction)
         {
             if (playerNumber == 1)
@@ -258,8 +259,12 @@ namespace SuperPong
 
         public void RestartGame()
         {
-            ResetGame();
-            gameIsOver = false;
+            if (gameIsOver)
+            {
+                ResetGame();
+                gameIsOver = false;
+                replayGameNode.RemoveFromParent();
+            }
         }
 
         public void AddToGameLayer(MJNode node)
@@ -280,7 +285,23 @@ namespace SuperPong
 
         public void BackButtonPressed()
         {
-            MJSceneManager.GetInstance().PopScene();
+            if (gameIsOver)
+                MJSceneManager.GetInstance().PopScene();
+        }
+
+
+        public void AButtonPressed(int playerNumber)
+        {
+            if (gameIsOver)
+                RestartGame();
+            else
+            {
+                if (playerNumber == 1)
+                    powerupManager.UsePowerup(player1, player1Cursor.absoluteCoordinateSystem.Position);
+                else
+                    powerupManager.UsePowerup(player2, player2Cursor.absoluteCoordinateSystem.Position);
+            }
+
         }
     }
 }

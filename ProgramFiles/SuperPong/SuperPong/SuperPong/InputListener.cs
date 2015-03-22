@@ -11,7 +11,7 @@ namespace SuperPong
 
         void MovePlayer(int playerNumber, Vector2 direction);
         void StopPlayerMovement(int playerNumber);
-        void UsePowerup(int playerNumber);
+        void AButtonPressed(int playerNumber);
         void MovePlayerStick(int playerNumber, Vector2 direction);
         void RestartGame();
         void BackButtonPressed();
