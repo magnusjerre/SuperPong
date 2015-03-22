@@ -43,6 +43,7 @@ namespace SuperPong.Powerups
         public Powerup CreateLinePowerup()
         {
             MJSprite sprite = new MJSprite(textures[PowerupType.LINE.ToString()]);
+            sprite.ColorTint = Color.Yellow;
             MJPhysicsBody body = MJPhysicsBody.RectangularMJPhysicsBody(sprite.Size, sprite.GetOrigin());
             body.Bitmask = Bitmasks.WALL;
             body.CollisionMask = Bitmasks.BALL | Bitmasks.POWERUP;
@@ -56,6 +57,7 @@ namespace SuperPong.Powerups
         public Powerup CreateSquarePowerup()
         {
             MJSprite sprite = new MJSprite(textures[PowerupType.SQUARE.ToString()]);
+            sprite.ColorTint = Color.Red;
             MJPhysicsBody body = MJPhysicsBody.RectangularMJPhysicsBody(sprite.Size, sprite.GetOrigin());
             body.Bitmask = Bitmasks.WALL;
             body.CollisionMask = Bitmasks.BALL | Bitmasks.POWERUP;

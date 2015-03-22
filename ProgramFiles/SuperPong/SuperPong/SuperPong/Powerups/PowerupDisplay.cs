@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using SuperPong.MJFrameWork;
+using Microsoft.Xna.Framework;
 
 namespace SuperPong.Powerups
 {
@@ -17,6 +18,10 @@ namespace SuperPong.Powerups
         {
             PowerupType = type;
             MJSprite powerup = new MJSprite(powerupTexture);
+            if (type == PowerupType.LINE)
+                powerup.ColorTint = Color.Yellow;
+            else
+                powerup.ColorTint = Color.Red;
             AddChild(powerup);
             Name = "PowerupDisplay";
         }

@@ -86,6 +86,7 @@ namespace SuperPong
             ball.PhysicsBody.CollisionMask = Bitmasks.WALL | Bitmasks.PADDLE;
             ball.PhysicsBody.IntersectionMask = Bitmasks.GOAL;
             ball.Position = new Vector2(Width / 2, Height / 2);
+            ball.ColorTint = Color.BlueViolet;
             AddToGameLayer(ball);
 
             topWall = new MJNode();

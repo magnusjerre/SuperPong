@@ -26,6 +26,7 @@ namespace SuperPong
             MJSprite paddleLeftSprite = new MJSprite(player1Texture);   //Points right
             paddleLeftSprite.Name = "PaddleLeft";
             paddleLeftSprite.origin = new Vector2(0.5f, 0.5f);
+            paddleLeftSprite.ColorTint = Color.LightGreen;
             
             MJPhysicsBody body = MJPhysicsBody.PolygonPathMJPhysicsBody(generatePlayer1Shape());
             body.IsStatic = true;
@@ -55,6 +56,8 @@ namespace SuperPong
             paddleRight.Name = "PaddleRight";
             paddleRight.origin = new Vector2(0.5f, 0.5f);
             paddleRight.SEffects = SpriteEffects.FlipHorizontally;
+            paddleRight.ColorTint = Color.Blue;
+
             MJPhysicsBody body = MJPhysicsBody.PolygonPathMJPhysicsBody(generatePlayer2Shape());
             body.IsStatic = true;
             body.Bitmask = Bitmasks.PADDLE;

@@ -28,6 +28,10 @@ namespace SuperPong.Powerups
             body.IntersectionMask = Bitmasks.PADDLE | Bitmasks.GOAL;
             body.Velocity = GenerateRandomInitialVelocity(randomGenerator);
             AttachPhysicsBody(body);
+            if (powerupType == PowerupType.LINE)
+                ColorTint = Color.Yellow;
+            else
+                ColorTint = Color.Red;
             MJPhysicsManager.getInstance().AddListenerSafely(this);
         }
 
