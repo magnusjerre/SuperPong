@@ -75,8 +75,7 @@ namespace SuperPong
 
         public void ResetAfterPoint()
         {
-            //InitialDirection = RandomDirection();
-            InitialDirection = new Vector2(-1, 0);
+            InitialDirection = RandomDirection();
             speed = InitialSpeed;
             ball.Velocity = InitialDirection * speed;
             TotalMultiplier = 1f;
