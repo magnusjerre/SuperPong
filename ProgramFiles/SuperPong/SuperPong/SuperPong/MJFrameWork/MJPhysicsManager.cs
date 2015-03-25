@@ -29,6 +29,8 @@ namespace SuperPong.MJFrameWork
         public List<MJPhysicsBody> bodiesToRemove;
         public List<MJPhysicsBody> bodiesToAdd;
 
+        public float Gravity { get; set; }
+
         private MJPhysicsManager()
         {
             intersectionPairs = new List<MJIntersection>();
@@ -38,6 +40,8 @@ namespace SuperPong.MJFrameWork
             listenersToAdd = new List<MJPhysicsEventListener>();
             bodiesToRemove = new List<MJPhysicsBody>();
             bodiesToAdd = new List<MJPhysicsBody>();
+
+            Gravity = 1000;
         }
 
         private void AddListenersSafely()
@@ -186,25 +190,25 @@ namespace SuperPong.MJFrameWork
             float v2nFinal = 0f;
             if (body1.IsStatic)
             {
-                //The commented out code removes the speed increase/decrease from moving static
+                //The commented out code adds the speed increase/decrease from moving static
                 /*v1nFinal = v1n;
-                v1nFinal = 0;
-                v1tFinal = 0;
+                v1nFinal = v1n;
+                v1tFinal = v1t;
                 v2nFinal = 2 * v1n - v2n;*/
-                v1nFinal = 0;
-                v1tFinal = 0;
+                v1nFinal = v1n;
+                v1tFinal = v1t;
                 v2nFinal = -v2n;
             }
             else if (body2.IsStatic)
             {
-                //The commented out code removes the speed increase/decrease from moving static
-                /*v1nFinal = 2 * v2n - v1n;
+                //The commented out code adds the speed increase/decrease from moving static
+                /*
+                v1nFinal = 2 * v2n - v1n;
                 v2nFinal = v2n;
-                v2nFinal = 0;
-                v2tFinal = 0;*/
+                v2tFinal = v2t;*/
                 v1nFinal = -v1n;
-                v2nFinal = 0;
-                v2tFinal = 0;
+                v2nFinal = v2n;
+                v2tFinal = v2t;
             }
             else
             {
@@ -312,6 +316,17 @@ namespace SuperPong.MJFrameWork
             foreach (MJPhysicsEventListener listener in listeners)
             {
                 RemoveListenerSafely(listener);
+            }
+        }
+
+        public void ApplyGravity()
+        {
+            foreach (MJPhysicsBody body in allBodies)
+            {
+                if (body.AffectedByGravity)
+                {
+                    ApplyForce(new Vector2(0, 1) * body.Mass * Gravity, body);
+                }
             }
         }
     }

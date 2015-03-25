@@ -39,6 +39,11 @@ namespace SuperPong.MJFrameWork
         public Matrix TransformationMatrix { get; set; }
 
         public Boolean ToBeRemoved { get; set; }
+
+        public float Restitution { get; set; }
+
+        public Boolean AffectedByGravity { get; set; }
+
         /*
          * <summary>
          * The axis-aligned bounding box is the rectangular box created using
@@ -118,6 +123,9 @@ namespace SuperPong.MJFrameWork
             CollisionMask = 0;
             IntersectionMask = 0;
             ToBeRemoved = false;
+
+            Restitution = 1f;
+            AffectedByGravity = true;
         }
 
         /*
