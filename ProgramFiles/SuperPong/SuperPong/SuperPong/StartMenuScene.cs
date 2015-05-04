@@ -49,6 +49,9 @@ namespace SuperPong
             {
                 MJSceneManager.GetInstance().PushScene(new GameScene(Height, Width));
             }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.M))
+                MJSceneManager.GetInstance().PushScene(new GameScene(Height, Width));
         }
 
         public override void Draw(SpriteBatch spriteBatch)

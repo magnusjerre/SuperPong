@@ -56,6 +56,7 @@ namespace SuperPong
             inputHandlers = new List<InputHandler>();
             inputHandlers.Add(new InputHandler(this, 1));
             inputHandlers.Add(new InputHandler(this, 2));
+            inputHandlers.Add(new InputHandler(this));
             
             CursorLayer = new MJNode();
             CursorLayer.Name = CURSORLAYERNAME;
